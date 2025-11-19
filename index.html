@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en" class="scroll-smooth selection:bg-blue-500/30 selection:text-blue-900">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -7,10 +7,12 @@
     <meta name="description" content="Portfolio of Allen Wang - Software Engineer at Apple.">
     <meta name="theme-color" content="#F5F5F7">
     
+    <link rel="preconnect" href="https://unpkg.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
 
@@ -24,13 +26,16 @@
                     colors: {
                         primary: '#1D1D1F', 
                         secondary: '#86868B', 
-                        accent: '#007AFF', /* Apple Blue */
+                        accent: '#007AFF',
+                        glass: 'rgba(255, 255, 255, 0.65)',
                     },
                     borderRadius: {
                         '4xl': '32px',
+                        '5xl': '40px',
                     },
-                    animation: {
-                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    boxShadow: {
+                        'glass': '0 4px 30px rgba(0, 0, 0, 0.03)',
+                        'glass-hover': '0 20px 40px rgba(0, 0, 0, 0.08)',
                     }
                 }
             }
@@ -47,78 +52,76 @@
             overflow-x: hidden;
         }
 
-        /* NOISE TEXTURE - Premium Feel */
+        /* OPTIMIZED NOISE - Uses blend mode for better integration */
         .noise-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            inset: 0;
             z-index: -1;
-            opacity: 0.035;
+            opacity: 0.4;
             pointer-events: none;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            mix-blend-mode: overlay;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
 
         .ambient-light {
             position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
+            inset: 0;
             z-index: -2;
             overflow: hidden;
             background: #F5F5F7;
         }
 
+        /* Smoother Blob Animation */
         .blob {
             position: absolute;
-            filter: blur(90px);
-            opacity: 0.5;
-            animation: float 10s ease-in-out infinite;
-            will-change: transform; 
+            filter: blur(80px);
+            opacity: 0.6;
+            will-change: transform;
+            animation: float 20s ease-in-out infinite;
         }
 
-        .blob-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: radial-gradient(circle, rgba(0, 122, 255, 0.15) 0%, rgba(0,0,0,0) 70%); }
-        .blob-2 { top: 20%; right: -20%; width: 60vw; height: 60vw; background: radial-gradient(circle, rgba(175, 82, 222, 0.1) 0%, rgba(0,0,0,0) 70%); animation-delay: -2s; }
-        .blob-3 { bottom: -20%; left: 20%; width: 70vw; height: 70vw; background: radial-gradient(circle, rgba(52, 199, 89, 0.1) 0%, rgba(0,0,0,0) 70%); animation-delay: -5s; }
+        .blob-1 { top: -10%; left: -10%; width: 60vw; height: 60vw; background: radial-gradient(circle, rgba(0, 122, 255, 0.12) 0%, rgba(0,0,0,0) 70%); }
+        .blob-2 { top: 30%; right: -20%; width: 50vw; height: 50vw; background: radial-gradient(circle, rgba(175, 82, 222, 0.08) 0%, rgba(0,0,0,0) 70%); animation-delay: -5s; }
+        .blob-3 { bottom: -20%; left: 20%; width: 70vw; height: 70vw; background: radial-gradient(circle, rgba(52, 199, 89, 0.08) 0%, rgba(0,0,0,0) 70%); animation-delay: -10s; }
 
         @keyframes float {
             0%, 100% { transform: translate(0, 0) scale(1); }
-            33% { transform: translate(30px, -50px) scale(1.05); }
-            66% { transform: translate(-20px, 20px) scale(0.95); }
+            33% { transform: translate(20px, -30px) scale(1.05); }
+            66% { transform: translate(-10px, 20px) scale(0.95); }
         }
 
+        /* PREMIUM GLASS EFFECT */
         .glass-card {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: saturate(180%) blur(20px);
-            -webkit-backdrop-filter: saturate(180%) blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.04);
-            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            background: linear-gradient(145deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.4) 100%);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.02);
+            transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
         .glass-card:hover {
-            background: rgba(255, 255, 255, 0.85);
-            transform: scale(1.01) translateY(-2px);
-            box-shadow: 0 20px 40px -5px rgba(0, 0, 0, 0.08);
-            border-color: rgba(255, 255, 255, 1);
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateY(-4px) scale(1.005);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+            border-color: rgba(255, 255, 255, 0.9);
         }
 
         .nav-glass {
-            background: rgba(250, 250, 252, 0.8);
-            backdrop-filter: saturate(200%) blur(30px);
-            -webkit-backdrop-filter: saturate(200%) blur(30px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
         }
 
-        .logo-img { transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
-        .group:hover .logo-img { transform: scale(1.1); }
-        
-        .no-scrollbar::-webkit-scrollbar { display: none; }
+        /* Custom Scrollbar helper */
+        .hide-scroll::-webkit-scrollbar { display: none; }
+        .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body>
     <div class="noise-overlay"></div>
-
     <div class="ambient-light">
         <div class="blob blob-1"></div>
         <div class="blob blob-2"></div>
@@ -128,8 +131,9 @@
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useEffect, useRef } = React;
+        const { useState, useEffect, useRef, useMemo } = React;
 
+        // --- DATA LAYER (RETAINED CONTENT FIXES) ---
         const DATA = {
             profile: {
                 name: "Allen Wang",
@@ -143,26 +147,26 @@
             education: [
                 {
                     school: "Stanford University",
-                    degree: "Bachelor of Science",
-                    field: "Math & Computer Science",
+                    degree: "Bachelor of Science", 
+                    field: "Mathematics & Computer Science", 
                     logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Seal_of_Leland_Stanford_Junior_University.svg/1200px-Seal_of_Leland_Stanford_Junior_University.svg.png",
                     url: "https://mcs.stanford.edu/"
                 },
                 {
                     school: "University of Oxford",
-                    degree: "Tutorial",
-                    field: "Quantitative Finance",
+                    degree: "Tutorial in Quantitative Finance",
+                    field: "Corpus Christi College",
                     logo: "https://upload.wikimedia.org/wikipedia/commons/e/e4/Arms_of_University_of_Oxford.svg",
-                    url: "https://oxford.stanford.edu/tutorials/mathematical-physical-and-life-sciences#0209"
+                    url: "https://oxford.stanford.edu/"
                 }
             ],
             experience: [
                 {
                     company: "Apple",
                     role: "Software Engineer",
-                    team: "iCloud Intelligence",
-                    summary: "Building resilient distributed systems to secure iCloud at scale.",
-                    details: "Java · Cassandra · FoundationDB · Kafka · Spark · Kubernetes",
+                    // team field intentionally removed
+                    summary: "Building resilient distributed systems to secure iCloud at scale.", 
+                    details: ["Java", "Cassandra", "FoundationDB", "Kafka", "Spark", "Kubernetes"],
                     logo: "apple",
                     isApple: true,
                     url: "https://apple.com"
@@ -170,15 +174,14 @@
                 {
                     company: "Millennium",
                     role: "Quantitative Developer",
-                    team: "Quantitative Development",
-                    summary: "Accelerating quantitative research through intelligent data platforms.",
-                    details: "Python · C++ · Vector DB · RAG · Pandas · System Design",
+                    // team field intentionally removed
+                    summary: "Accelerating quantitative research through intelligent data platforms.", 
+                    details: ["Python", "C++", "Vector DB", "RAG", "Pandas", "System Design"],
                     logo: "millennium",
                     fullFill: true,
                     url: "https://mlp.com"
                 }
             ],
-            // Enhanced Stack Layout
             stack: [
                 { name: "Java", type: "Backend" }, 
                 { name: "Python", type: "Data" }, 
@@ -191,6 +194,8 @@
             ]
         };
 
+        // --- COMPONENTS ---
+
         const Icon = ({ name, size = 16, className }) => {
             useEffect(() => { if (window.lucide) window.lucide.createIcons(); }, [name]);
             return <i data-lucide={name} width={size} height={size} className={className}></i>;
@@ -202,154 +207,195 @@
                 millennium: "https://upload.wikimedia.org/wikipedia/commons/d/d8/Millennium_Management_logo_2024.png"
             };
             const src = name.startsWith('http') ? name : logos[name];
-            let imgClass = `logo-img transition-transform duration-500 `;
-            if (name === 'apple' || name === 'millennium') imgClass += " object-contain p-2.5"; 
+            let imgClass = `transition-transform duration-700 ease-out group-hover:scale-110 `;
+            
+            if (name === 'apple') imgClass += " object-contain p-3"; 
+            else if (name === 'millennium') imgClass += " object-contain p-2";
             else if (fullFill) imgClass += " object-cover w-full h-full";
             else imgClass += " object-contain";
 
-            return <img src={src} alt={name} className={`${imgClass} ${className}`} />;
+            return <img src={src} alt={name} className={`${imgClass} ${className}`} loading="lazy" />;
         };
 
         const FadeIn = ({ children, delay = 0, className = "" }) => {
             const [isVisible, setIsVisible] = useState(false);
             const ref = useRef();
+
             useEffect(() => {
                 const observer = new IntersectionObserver(([e]) => {
-                    if (e.isIntersecting) setIsVisible(true);
-                }, { threshold: 0.1 });
+                    if (e.isIntersecting) {
+                        setIsVisible(true);
+                        observer.disconnect(); // Once shown, don't toggle back
+                    }
+                }, { threshold: 0.15, rootMargin: "50px" });
+                
                 if (ref.current) observer.observe(ref.current);
-                return () => ref.current && observer.unobserve(ref.current);
+                return () => observer.disconnect();
             }, []);
+
             return (
                 <div ref={ref} style={{ transitionDelay: `${delay}ms` }} 
-                     className={`transition-all duration-1000 ease-[cubic-bezier(0.2,1,0.2,1)] transform ${isVisible ? 'opacity-100 translate-y-0 blur-0' : 'opacity-0 translate-y-8 blur-md'} ${className}`}>
+                    className={`transform transition-all duration-1000 cubic-bezier(0.16, 1, 0.3, 1) 
+                    ${isVisible ? 'opacity-100 translate-y-0 blur-0' : 'opacity-0 translate-y-8 blur-sm'} ${className}`}>
                     {children}
                 </div>
             );
         };
 
+        // --- MAIN APP ---
+
         const App = () => {
             const [activeSection, setActiveSection] = useState(null);
             const [pillStyle, setPillStyle] = useState({ left: 0, width: 0, opacity: 0 });
-            const [isNavReady, setIsNavReady] = useState(false); 
+            // Removed showNav state and lastScrollY ref
             const navRefs = useRef({});
-            const navContainerRef = useRef(null);
-
+            
+            // Optimized Scroll Spy
             useEffect(() => {
                 const sections = ['work', 'skills', 'education'];
+                
                 const handleScroll = () => {
                     const scrollY = window.scrollY;
-                    const windowHeight = window.innerHeight;
-                    const docHeight = document.body.offsetHeight;
+                    const offset = window.innerHeight * 0.3; 
                     
-                    if (scrollY < 100) { setActiveSection(null); return; }
-                    if ((windowHeight + scrollY) >= docHeight - 20) { setActiveSection('education'); return; }
+                    // 1. Bar Hiding/Pill logic: activeSection controls visibility
+                    if (scrollY < 100) { 
+                        setActiveSection(null);
+                        return;
+                    }
+                    
+                    // 2. If at bottom of page, force 'education'
+                    if ((window.innerHeight + scrollY) >= document.body.offsetHeight - 50) {
+                        setActiveSection('education');
+                        return;
+                    }
 
-                    const triggerPoint = windowHeight * 0.35; 
-                    const readLine = scrollY + triggerPoint;
                     let newActiveSection = null;
-
-                    sections.forEach(id => {
-                        const element = document.getElementById(id);
-                        if (element && readLine >= element.offsetTop) newActiveSection = id;
-                    });
+                    
+                    // 3. Find current section: ITERATE REVERSELY (from bottom to top)
+                    for (let i = sections.length - 1; i >= 0; i--) {
+                        const id = sections[i];
+                        const el = document.getElementById(id);
+                        
+                        if (el) {
+                            const top = el.offsetTop - offset;
+                            if (scrollY >= top) {
+                                newActiveSection = id;
+                                break; 
+                            }
+                        }
+                    }
                     
                     if (!newActiveSection && scrollY > 100) newActiveSection = 'work';
-                    if (newActiveSection !== activeSection) setActiveSection(newActiveSection);
+                    
+                    setActiveSection(newActiveSection);
                 };
 
-                window.addEventListener('scroll', handleScroll);
-                window.addEventListener('resize', handleScroll); 
-                setTimeout(handleScroll, 100); 
-                return () => {
-                    window.removeEventListener('scroll', handleScroll);
-                    window.removeEventListener('resize', handleScroll);
-                };
-            }, [activeSection]);
+                window.addEventListener('scroll', handleScroll, { passive: true });
+                handleScroll(); 
+                return () => window.removeEventListener('scroll', handleScroll);
+            }, []); 
 
+            // Pill Animation Logic
             useEffect(() => {
-                const updatePill = () => {
-                    if (activeSection && navRefs.current[activeSection]) {
-                        const activeEl = navRefs.current[activeSection];
-                        setPillStyle({ left: activeEl.offsetLeft, width: activeEl.offsetWidth, opacity: 1 });
-                    } else {
-                        setPillStyle(prev => ({ ...prev, opacity: 0 }));
-                    }
-                    if (!isNavReady) setTimeout(() => setIsNavReady(true), 100);
-                };
-                updatePill();
-            }, [activeSection, isNavReady]);
+                if (activeSection && navRefs.current[activeSection]) {
+                    const el = navRefs.current[activeSection];
+                    setPillStyle({ 
+                        left: el.offsetLeft, 
+                        width: el.offsetWidth, 
+                        opacity: 1 
+                    });
+                } else {
+                    setPillStyle(prev => ({ ...prev, opacity: 0 })); 
+                }
+            }, [activeSection]);
 
             const navItems = [
                 { id: 'work', label: 'Experience' },
-                { id: 'skills', label: 'Skills' },
+                { id: 'skills', label: 'Stack' },
                 { id: 'education', label: 'Education' }
             ];
 
+            // Determine header visibility class based on activeSection
+            const headerClass = activeSection 
+                ? 'translate-y-0 opacity-100' 
+                : 'translate-y-[-100px] opacity-0';
+
             return (
-                <div className="min-h-screen font-sans selection:bg-accent selection:text-white pb-40"> 
-                    <header className="fixed top-6 z-50 w-full flex justify-center px-4 pointer-events-none">
-                        <nav ref={navContainerRef} className="nav-glass p-1.5 rounded-full flex items-center relative pointer-events-auto shadow-xl shadow-black/5">
+                <div className="min-h-screen font-sans pb-40">
+                    
+                    {/* Navigation - Visibility controlled by activeSection */}
+                    <header className={`fixed top-6 z-50 w-full flex justify-center px-4 transition-transform duration-500 ease-in-out ${headerClass}`}>
+                        <nav className="nav-glass p-1.5 rounded-full flex items-center relative pointer-events-auto transition-transform duration-300 hover:scale-[1.02]">
                             <div 
-                                className={`absolute bg-primary rounded-full h-[calc(100%-12px)] top-1.5 shadow-lg ${isNavReady ? 'transition-all duration-500 ease-[cubic-bezier(0.2,0,0,1)]' : ''}`}
+                                className="absolute bg-primary rounded-full h-[calc(100%-12px)] top-1.5 shadow-md transition-all duration-500 cubic-bezier(0.2, 0.8, 0.2, 1)"
                                 style={{ left: pillStyle.left, width: pillStyle.width, opacity: pillStyle.opacity }} 
                             />
                             {navItems.map((item) => (
-                                <a key={item.id} ref={el => navRefs.current[item.id] = el} href={`#${item.id}`} 
-                                   className={`relative z-10 px-5 py-2 rounded-full text-[13px] font-medium transition-colors duration-300 ${activeSection === item.id ? 'text-white' : 'text-secondary hover:text-primary'}`}>
+                                <a key={item.id} 
+                                   ref={el => navRefs.current[item.id] = el} 
+                                   href={`#${item.id}`} 
+                                   className={`relative z-10 px-6 py-2.5 rounded-full text-[13px] font-medium transition-colors duration-300 
+                                   ${activeSection === item.id ? 'text-white' : 'text-secondary hover:text-primary'}`}>
                                     {item.label}
                                 </a>
                             ))}
                         </nav>
                     </header>
 
+                    {/* Main Content */}
                     <main className="max-w-3xl mx-auto px-6 pt-40 md:pt-52">
                         
-                        <section className="mb-20 md:mb-32 text-center">
+                        {/* Hero Section */}
+                        <section className="mb-24 md:mb-36 text-center">
                             <FadeIn>
-                                <h1 className="text-5xl md:text-8xl font-bold tracking-tighter text-primary mb-6 leading-[0.9] mix-blend-overlay opacity-90">
+                                <h1 className="text-6xl md:text-8xl font-bold tracking-tighter text-primary mb-6 leading-[0.9] mix-blend-color-burn opacity-90">
                                     {DATA.profile.name}
                                 </h1>
                                 <p className="text-xl md:text-2xl text-secondary font-medium tracking-tight max-w-xl mx-auto leading-snug">
-                                    Software Engineer at <span className="text-primary font-semibold">Apple</span>
+                                    {DATA.profile.title} at <span className="text-primary font-semibold relative inline-block after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-primary/20 after:rounded-full">Apple</span>
                                 </p>
                             </FadeIn>
                             <FadeIn delay={150}>
-                                <div className="flex justify-center gap-4 mt-8">
+                                <div className="flex justify-center gap-4 mt-10">
                                     {DATA.profile.socials.map((social, i) => (
-                                        <a key={i} href={social.url} target="_blank" 
-                                           className="glass-card p-3 rounded-full text-secondary hover:text-accent hover:scale-110 transition-all duration-300">
-                                            <Icon name={social.icon} size={20} />
+                                        <a key={i} href={social.url} target="_blank" aria-label={social.label}
+                                           className="glass-card p-3.5 rounded-full text-secondary/80 hover:text-accent hover:scale-110 transition-all duration-300">
+                                            <Icon name={social.icon} size={22} />
                                         </a>
                                     ))}
                                 </div>
                             </FadeIn>
                         </section>
 
-                        <section id="work" className="mb-24 scroll-mt-32">
+                        {/* Experience Section */}
+                        <section id="work" className="mb-32 scroll-mt-32">
                             <FadeIn>
-                                <div className="flex items-center gap-3 mb-8 opacity-60">
-                                    <div className="h-px flex-1 bg-secondary/30"></div>
-                                    <h2 className="text-xs font-bold text-secondary uppercase tracking-widest">Experience</h2>
-                                    <div className="h-px flex-1 bg-secondary/30"></div>
+                                <div className="flex items-center gap-4 mb-10 opacity-50">
+                                    <div className="h-px flex-1 bg-gradient-to-r from-transparent via-secondary/40 to-transparent"></div>
+                                    <h2 className="text-xs font-bold text-secondary uppercase tracking-[0.2em]">Selected Work</h2>
+                                    <div className="h-px flex-1 bg-gradient-to-r from-transparent via-secondary/40 to-transparent"></div>
                                 </div>
                             </FadeIn>
                             <div className="flex flex-col gap-6">
                                 {DATA.experience.map((job, i) => (
                                     <FadeIn key={i} delay={i * 100}>
-                                        <a href={job.url} target="_blank" className="block group relative glass-card rounded-4xl p-8 transition-all duration-500 hover:shadow-2xl hover:shadow-accent/5">
-                                            <div className="flex flex-col md:flex-row gap-6">
-                                                <div className={`w-16 h-16 rounded-2xl overflow-hidden shrink-0 flex items-center justify-center shadow-sm ${job.fullFill ? 'p-0' : 'bg-white/80'}`}>
+                                        <a href={job.url} target="_blank" className="block group relative glass-card rounded-[2rem] p-8 md:p-10">
+                                            <div className="flex flex-col md:flex-row gap-6 md:gap-8">
+                                                <div className={`w-16 h-16 md:w-20 md:h-20 rounded-2xl overflow-hidden shrink-0 flex items-center justify-center shadow-inner border border-white/50 ${job.fullFill ? 'p-0' : 'bg-white'}`}>
                                                     <Logo name={job.logo} fullFill={job.fullFill} isApple={job.isApple} className="max-w-full max-h-full" />
                                                 </div>
-                                                <div className="flex-1">
-                                                    <h3 className="text-2xl font-semibold text-primary tracking-tight mb-1">{job.company}</h3>
-                                                    <p className="text-sm text-secondary font-medium uppercase tracking-wide mb-3">{job.role}</p>
-                                                    <p className="text-[16px] leading-relaxed text-primary/80 font-normal mb-5">{job.summary}</p>
+                                                <div className="flex-1 pt-1">
+                                                    <div className="flex flex-col md:flex-row md:items-baseline md:justify-between gap-1 mb-2">
+                                                        <h3 className="text-2xl font-bold text-primary tracking-tight group-hover:text-accent transition-colors">{job.company}</h3>
+                                                        {/* Removed job.team span */}
+                                                    </div>
+                                                    <p className="text-[13px] font-semibold text-accent uppercase tracking-wide mb-3">{job.role}</p>
+                                                    <p className="text-[16px] leading-relaxed text-secondary font-normal mb-6">{job.summary}</p>
                                                     <div className="flex flex-wrap gap-2">
-                                                        {job.details.split('·').map((tech, idx) => (
-                                                            <span key={idx} className="text-[11px] font-semibold text-secondary/80 bg-white/40 px-3 py-1 rounded-full border border-white/20">
-                                                                {tech.trim()}
+                                                        {job.details.map((tech, idx) => (
+                                                            <span key={idx} className="text-[11px] font-medium text-secondary/80 bg-white/50 px-3 py-1 rounded-full border border-white/40 shadow-sm">
+                                                                {tech}
                                                             </span>
                                                         ))}
                                                     </div>
@@ -361,41 +407,43 @@
                             </div>
                         </section>
 
-                         <section id="skills" className="mb-24 scroll-mt-32">
+                        {/* Skills Grid */}
+                        <section id="skills" className="mb-32 scroll-mt-32">
                             <FadeIn>
-                                <div className="flex items-center gap-3 mb-8 opacity-60">
-                                    <div className="h-px flex-1 bg-secondary/30"></div>
-                                    <h2 className="text-xs font-bold text-secondary uppercase tracking-widest">Technical Stack</h2>
-                                    <div className="h-px flex-1 bg-secondary/30"></div>
+                                <div className="flex items-center gap-4 mb-10 opacity-50">
+                                    <div className="h-px flex-1 bg-gradient-to-r from-transparent via-secondary/40 to-transparent"></div>
+                                    <h2 className="text-xs font-bold text-secondary uppercase tracking-[0.2em]">Technical Stack</h2>
+                                    <div className="h-px flex-1 bg-gradient-to-r from-transparent via-secondary/40 to-transparent"></div>
                                 </div>
-                                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                                     {DATA.stack.map((tech, i) => (
-                                        <div key={i} className="glass-card p-4 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-accent/30 transition-colors group">
-                                            <span className="text-sm font-semibold text-primary group-hover:text-accent transition-colors">{tech.name}</span>
-                                            <span className="text-[10px] text-secondary/60 uppercase tracking-wider">{tech.type}</span>
+                                        <div key={i} className="glass-card p-4 rounded-2xl flex flex-col items-center justify-center gap-2 group hover:bg-white/90">
+                                            <span className="text-[15px] font-semibold text-primary group-hover:scale-105 transition-transform">{tech.name}</span>
+                                            <span className="text-[10px] text-secondary/60 uppercase tracking-wider font-medium">{tech.type}</span>
                                         </div>
                                     ))}
                                 </div>
                             </FadeIn>
                         </section>
 
-                        <section id="education" className="mb-24 scroll-mt-32">
-                             <FadeIn>
-                                <div className="flex items-center gap-3 mb-8 opacity-60">
-                                    <div className="h-px flex-1 bg-secondary/30"></div>
-                                    <h2 className="text-xs font-bold text-secondary uppercase tracking-widest">Education</h2>
-                                    <div className="h-px flex-1 bg-secondary/30"></div>
+                        {/* Education */}
+                        <section id="education" className="mb-32 scroll-mt-32">
+                            <FadeIn>
+                                <div className="flex items-center gap-4 mb-10 opacity-50">
+                                    <div className="h-px flex-1 bg-gradient-to-r from-transparent via-secondary/40 to-transparent"></div>
+                                    <h2 className="text-xs font-bold text-secondary uppercase tracking-[0.2em]">Education</h2>
+                                    <div className="h-px flex-1 bg-gradient-to-r from-transparent via-secondary/40 to-transparent"></div>
                                 </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                                     {DATA.education.map((edu, i) => (
-                                        <a key={i} href={edu.url} target="_blank" className="glass-card p-6 rounded-3xl flex items-center gap-4 group hover:border-accent/30">
-                                            <div className="w-12 h-12 shrink-0 flex items-center justify-center bg-white/80 rounded-xl p-1 shadow-sm">
+                                        <a key={i} href={edu.url} target="_blank" className="glass-card p-6 rounded-[24px] flex items-center gap-5 group">
+                                            <div className="w-14 h-14 shrink-0 flex items-center justify-center bg-white rounded-2xl p-2 shadow-sm border border-white/50">
                                                 <Logo name={edu.logo} className="w-full h-full object-contain" />
                                             </div>
                                             <div>
-                                                <h3 className="text-[16px] md:text-[17px] font-semibold text-primary group-hover:text-accent transition-colors duration-300">{edu.school}</h3>
-                                                <p className="text-[14px] md:text-[15px] text-secondary mt-1">{edu.degree}</p>
-                                                <p className="text-[14px] md:text-[15px] text-secondary/80 mt-0.5">{edu.field}</p>
+                                                <h3 className="text-[16px] font-bold text-primary group-hover:text-accent transition-colors">{edu.school}</h3>
+                                                <p className="text-[13px] font-medium text-secondary mt-1">{edu.degree}</p>
+                                                <p className="text-[13px] text-secondary/60 mt-0.5">{edu.field}</p>
                                             </div>
                                         </a>
                                     ))}
@@ -403,14 +451,17 @@
                             </FadeIn>
                         </section>
 
+                        {/* Footer */}
                         <footer className="text-center pb-10">
-                             <FadeIn delay={200}>
-                                <a href="mailto:ahw@alumni.stanford.edu" className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-white text-sm font-medium hover:bg-accent transition-colors duration-300 shadow-lg hover:shadow-accent/25">
-                                    <Icon name="mail" size={16} />
+                            <FadeIn delay={200}>
+                                <a href="mailto:ahw@alumni.stanford.edu" className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-primary text-white text-sm font-semibold hover:bg-accent hover:scale-105 transition-all duration-300 shadow-xl shadow-primary/20">
+                                    <Icon name="mail" size={18} />
                                     Get in Touch
                                 </a>
-                                <p className="mt-8 text-[12px] text-secondary/40 font-medium">&copy; {new Date().getFullYear()} Allen Wang.</p>
-                             </FadeIn>
+                                <p className="mt-12 text-[12px] text-secondary/40 font-medium">
+                                    Designed & Built by {DATA.profile.name} &middot; {new Date().getFullYear()}
+                                </p>
+                            </FadeIn>
                         </footer>
                     </main>
                 </div>
