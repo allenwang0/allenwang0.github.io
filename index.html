@@ -104,13 +104,15 @@
                     school: "Stanford University",
                     degree: "BS, Math & Computer Science",
                     year: "Dec 2024",
-                    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Seal_of_Leland_Stanford_Junior_University.svg/1200px-Seal_of_Leland_Stanford_Junior_University.svg.png"
+                    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Seal_of_Leland_Stanford_Junior_University.svg/1200px-Seal_of_Leland_Stanford_Junior_University.svg.png",
+                    url: "https://mcs.stanford.edu/"
                 },
                 {
                     school: "University of Oxford",
                     degree: "Quantitative Finance",
                     year: "2024",
-                    logo: "https://upload.wikimedia.org/wikipedia/commons/e/e4/Arms_of_University_of_Oxford.svg"
+                    logo: "https://upload.wikimedia.org/wikipedia/commons/e/e4/Arms_of_University_of_Oxford.svg",
+                    url: "https://oxford.stanford.edu/tutorials/mathematical-physical-and-life-sciences#0209"
                 }
             ],
             experience: [
@@ -118,22 +120,23 @@
                     company: "Apple",
                     role: "Software Engineer",
                     team: "iCloud Intelligence",
-                    summary: "Building resilient distributed systems to secure iCloud at scale.",
+                    summary: "Building resilient distributed systems to secure iCloud at scale",
                     details: "Java · Cassandra · FoundationDB · Kafka · Spark · Kubernetes · Redis",
                     logo: "apple",
-                    isApple: true 
+                    isApple: true,
+                    url: "https://apple.com"
                 },
                 {
                     company: "Millennium",
                     role: "Quantitative Developer",
                     team: "Quantitative Development",
-                    summary: "Accelerating quantitative research through intelligent data platforms.",
+                    summary: "Accelerating quantitative research through intelligent data platforms",
                     details: "Python · C++ · Vector DB · RAG · Pandas · System Design",
                     logo: "millennium",
-                    fullFill: true 
+                    fullFill: true,
+                    url: "https://mlp.com"
                 }
             ],
-            // Curated to most relevant/important skills only
             stack: [
                 "Java", "Python", "C++", "Apache Kafka", "Cassandra", "Kubernetes"
             ]
@@ -157,7 +160,7 @@
             const src = name.startsWith('http') ? name : logos[name];
             let imgClass = `logo-img transition-transform duration-500 `;
             
-            if (name === 'apple' || name === 'millennium') { // Apply specific styling for these logos
+            if (name === 'apple' || name === 'millennium') { 
                 imgClass += " object-contain p-3"; 
             } else if (fullFill) {
                 imgClass += " object-cover w-full h-full";
@@ -333,11 +336,16 @@
                             <div className="flex flex-col gap-5">
                                 {DATA.experience.map((job, i) => (
                                     <FadeIn key={i} delay={i * 100}>
-                                        <article className="group relative bg-white rounded-4xl p-8 md:p-10 shadow-soft hover:shadow-hover transition-all duration-500 border border-border hover:scale-[1.01]">
+                                        {/* Outer Link Wrapper - Makes entire card clickable */}
+                                        <a 
+                                            href={job.url} 
+                                            target="_blank" 
+                                            rel="noopener noreferrer"
+                                            className="block group relative bg-white rounded-4xl p-8 md:p-10 shadow-soft hover:shadow-hover transition-all duration-500 border border-border hover:scale-[1.01]"
+                                        >
                                             <div className="flex flex-col md:flex-row md:items-start gap-6">
                                                 {/* Logo Container */}
-                                                <div 
-                                                    className={`
+                                                <div className={`
                                                         w-16 h-16 rounded-2xl overflow-hidden shrink-0 flex items-center justify-center
                                                         ${job.fullFill ? 'p-0' : ''} 
                                                         ${job.isApple ? 'bg-white' : ''} 
@@ -354,7 +362,9 @@
                                                 
                                                 <div className="flex-1">
                                                     <div className="flex justify-between items-baseline mb-2">
-                                                        <h3 className="text-2xl font-semibold text-primary tracking-tight">{job.company}</h3>
+                                                        <h3 className="text-2xl font-semibold text-primary tracking-tight group-hover:text-accent transition-colors duration-300">
+                                                            {job.company}
+                                                        </h3>
                                                     </div>
                                                     <p className="text-[16px] text-secondary font-medium mb-4">{job.role}</p>
                                                     <p className="text-[17px] leading-relaxed text-primary/85 font-normal mb-6 max-w-2xl">
@@ -369,7 +379,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </article>
+                                        </a>
                                     </FadeIn>
                                 ))}
                             </div>
@@ -379,10 +389,10 @@
                          <section id="skills" className="mb-20 scroll-mt-32">
                             <FadeIn>
                                 <h2 className="text-xs font-bold text-secondary/60 uppercase tracking-widest mb-8 pl-1">Skills</h2>
-                                {/* Added whitespace-nowrap and overflow-x-auto for single row horizontal scroll */}
-                                <div className="flex flex-nowrap overflow-x-auto gap-3 pb-2 scrollbar-hide">
+                                {/* Changed from horizontal scroll to Grid Layout to fill width */}
+                                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-4 w-full">
                                     {DATA.stack.map((tech, i) => (
-                                        <div key={tech} className="flex-none bg-white px-6 py-4 rounded-2xl shadow-sm border border-gray-200 hover:border-accent/40 hover:text-accent transition-all duration-300 cursor-default text-center">
+                                        <div key={tech} className="bg-white px-4 py-5 rounded-2xl shadow-sm border border-gray-200 hover:border-accent/40 hover:shadow-md transition-all duration-300 cursor-default text-center flex items-center justify-center">
                                             <span className="text-[16px] font-medium text-primary/90">{tech}</span>
                                         </div>
                                     ))}
@@ -396,30 +406,37 @@
                                 <h2 className="text-xs font-bold text-secondary/60 uppercase tracking-widest mb-8 pl-1">Education</h2>
                                 <div className="grid md:grid-cols-2 gap-4">
                                     {DATA.education.map((edu, i) => (
-                                        <div key={i} className="bg-white p-8 rounded-3xl shadow-soft border border-border flex items-center gap-6 group hover:scale-[1.01] transition-transform duration-300">
+                                        // Outer Link Wrapper - Makes entire bubble clickable
+                                        <a 
+                                            key={i} 
+                                            href={edu.url} 
+                                            target="_blank" 
+                                            rel="noopener noreferrer"
+                                            className="bg-white p-8 rounded-3xl shadow-soft border border-border flex items-center gap-6 group hover:scale-[1.01] transition-transform duration-300 block"
+                                        >
                                             <div className="w-14 h-14 shrink-0 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
                                                 <Logo name={edu.logo} className="w-full h-full" />
                                             </div>
                                             <div>
-                                                <h3 className="text-[17px] font-semibold text-primary">{edu.school}</h3>
+                                                <h3 className="text-[17px] font-semibold text-primary group-hover:text-accent transition-colors duration-300">{edu.school}</h3>
                                                 <p className="text-[15px] text-secondary mt-1">{edu.degree}</p>
                                                 <p className="text-[13px] text-accent font-medium mt-1">{edu.year}</p>
                                             </div>
-                                        </div>
+                                        </a>
                                     ))}
                                 </div>
                             </FadeIn>
                         </section>
 
-                        {/* Contact Section - Improved styling */}
+                        {/* Contact Section */}
                         <section id="contact" className="mb-12 scroll-mt-32">
                             <FadeIn>
                                 <div className="bg-white rounded-4xl p-8 shadow-soft border border-border text-center">
                                     <h2 className="text-2xl font-bold text-primary mb-6 tracking-tight">Get in Touch</h2>
-                                    <div className="flex justify-center gap-4"> {/* Reduced gap */}
+                                    <div className="flex justify-center gap-4"> 
                                         {DATA.profile.socials.map((link, i) => (
                                             <a key={i} href={link.url} target="_blank" aria-label={link.label}
-                                            className="p-4 bg-[#F5F5F7] hover:bg-primary hover:text-white text-secondary transition-all duration-300 rounded-full shadow-sm hover:shadow-lg hover:-translate-y-1"> {/* Reduced padding and icon size */}
+                                            className="p-4 bg-[#F5F5F7] hover:bg-primary hover:text-white text-secondary transition-all duration-300 rounded-full shadow-sm hover:shadow-lg hover:-translate-y-1"> 
                                                 <Icon name={link.icon} size={24} /> 
                                             </a>
                                         ))}
@@ -441,4 +458,3 @@
     </script>
 </body>
 </html>
-```http://googleusercontent.com/image_generation_content/1
