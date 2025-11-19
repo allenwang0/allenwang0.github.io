@@ -1,84 +1,83 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Allen Wang | Software Engineer</title>
-    <meta name="description" content="Portfolio of Allen Wang, a Software Engineer specializing in distributed systems and ML infrastructure.">
+    <meta name="description" content="Portfolio of Allen Wang.">
     
-    <!-- React & ReactDOM -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     
-    <!-- Babel -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <script>
         tailwind.config = {
-            darkMode: 'class',
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Inter', 'system-ui', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'Menlo', 'Courier New', 'monospace'],
+                        sans: ['SF Pro Display', '-apple-system', 'BlinkMacSystemFont', 'Inter', 'sans-serif'],
                     },
                     colors: {
-                        slate: { 850: '#172033', 900: '#0f172a', 950: '#020617' },
-                        accent: { 400: '#38bdf8', 500: '#0ea5e9' } // Sky Blue
+                        bg: '#F5F5F7',
+                        card: '#FFFFFF',
+                        primary: '#1D1D1F', 
+                        secondary: '#86868B', 
+                        accent: '#0071E3', 
+                        border: 'rgba(0, 0, 0, 0.04)',
                     },
-                    animation: {
-                        'cursor-blink': 'blink 1s step-end infinite',
-                        'blob': 'blob 10s infinite',
-                        'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
+                    boxShadow: {
+                        'soft': '0 4px 24px -1px rgba(0, 0, 0, 0.04)',
+                        'hover': '0 8px 32px -4px rgba(0, 0, 0, 0.08)',
                     },
-                    keyframes: {
-                        blink: { '0%, 100%': { opacity: '1' }, '50%': { opacity: '0' } },
-                        blob: {
-                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
-                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
-                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
-                            '100%': { transform: 'translate(0px, 0px) scale(1)' }
-                        },
-                        fadeInUp: {
-                            '0%': { opacity: '0', transform: 'translateY(20px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' }
-                        }
-                    }
+                    borderRadius: {
+                        '4xl': '32px',
+                    },
                 }
             }
         }
     </script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap');
-        
-        body { background-color: #020617; color: #f8fafc; overflow-x: hidden; }
-        html { scroll-behavior: smooth; }
-        
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #0f172a; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #475569; }
-        
-        .glass-nav {
-            background: rgba(2, 6, 23, 0.7);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+        body { 
+            background-color: #F5F5F7; 
+            color: #1D1D1F; 
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
-        .glass-card {
-            background: rgba(30, 41, 59, 0.3);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.03);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        .nav-glass {
+            background: rgba(251, 251, 253, 0.75);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+        }
+
+        .logo-img {
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .group:hover .logo-img {
+            transform: scale(1.08);
+        }
+
+        .mesh-gradient {
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.8) 0%, rgba(245, 245, 247, 0) 60%),
+                radial-gradient(circle at 85% 30%, rgba(0, 113, 227, 0.03) 0%, rgba(245, 245, 247, 0) 40%);
+            pointer-events: none;
         }
     </style>
 </head>
@@ -88,290 +87,351 @@
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
 
-        // --- DATA CONFIGURATION ---
+        // --- DATA ---
         const DATA = {
             profile: {
                 name: "Allen Wang",
                 title: "Software Engineer",
                 company: "Apple",
-                email: "ahw@alumni.stanford.edu",
-                github: "https://github.com/allenwang0",
-                linkedin: "https://linkedin.com/in/allen--wang",
-                bio: "I build resilient distributed systems and scalable machine learning infrastructure. Based in San Francisco."
+                socials: [
+                    { label: "GitHub", url: "https://github.com/allenwang0", icon: "github" },
+                    { label: "LinkedIn", url: "https://linkedin.com/in/allen--wang", icon: "linkedin" },
+                    { label: "Email", url: "mailto:ahw@alumni.stanford.edu", icon: "mail" }
+                ]
             },
-            expertise: [
+            education: [
                 {
-                    title: "Distributed Systems",
-                    icon: "server",
-                    desc: "Designing fault-tolerant architectures that handle massive concurrency and data throughput (Kafka, Cassandra)."
+                    school: "Stanford University",
+                    degree: "BS, Math & Computer Science",
+                    year: "Dec 2024",
+                    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Seal_of_Leland_Stanford_Junior_University.svg/1200px-Seal_of_Leland_Stanford_Junior_University.svg.png"
                 },
                 {
-                    title: "ML Infrastructure",
-                    icon: "cpu",
-                    desc: "Bridge the gap between research and production by building robust pipelines for model training and inference."
-                },
-                {
-                    title: "Data Engineering",
-                    icon: "database",
-                    desc: "Optimizing ETL pipelines and storage layers to reduce latency and ensure data integrity at petabyte scale."
+                    school: "University of Oxford",
+                    degree: "Quantitative Finance",
+                    year: "2024",
+                    logo: "https://upload.wikimedia.org/wikipedia/commons/e/e4/Arms_of_University_of_Oxford.svg"
                 }
             ],
             experience: [
                 {
                     company: "Apple",
                     role: "Software Engineer",
-                    period: "Jan 2025 – Present",
-                    summary: "Engineering core infrastructure for iCloud services. Focusing on distributed systems architecture, high-availability data streaming, and integrating machine learning pipelines for security at scale.",
-                    tech: ["Cassandra", "Kafka", "Redis", "Java", "System Design"]
+                    team: "iCloud Intelligence",
+                    summary: "Building resilient distributed systems to secure iCloud at scale.",
+                    details: "Java · Cassandra · FoundationDB · Kafka · Spark · Kubernetes · Redis",
+                    logo: "apple",
+                    isApple: true 
                 },
                 {
-                    company: "Millennium Management",
-                    role: "Software Engineer Intern",
-                    period: "Summer 2024",
-                    summary: "Developed quantitative research tools and optimized data pipelines. Worked on improving research iteration speeds and ensuring data integrity for portfolio management strategies.",
-                    tech: ["Python", "Vector DB", "LLMs", "Data Engineering"]
-                },
-                {
-                    company: "Chewy",
-                    role: "Data Science Intern",
-                    period: "Summer 2023",
-                    summary: "Leveraged NLP and statistical modeling to derive customer insights. Built analytical dashboards to support business strategy and operational decision-making.",
-                    tech: ["Python", "SQL", "NLP", "Tableau"]
-                },
-                {
-                    company: "New Relic",
-                    role: "Monetization Intern",
-                    period: "Summer 2022",
-                    summary: "Applied machine learning techniques to optimize pricing strategies and model customer consumption patterns.",
-                    tech: ["Python", "XGBoost", "Scikit-learn"]
+                    company: "Millennium",
+                    role: "Quantitative Developer",
+                    team: "Quantitative Development",
+                    summary: "Accelerating quantitative research through intelligent data platforms.",
+                    details: "Python · C++ · Vector DB · RAG · Pandas · System Design",
+                    logo: "millennium",
+                    fullFill: true 
                 }
             ],
-            skills: ["Python", "Java", "C++", "R", "SQL", "Kafka", "Redis", "Cassandra", "Spark", "Docker", "Kubernetes", "PyTorch", "AWS"]
+            // Curated to most relevant/important skills only
+            stack: [
+                "Java", "Python", "C++", "Apache Kafka", "Cassandra", "Kubernetes"
+            ]
         };
 
-        // --- UTILS ---
-        const Icon = ({ name, size = 20, className }) => {
-            useEffect(() => lucide.createIcons(), [name]);
+        // --- COMPONENTS ---
+
+        const Icon = ({ name, size = 16, className }) => {
+            useEffect(() => {
+                if (window.lucide) window.lucide.createIcons();
+            }, [name]);
             return <i data-lucide={name} width={size} height={size} className={className}></i>;
         };
 
-        const useIntersectionObserver = (options) => {
-            const ref = useRef(null);
-            const [isVisible, setIsVisible] = useState(false);
+        const Logo = ({ name, className, fullFill, isApple }) => {
+            const logos = {
+                apple: "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg",
+                millennium: "https://upload.wikimedia.org/wikipedia/commons/d/d8/Millennium_Management_logo_2024.png"
+            };
 
-            useEffect(() => {
-                const observer = new IntersectionObserver(([entry]) => {
-                    if (entry.isIntersecting) {
-                        setIsVisible(true);
-                        observer.unobserve(entry.target);
-                    }
-                }, options);
-                if (ref.current) observer.observe(ref.current);
-                return () => { if (ref.current) observer.unobserve(ref.current); };
-            }, [ref, options]);
+            const src = name.startsWith('http') ? name : logos[name];
+            let imgClass = `logo-img transition-transform duration-500 `;
+            
+            if (name === 'apple' || name === 'millennium') { // Apply specific styling for these logos
+                imgClass += " object-contain p-3"; 
+            } else if (fullFill) {
+                imgClass += " object-cover w-full h-full";
+            } else {
+                imgClass += " object-contain";
+            }
 
-            return [ref, isVisible];
+            return <img src={src} alt={name} className={`${imgClass} ${className}`} />;
         };
 
-        const FadeInSection = ({ children, delay = 0 }) => {
-            const [ref, isVisible] = useIntersectionObserver({ threshold: 0.1 });
+        const FadeIn = ({ children, delay = 0, className = "" }) => {
+            const [isVisible, setIsVisible] = useState(false);
+            const ref = useRef();
+            useEffect(() => {
+                const observer = new IntersectionObserver(([e]) => {
+                    if (e.isIntersecting) setIsVisible(true);
+                }, { threshold: 0.1 });
+                if (ref.current) observer.observe(ref.current);
+                return () => ref.current && observer.unobserve(ref.current);
+            }, []);
             return (
-                <div ref={ref} className={`transition-all duration-700 transform ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`} style={{ transitionDelay: `${delay}ms` }}>
+                <div ref={ref} style={{ transitionDelay: `${delay}ms` }} 
+                     className={`transition-all duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] transform ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'} ${className}`}>
                     {children}
                 </div>
             );
         };
 
-        // --- COMPONENTS ---
-        
-        const Navbar = () => (
-            <nav className="fixed top-0 w-full h-16 glass-nav z-50 flex justify-between items-center px-6 md:px-12 border-b border-slate-800/50">
-                <a href="#" className="font-bold text-xl tracking-tight text-slate-100 hover:text-accent-400 transition-colors">
-                    AW<span className="text-accent-400">.</span>
-                </a>
-                <div className="hidden md:flex items-center space-x-8 text-sm font-medium text-slate-400">
-                    <a href="#about" className="hover:text-white transition-colors">About</a>
-                    <a href="#exp" className="hover:text-white transition-colors">Experience</a>
-                    <a href="#skills" className="hover:text-white transition-colors">Tech</a>
-                    <a href={`mailto:${DATA.profile.email}`} className="px-4 py-2 bg-slate-800 text-slate-200 rounded hover:bg-slate-700 transition-colors border border-slate-700">
-                        Contact
-                    </a>
-                </div>
-            </nav>
-        );
-
-        const Background = () => (
-            <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10">
-                <div className="absolute top-0 left-1/4 w-96 h-96 bg-accent-500/10 rounded-full mix-blend-screen filter blur-[100px] opacity-30 animate-blob"></div>
-                <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full mix-blend-screen filter blur-[100px] opacity-30 animate-blob" style={{ animationDelay: '2s' }}></div>
-                <div className="absolute -bottom-8 left-1/3 w-96 h-96 bg-blue-500/10 rounded-full mix-blend-screen filter blur-[100px] opacity-30 animate-blob" style={{ animationDelay: '4s' }}></div>
-            </div>
-        );
-
         const App = () => {
-            const [highlightedTech, setHighlightedTech] = useState(null);
-            const [text, setText] = useState("");
-            
-            // Typewriter
+            const [activeSection, setActiveSection] = useState('about');
+            const [pillStyle, setPillStyle] = useState({ left: 0, width: 0, opacity: 0 });
+            const [isNavReady, setIsNavReady] = useState(false); 
+            const navRefs = useRef({});
+            const navContainerRef = useRef(null);
+
+            // --- NAVIGATION LOGIC ---
             useEffect(() => {
-                const fullText = `${DATA.profile.title} @ ${DATA.profile.company}`;
-                let i = 0;
-                const timer = setInterval(() => {
-                    setText(fullText.slice(0, i));
-                    i++;
-                    if (i > fullText.length) clearInterval(timer);
-                }, 50);
-                return () => clearInterval(timer);
-            }, []);
+                const sections = ['about', 'work', 'skills', 'education', 'contact'];
+                
+                const handleScroll = () => {
+                    if (window.scrollY < 50) { 
+                        setActiveSection('about');
+                        return;
+                    }
+                    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 50) {
+                        setActiveSection('contact');
+                        return;
+                    }
+
+                    const scrollPosition = window.scrollY + window.innerHeight / 3;
+
+                    let newActiveSection = activeSection;
+                    for (const id of sections) {
+                        const element = document.getElementById(id);
+                        if (element) {
+                            const { offsetTop, offsetHeight } = element;
+                            if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+                                newActiveSection = id;
+                                break;
+                            }
+                        }
+                    }
+                    if (newActiveSection !== activeSection) {
+                        setActiveSection(newActiveSection);
+                    }
+                };
+
+                window.addEventListener('scroll', handleScroll);
+                window.addEventListener('resize', handleScroll); 
+                setTimeout(handleScroll, 100); 
+                
+                return () => {
+                    window.removeEventListener('scroll', handleScroll);
+                    window.removeEventListener('resize', handleScroll);
+                };
+            }, [activeSection]);
+
+            useEffect(() => {
+                const updatePill = () => {
+                    if (activeSection && navRefs.current[activeSection] && navContainerRef.current) {
+                        const activeEl = navRefs.current[activeSection];
+                        const containerRect = navContainerRef.current.getBoundingClientRect();
+                        const itemRect = activeEl.getBoundingClientRect();
+                        
+                        setPillStyle({
+                            left: itemRect.left - containerRect.left,
+                            width: itemRect.width,
+                            opacity: 1
+                        });
+
+                        if (!isNavReady) {
+                            setTimeout(() => setIsNavReady(true), 100);
+                        }
+                    }
+                };
+                updatePill();
+                setTimeout(updatePill, 50); 
+            }, [activeSection]);
+
+            const navItems = [
+                { id: 'about', label: 'About' },
+                { id: 'work', label: 'Experience' },
+                { id: 'skills', label: 'Skills' },
+                { id: 'education', label: 'Education' },
+                { id: 'contact', label: 'Contact' }
+            ];
 
             return (
-                <div className="min-h-screen font-sans selection:bg-accent-500 selection:text-white pb-24">
-                    <Background />
-                    <Navbar />
+                <div className="min-h-screen font-sans selection:bg-accent selection:text-white pb-20">
+                    <div className="mesh-gradient"></div>
 
-                    <div className="max-w-5xl mx-auto px-6 md:px-12 pt-40">
+                    {/* Navigation */}
+                    <header className="fixed top-6 z-50 w-full flex justify-center pointer-events-none">
+                        <nav ref={navContainerRef} className="nav-glass p-1.5 rounded-full flex items-center relative pointer-events-auto">
+                            <div 
+                                className={`absolute bg-primary rounded-full h-[calc(100%-12px)] top-1.5 shadow-sm ${isNavReady ? 'transition-all duration-500 ease-[cubic-bezier(0.2,0,0,1)]' : ''}`}
+                                style={{ 
+                                    left: pillStyle.left, 
+                                    width: pillStyle.width, 
+                                    opacity: pillStyle.opacity 
+                                }} 
+                            />
+                            {navItems.map((item) => (
+                                <a 
+                                    key={item.id} 
+                                    ref={el => navRefs.current[item.id] = el}
+                                    href={`#${item.id}`} 
+                                    className={`relative z-10 px-5 py-2 rounded-full text-[13px] font-medium transition-colors duration-300 ${
+                                        activeSection === item.id 
+                                        ? 'text-white' 
+                                        : 'text-secondary hover:text-primary'
+                                    }`}
+                                >
+                                    {item.label}
+                                </a>
+                            ))}
+                        </nav>
+                    </header>
+
+                    {/* Main Content */}
+                    <main className="max-w-4xl mx-auto px-6 pt-52 md:pt-60">
                         
-                        {/* HERO */}
-                        <header className="mb-32 relative">
-                            <FadeInSection>
-                                <p className="font-mono text-accent-400 mb-4 text-sm tracking-wide">HELLO, I'M</p>
-                                <h1 className="text-6xl md:text-8xl font-bold text-white mb-6 tracking-tighter leading-tight">
+                        {/* Hero / About Section */}
+                        <section id="about" className="mb-24 text-center scroll-mt-48">
+                            <FadeIn>
+                                <h1 className="text-7xl md:text-9xl font-semibold tracking-tighter text-primary mb-8 leading-[0.9]">
                                     {DATA.profile.name}
                                 </h1>
-                                <div className="h-8 font-mono text-slate-400 text-xl md:text-2xl mb-8 flex items-center">
-                                    <span className="text-accent-400 mr-3">></span>
-                                    {text}<span className="animate-cursor-blink border-r-2 border-accent-400 h-6 ml-1"></span>
-                                </div>
-                                <p className="max-w-xl text-slate-400 text-lg leading-relaxed mb-10 border-l-2 border-slate-800 pl-6">
-                                    {DATA.profile.bio}
+                                <p className="text-2xl md:text-3xl text-secondary/70 font-medium tracking-tight max-w-2xl mx-auto leading-snug">
+                                    Software Engineer at <span className="text-primary">Apple</span>.
                                 </p>
-                                <div className="flex gap-4">
-                                    <a href={`mailto:${DATA.profile.email}`} className="px-6 py-3 bg-white text-slate-950 font-bold rounded hover:bg-slate-200 transition-all active:scale-95">
-                                        Get In Touch
-                                    </a>
-                                    <a href={DATA.profile.github} target="_blank" className="px-6 py-3 glass-card text-slate-200 font-medium rounded hover:bg-slate-800/50 transition-all flex items-center">
-                                        <Icon name="github" className="mr-2" size={18}/> GitHub
-                                    </a>
+                                <p className="mt-6 text-[19px] text-secondary/80 font-normal max-w-xl mx-auto leading-relaxed">
+                                    Building intelligent infrastructure & distributed systems.
+                                </p>
+                            </FadeIn>
+                            <FadeIn delay={200}>
+                                <div className="flex justify-center gap-4 mt-10">
+                                    {DATA.profile.socials.map((social, i) => (
+                                        <a key={i} href={social.url} target="_blank" 
+                                           className="p-3 bg-white rounded-full shadow-sm border border-border text-secondary hover:text-accent hover:scale-110 hover:shadow-md transition-all duration-300">
+                                            <Icon name={social.icon} size={22} />
+                                        </a>
+                                    ))}
                                 </div>
-                            </FadeInSection>
-                        </header>
+                            </FadeIn>
+                        </section>
 
-                        {/* EXPERTISE GRID */}
-                        <section id="about" className="mb-32">
-                            <FadeInSection>
-                                <h2 className="text-2xl font-bold text-white mb-10 flex items-center">
-                                    <span className="w-8 h-[1px] bg-accent-500 mr-4"></span>
-                                    What I Do
-                                </h2>
-                            </FadeInSection>
-                            <div className="grid md:grid-cols-3 gap-6">
-                                {DATA.expertise.map((item, i) => (
-                                    <FadeInSection key={i} delay={i * 100}>
-                                        <div className="glass-card p-8 rounded-xl h-full hover:border-accent-500/30 transition-colors group">
-                                            <div className="w-12 h-12 bg-slate-800/50 rounded-lg flex items-center justify-center mb-6 text-accent-400 group-hover:scale-110 transition-transform duration-300">
-                                                <Icon name={item.icon} size={24} />
+                        {/* Experience */}
+                        <section id="work" className="mb-20 scroll-mt-32">
+                            <FadeIn>
+                                <h2 className="text-xs font-bold text-secondary/60 uppercase tracking-widest mb-8 pl-1">Experience</h2>
+                            </FadeIn>
+                            <div className="flex flex-col gap-5">
+                                {DATA.experience.map((job, i) => (
+                                    <FadeIn key={i} delay={i * 100}>
+                                        <article className="group relative bg-white rounded-4xl p-8 md:p-10 shadow-soft hover:shadow-hover transition-all duration-500 border border-border hover:scale-[1.01]">
+                                            <div className="flex flex-col md:flex-row md:items-start gap-6">
+                                                {/* Logo Container */}
+                                                <div 
+                                                    className={`
+                                                        w-16 h-16 rounded-2xl overflow-hidden shrink-0 flex items-center justify-center
+                                                        ${job.fullFill ? 'p-0' : ''} 
+                                                        ${job.isApple ? 'bg-white' : ''} 
+                                                        ${!job.fullFill && !job.isApple ? 'bg-[#F5F5F7]' : ''}
+                                                    `}
+                                                >
+                                                    <Logo 
+                                                        name={job.logo} 
+                                                        fullFill={job.fullFill} 
+                                                        isApple={job.isApple}
+                                                        className="max-w-full max-h-full" 
+                                                    />
+                                                </div>
+                                                
+                                                <div className="flex-1">
+                                                    <div className="flex justify-between items-baseline mb-2">
+                                                        <h3 className="text-2xl font-semibold text-primary tracking-tight">{job.company}</h3>
+                                                    </div>
+                                                    <p className="text-[16px] text-secondary font-medium mb-4">{job.role}</p>
+                                                    <p className="text-[17px] leading-relaxed text-primary/85 font-normal mb-6 max-w-2xl">
+                                                        {job.summary}
+                                                    </p>
+                                                    <div className="flex flex-wrap gap-2">
+                                                        {job.details.split('·').map((tech, idx) => (
+                                                            <span key={idx} className="text-[12px] font-semibold text-secondary/70 bg-bg px-3 py-1.5 rounded-lg uppercase tracking-wide">
+                                                                {tech.trim()}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <h3 className="text-lg font-bold text-white mb-3">{item.title}</h3>
-                                            <p className="text-slate-400 text-sm leading-relaxed">
-                                                {item.desc}
-                                            </p>
-                                        </div>
-                                    </FadeInSection>
+                                        </article>
+                                    </FadeIn>
                                 ))}
                             </div>
                         </section>
 
-                        {/* EXPERIENCE TIMELINE */}
-                        <section id="exp" className="mb-32">
-                            <FadeInSection>
-                                <h2 className="text-2xl font-bold text-white mb-12 flex items-center">
-                                    <span className="w-8 h-[1px] bg-accent-500 mr-4"></span>
-                                    Experience
-                                </h2>
-                            </FadeInSection>
-                            
-                            <div className="relative space-y-16">
-                                {/* Vertical Line */}
-                                <div className="absolute left-[9px] top-2 bottom-2 w-[2px] bg-slate-800 md:left-[9px]"></div>
-
-                                {DATA.experience.map((job, idx) => {
-                                    const isDimmed = highlightedTech && !job.tech.includes(highlightedTech);
-                                    const isActive = highlightedTech && job.tech.includes(highlightedTech);
-
-                                    return (
-                                        <FadeInSection key={idx} delay={idx * 100}>
-                                            <div className={`relative pl-10 transition-all duration-500 ${isDimmed ? 'opacity-40' : 'opacity-100'}`}>
-                                                {/* Dot */}
-                                                <div className={`absolute left-0 top-2 w-5 h-5 rounded-full border-4 border-slate-950 bg-slate-800 z-10 transition-colors duration-300 ${isActive ? 'bg-accent-500 border-accent-900' : ''}`}></div>
-                                                
-                                                <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between mb-2">
-                                                    <h3 className="text-xl font-bold text-white">{job.company}</h3>
-                                                    <span className="font-mono text-xs text-slate-500 mt-1 sm:mt-0 bg-slate-900 px-2 py-1 rounded border border-slate-800">
-                                                        {job.period}
-                                                    </span>
-                                                </div>
-                                                
-                                                <p className="text-accent-400 font-medium text-sm mb-4">{job.role}</p>
-                                                <p className="text-slate-400 leading-relaxed mb-6 text-sm md:text-base max-w-3xl">
-                                                    {job.summary}
-                                                </p>
-                                                
-                                                <div className="flex flex-wrap gap-2">
-                                                    {job.tech.map(t => (
-                                                        <span 
-                                                            key={t} 
-                                                            onMouseEnter={() => setHighlightedTech(t)}
-                                                            onMouseLeave={() => setHighlightedTech(null)}
-                                                            className={`text-xs font-mono px-3 py-1 rounded cursor-pointer transition-all border ${
-                                                                isActive && job.tech.includes(t) && t === highlightedTech 
-                                                                ? 'bg-accent-500 text-white border-accent-500' 
-                                                                : 'bg-slate-900/50 text-slate-400 border-slate-800 hover:border-slate-600 hover:text-white'
-                                                            }`}
-                                                        >
-                                                            {t}
-                                                        </span>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        </FadeInSection>
-                                    )
-                                })}
-                            </div>
-                        </section>
-
-                        {/* SKILLS */}
-                        <section id="skills">
-                            <FadeInSection>
-                                <h2 className="text-2xl font-bold text-white mb-10 flex items-center">
-                                    <span className="w-8 h-[1px] bg-accent-500 mr-4"></span>
-                                    Tech Stack
-                                </h2>
-                            </FadeInSection>
-                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                                {DATA.skills.map((skill, i) => (
-                                    <FadeInSection key={skill} delay={i * 50}>
-                                        <div 
-                                            onMouseEnter={() => setHighlightedTech(skill)}
-                                            onMouseLeave={() => setHighlightedTech(null)}
-                                            className="glass-card p-4 rounded-lg hover:bg-slate-800/50 transition-all cursor-default flex justify-between items-center group"
-                                        >
-                                            <span className="font-medium text-slate-300 group-hover:text-white">{skill}</span>
-                                            <Icon name="code-2" size={14} className="text-slate-700 group-hover:text-accent-400 transition-colors" />
+                         {/* Skills */}
+                         <section id="skills" className="mb-20 scroll-mt-32">
+                            <FadeIn>
+                                <h2 className="text-xs font-bold text-secondary/60 uppercase tracking-widest mb-8 pl-1">Skills</h2>
+                                {/* Added whitespace-nowrap and overflow-x-auto for single row horizontal scroll */}
+                                <div className="flex flex-nowrap overflow-x-auto gap-3 pb-2 scrollbar-hide">
+                                    {DATA.stack.map((tech, i) => (
+                                        <div key={tech} className="flex-none bg-white px-6 py-4 rounded-2xl shadow-sm border border-gray-200 hover:border-accent/40 hover:text-accent transition-all duration-300 cursor-default text-center">
+                                            <span className="text-[16px] font-medium text-primary/90">{tech}</span>
                                         </div>
-                                    </FadeInSection>
-                                ))}
-                            </div>
+                                    ))}
+                                </div>
+                            </FadeIn>
                         </section>
 
-                        <footer className="border-t border-slate-800 mt-32 py-8 flex flex-col md:flex-row justify-between items-center text-slate-600 text-sm">
+                        {/* Education */}
+                        <section id="education" className="mb-20 scroll-mt-32">
+                            <FadeIn>
+                                <h2 className="text-xs font-bold text-secondary/60 uppercase tracking-widest mb-8 pl-1">Education</h2>
+                                <div className="grid md:grid-cols-2 gap-4">
+                                    {DATA.education.map((edu, i) => (
+                                        <div key={i} className="bg-white p-8 rounded-3xl shadow-soft border border-border flex items-center gap-6 group hover:scale-[1.01] transition-transform duration-300">
+                                            <div className="w-14 h-14 shrink-0 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+                                                <Logo name={edu.logo} className="w-full h-full" />
+                                            </div>
+                                            <div>
+                                                <h3 className="text-[17px] font-semibold text-primary">{edu.school}</h3>
+                                                <p className="text-[15px] text-secondary mt-1">{edu.degree}</p>
+                                                <p className="text-[13px] text-accent font-medium mt-1">{edu.year}</p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </FadeIn>
+                        </section>
+
+                        {/* Contact Section - Improved styling */}
+                        <section id="contact" className="mb-12 scroll-mt-32">
+                            <FadeIn>
+                                <div className="bg-white rounded-4xl p-8 shadow-soft border border-border text-center">
+                                    <h2 className="text-2xl font-bold text-primary mb-6 tracking-tight">Get in Touch</h2>
+                                    <div className="flex justify-center gap-4"> {/* Reduced gap */}
+                                        {DATA.profile.socials.map((link, i) => (
+                                            <a key={i} href={link.url} target="_blank" aria-label={link.label}
+                                            className="p-4 bg-[#F5F5F7] hover:bg-primary hover:text-white text-secondary transition-all duration-300 rounded-full shadow-sm hover:shadow-lg hover:-translate-y-1"> {/* Reduced padding and icon size */}
+                                                <Icon name={link.icon} size={24} /> 
+                                            </a>
+                                        ))}
+                                    </div>
+                                </div>
+                            </FadeIn>
+                        </section>
+
+                        <footer className="pb-12 text-center text-[13px] text-secondary/40 font-medium">
                             <p>&copy; {new Date().getFullYear()} Allen Wang.</p>
-                            <div className="flex space-x-6 mt-4 md:mt-0">
-                                <a href={DATA.profile.linkedin} className="hover:text-accent-400 transition-colors">LinkedIn</a>
-                                <a href={DATA.profile.github} className="hover:text-accent-400 transition-colors">GitHub</a>
-                                <a href={`mailto:${DATA.profile.email}`} className="hover:text-accent-400 transition-colors">Email</a>
-                            </div>
                         </footer>
-                    </div>
+                    </main>
                 </div>
             );
         };
@@ -381,3 +441,4 @@
     </script>
 </body>
 </html>
+```http://googleusercontent.com/image_generation_content/1
