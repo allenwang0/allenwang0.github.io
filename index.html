@@ -6,7 +6,7 @@
     <title>Allen Wang | Software Engineer</title>
     <meta name="description" content="Portfolio of Allen Wang - Software Engineer at Apple.">
     <meta name="theme-color" content="#F5F5F7">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-status-bar-style" content="translucent">
     
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -23,18 +23,13 @@
                     },
                     colors: {
                         bg: '#F5F5F7',
-                        card: '#FFFFFF',
                         primary: '#1D1D1F', 
                         secondary: '#86868B', 
-                        accent: '#0071E3', 
-                        border: 'rgba(0, 0, 0, 0.04)',
-                    },
-                    boxShadow: {
-                        'soft': '0 4px 24px -1px rgba(0, 0, 0, 0.04)',
-                        'hover': '0 8px 32px -4px rgba(0, 0, 0, 0.08)',
+                        accent: '#2997FF', /* Brighter iOS blue */
                     },
                     borderRadius: {
                         '4xl': '32px',
+                        '5xl': '40px',
                     },
                     screens: {
                         'xs': '375px',
@@ -48,59 +43,117 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
         body { 
-            background-color: #F5F5F7; 
+            background-color: #F2F4F6; 
             color: #1D1D1F; 
             -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden;
         }
 
-        /* Hide scrollbar for Chrome, Safari and Opera */
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        /* Hide scrollbar for IE, Edge and Firefox */
-        .no-scrollbar {
-            -ms-overflow-style: none;  /* IE and Edge */
-            scrollbar-width: none;  /* Firefox */
-        }
-
-        .nav-glass {
-            background: rgba(251, 251, 253, 0.85);
-            backdrop-filter: saturate(180%) blur(20px);
-            -webkit-backdrop-filter: saturate(180%) blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
-        }
-
-        .logo-img {
-            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        .group:hover .logo-img {
-            transform: scale(1.08);
-        }
-
-        .mesh-gradient {
+        /* --- LIQUID BACKGROUND ANIMATION --- */
+        .ambient-light {
             position: fixed;
-            width: 100vw;
-            height: 100vh;
             top: 0;
             left: 0;
+            width: 100vw;
+            height: 100vh;
             z-index: -1;
-            background: 
-                radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.8) 0%, rgba(245, 245, 247, 0) 60%),
-                radial-gradient(circle at 85% 30%, rgba(0, 113, 227, 0.03) 0%, rgba(245, 245, 247, 0) 40%);
-            pointer-events: none;
+            overflow: hidden;
+            background: #F2F4F6;
         }
+
+        .blob {
+            position: absolute;
+            filter: blur(80px);
+            opacity: 0.6;
+            animation: float 10s ease-in-out infinite;
+        }
+
+        .blob-1 {
+            top: -10%;
+            left: -10%;
+            width: 50vw;
+            height: 50vw;
+            background: radial-gradient(circle, rgba(41, 151, 255, 0.15) 0%, rgba(0,0,0,0) 70%);
+            animation-delay: 0s;
+        }
+
+        .blob-2 {
+            top: 20%;
+            right: -20%;
+            width: 60vw;
+            height: 60vw;
+            background: radial-gradient(circle, rgba(180, 100, 255, 0.1) 0%, rgba(0,0,0,0) 70%);
+            animation-delay: -2s;
+        }
+
+        .blob-3 {
+            bottom: -20%;
+            left: 20%;
+            width: 70vw;
+            height: 70vw;
+            background: radial-gradient(circle, rgba(41, 255, 200, 0.1) 0%, rgba(0,0,0,0) 70%);
+            animation-delay: -5s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.95); }
+        }
+
+        /* --- IOS 26 GLASS MATERIAL --- */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.65); /* Semi-transparent */
+            backdrop-filter: saturate(180%) blur(25px); /* Heavy blur */
+            -webkit-backdrop-filter: saturate(180%) blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.6); /* White semi-transparent border */
+            box-shadow: 
+                0 4px 30px rgba(0, 0, 0, 0.04), /* Soft drop shadow */
+                inset 0 0 0 1px rgba(255, 255, 255, 0.5); /* Inner white rim glow */
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.8);
+            transform: scale(1.02) translateY(-2px);
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.08),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.8);
+        }
+
+        .glass-card-active {
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Nav Bar specific glass - super frosty */
+        .nav-glass {
+            background: rgba(245, 245, 247, 0.7);
+            backdrop-filter: saturate(200%) blur(30px);
+            -webkit-backdrop-filter: saturate(200%) blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+        }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .logo-img { transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .group:hover .logo-img { transform: scale(1.08); }
     </style>
 </head>
 <body>
+    <div class="ambient-light">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
     <div id="root"></div>
 
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
 
-        // --- DATA ---
+        // --- DATA (Unchanged) ---
         const DATA = {
             profile: {
                 name: "Allen Wang",
@@ -173,6 +226,7 @@
             const src = name.startsWith('http') ? name : logos[name];
             let imgClass = `logo-img transition-transform duration-500 `;
             
+            // Make logos look embedded in glass
             if (name === 'apple' || name === 'millennium') { 
                 imgClass += " object-contain p-3"; 
             } else if (fullFill) {
@@ -196,7 +250,7 @@
             }, []);
             return (
                 <div ref={ref} style={{ transitionDelay: `${delay}ms` }} 
-                     className={`transition-all duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] transform ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'} ${className}`}>
+                     className={`transition-all duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] transform ${isVisible ? 'opacity-100 translate-y-0 blur-0' : 'opacity-0 translate-y-10 blur-sm'} ${className}`}>
                     {children}
                 </div>
             );
@@ -209,35 +263,37 @@
             const navRefs = useRef({});
             const navContainerRef = useRef(null);
 
-            // --- NAVIGATION LOGIC ---
+            // --- NAVIGATION LOGIC (Unchanged but works with new visual) ---
             useEffect(() => {
                 const sections = ['about', 'work', 'skills', 'education', 'contact'];
                 
                 const handleScroll = () => {
-                    // 1. Top Check (Force About)
-                    if (window.scrollY < 50) { 
+                    const scrollY = window.scrollY;
+                    const windowHeight = window.innerHeight;
+                    
+                    if (scrollY < 50) { 
                         setActiveSection('about');
                         return;
                     }
-
-                    // 2. Bottom Check (Force Contact ONLY if literally at bottom)
-                    // FIXED: Threshold changed from 100 to 2 to prevent Education overlap
-                    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 2) {
-                        setActiveSection('contact');
-                        return;
-                    }
-
-                    // 3. Standard Intersection Logic
-                    const scrollPosition = window.scrollY + window.innerHeight / 3;
-
+                    const readLine = scrollY + (windowHeight * 0.3);
                     let newActiveSection = activeSection;
+
                     for (const id of sections) {
                         const element = document.getElementById(id);
                         if (element) {
                             const { offsetTop, offsetHeight } = element;
-                            if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+                            if (readLine >= offsetTop && readLine < offsetTop + offsetHeight) {
                                 newActiveSection = id;
                                 break;
+                            }
+                        }
+                    }
+                    if ((windowHeight + scrollY) >= document.body.offsetHeight - 10) {
+                        const contactEl = document.getElementById('contact');
+                        if (contactEl) {
+                            const rect = contactEl.getBoundingClientRect();
+                            if (rect.top < windowHeight * 0.6) {
+                                newActiveSection = 'contact';
                             }
                         }
                     }
@@ -260,25 +316,13 @@
                 const updatePill = () => {
                     if (activeSection && navRefs.current[activeSection] && navContainerRef.current) {
                         const activeEl = navRefs.current[activeSection];
-                        const containerRect = navContainerRef.current.getBoundingClientRect();
-                        const itemRect = activeEl.getBoundingClientRect();
-                        
                         if (activeEl) {
-                            activeEl.scrollIntoView({
-                                behavior: 'smooth',
-                                block: 'nearest',
-                                inline: 'center'
+                            setPillStyle({
+                                left: activeEl.offsetLeft,
+                                width: activeEl.offsetWidth,
+                                opacity: 1
                             });
-                        }
-
-                        setPillStyle({
-                            left: activeEl.offsetLeft,
-                            width: activeEl.offsetWidth,
-                            opacity: 1
-                        });
-
-                        if (!isNavReady) {
-                            setTimeout(() => setIsNavReady(true), 100);
+                            if (!isNavReady) setTimeout(() => setIsNavReady(true), 100);
                         }
                     }
                 };
@@ -296,13 +340,12 @@
 
             return (
                 <div className="min-h-screen font-sans selection:bg-accent selection:text-white pb-12 md:pb-20">
-                    <div className="mesh-gradient"></div>
-
+                    
                     {/* Navigation */}
                     <header className="fixed top-4 md:top-6 z-50 w-full flex justify-center px-4 pointer-events-none">
                         <nav ref={navContainerRef} className="nav-glass p-1.5 rounded-full flex items-center relative pointer-events-auto overflow-x-auto no-scrollbar max-w-full">
                             <div 
-                                className={`absolute bg-primary rounded-full h-[calc(100%-12px)] top-1.5 shadow-sm ${isNavReady ? 'transition-all duration-500 ease-[cubic-bezier(0.2,0,0,1)]' : ''}`}
+                                className={`absolute bg-black/90 rounded-full h-[calc(100%-12px)] top-1.5 shadow-lg ${isNavReady ? 'transition-all duration-500 ease-[cubic-bezier(0.2,0,0,1)]' : ''}`}
                                 style={{ 
                                     left: pillStyle.left, 
                                     width: pillStyle.width, 
@@ -332,21 +375,22 @@
                         {/* Hero / About Section */}
                         <section id="about" className="mb-16 md:mb-24 text-center scroll-mt-48">
                             <FadeIn>
-                                <h1 className="text-5xl xs:text-6xl sm:text-7xl md:text-9xl font-semibold tracking-tighter text-primary mb-6 md:mb-8 leading-[0.95] md:leading-[0.9]">
+                                {/* Gradient Text Effect */}
+                                <h1 className="text-5xl xs:text-6xl sm:text-7xl md:text-9xl font-semibold tracking-tighter text-primary mb-6 md:mb-8 leading-[0.95] md:leading-[0.9] mix-blend-overlay opacity-90">
                                     {DATA.profile.name}
                                 </h1>
-                                <p className="text-xl md:text-3xl text-secondary/70 font-medium tracking-tight max-w-2xl mx-auto leading-snug px-2">
-                                    Software Engineer at <span className="text-primary">Apple</span>.
+                                <p className="text-xl md:text-3xl text-secondary/80 font-medium tracking-tight max-w-2xl mx-auto leading-snug px-2">
+                                    Software Engineer at <span className="text-primary font-semibold">Apple</span>.
                                 </p>
                                 <p className="mt-4 md:mt-6 text-[16px] md:text-[19px] text-secondary/80 font-normal max-w-xl mx-auto leading-relaxed px-4">
                                     Building intelligent infrastructure & distributed systems.
                                 </p>
                             </FadeIn>
                             <FadeIn delay={200}>
-                                <div className="flex justify-center gap-3 md:gap-4 mt-8 md:mt-10">
+                                <div className="flex justify-center gap-4 mt-8 md:mt-10">
                                     {DATA.profile.socials.map((social, i) => (
                                         <a key={i} href={social.url} target="_blank" 
-                                           className="p-3 bg-white rounded-full shadow-sm border border-border text-secondary hover:text-accent hover:scale-110 hover:shadow-md transition-all duration-300 active:scale-95">
+                                           className="glass-card p-3 rounded-full text-secondary hover:text-accent transition-all duration-300">
                                             <Icon name={social.icon} size={20} className="md:w-[22px] md:h-[22px]" />
                                         </a>
                                     ))}
@@ -366,14 +410,12 @@
                                             href={job.url} 
                                             target="_blank" 
                                             rel="noopener noreferrer"
-                                            className="block group relative bg-white rounded-3xl md:rounded-4xl p-6 md:p-10 shadow-soft hover:shadow-hover transition-all duration-500 border border-border hover:scale-[1.01] active:scale-[0.99]"
+                                            className="block group relative glass-card rounded-4xl p-6 md:p-10"
                                         >
                                             <div className="flex flex-col md:flex-row md:items-start gap-5 md:gap-6">
                                                 <div className={`
-                                                    w-14 h-14 md:w-16 md:h-16 rounded-2xl overflow-hidden shrink-0 flex items-center justify-center border border-border/50 md:border-transparent
-                                                    ${job.fullFill ? 'p-0' : ''} 
-                                                    ${job.isApple ? 'bg-white' : ''} 
-                                                    ${!job.fullFill && !job.isApple ? 'bg-[#F5F5F7]' : ''}
+                                                    w-14 h-14 md:w-16 md:h-16 rounded-2xl overflow-hidden shrink-0 flex items-center justify-center shadow-sm
+                                                    ${job.fullFill ? 'p-0' : 'bg-white/50 backdrop-blur-sm'} 
                                                 `}>
                                                     <Logo 
                                                         name={job.logo} 
@@ -395,7 +437,7 @@
                                                     </p>
                                                     <div className="flex flex-wrap gap-2">
                                                         {job.details.split('·').map((tech, idx) => (
-                                                            <span key={idx} className="text-[11px] md:text-[12px] font-semibold text-secondary/70 bg-bg px-2.5 py-1 md:px-3 md:py-1.5 rounded-lg uppercase tracking-wide">
+                                                            <span key={idx} className="text-[11px] md:text-[12px] font-semibold text-secondary/70 bg-white/50 px-2.5 py-1 md:px-3 md:py-1.5 rounded-lg uppercase tracking-wide backdrop-blur-md">
                                                                 {tech.trim()}
                                                             </span>
                                                         ))}
@@ -414,7 +456,7 @@
                                 <h2 className="text-xs font-bold text-secondary/60 uppercase tracking-widest mb-6 md:mb-8 pl-1">Skills</h2>
                                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 md:gap-4 w-full">
                                     {DATA.stack.map((tech, i) => (
-                                        <div key={tech} className="bg-white px-4 py-4 md:py-5 rounded-2xl shadow-sm border border-gray-200 hover:border-accent/40 hover:shadow-md transition-all duration-300 cursor-default text-center flex items-center justify-center">
+                                        <div key={tech} className="glass-card px-4 py-4 md:py-5 rounded-2xl cursor-default text-center flex items-center justify-center">
                                             <span className="text-[14px] md:text-[16px] font-medium text-primary/90">{tech}</span>
                                         </div>
                                     ))}
@@ -433,9 +475,9 @@
                                             href={edu.url} 
                                             target="_blank" 
                                             rel="noopener noreferrer"
-                                            className="bg-white p-6 md:p-8 rounded-3xl shadow-soft border border-border flex items-center gap-5 md:gap-6 group hover:scale-[1.01] active:scale-[0.99] transition-transform duration-300 block"
+                                            className="glass-card p-6 md:p-8 rounded-3xl flex items-center gap-5 md:gap-6 group block"
                                         >
-                                            <div className="w-12 h-12 md:w-14 md:h-14 shrink-0 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+                                            <div className="w-12 h-12 md:w-14 md:h-14 shrink-0 flex items-center justify-center bg-white/50 rounded-xl p-1 backdrop-blur-sm group-hover:scale-110 transition-transform duration-500">
                                                 <Logo name={edu.logo} className="w-full h-full object-contain" />
                                             </div>
                                             <div>
@@ -452,12 +494,12 @@
                         {/* Contact Section */}
                         <section id="contact" className="mb-12 scroll-mt-28 md:scroll-mt-32">
                             <FadeIn>
-                                <div className="bg-white rounded-4xl p-8 shadow-soft border border-border text-center">
+                                <div className="glass-card rounded-4xl p-8 text-center">
                                     <h2 className="text-2xl font-bold text-primary mb-6 tracking-tight">Get in Touch</h2>
                                     <div className="flex justify-center gap-4"> 
                                         {DATA.profile.socials.map((link, i) => (
                                             <a key={i} href={link.url} target="_blank" aria-label={link.label}
-                                            className="p-4 bg-[#F5F5F7] hover:bg-primary hover:text-white text-secondary transition-all duration-300 rounded-full shadow-sm hover:shadow-lg hover:-translate-y-1 active:translate-y-0"> 
+                                            className="p-4 bg-white/60 hover:bg-primary hover:text-white text-secondary transition-all duration-300 rounded-full shadow-sm hover:shadow-lg hover:-translate-y-1 active:translate-y-0"> 
                                                 <Icon name={link.icon} size={24} /> 
                                             </a>
                                         ))}
