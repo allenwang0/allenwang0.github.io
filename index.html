@@ -25,7 +25,7 @@
                         bg: '#F5F5F7',
                         primary: '#1D1D1F', 
                         secondary: '#86868B', 
-                        accent: '#2997FF', /* Brighter iOS blue */
+                        accent: '#2997FF',
                     },
                     borderRadius: {
                         '4xl': '32px',
@@ -49,7 +49,6 @@
             overflow-x: hidden;
         }
 
-        /* --- LIQUID BACKGROUND ANIMATION --- */
         .ambient-light {
             position: fixed;
             top: 0;
@@ -101,15 +100,14 @@
             66% { transform: translate(-20px, 20px) scale(0.95); }
         }
 
-        /* --- IOS 26 GLASS MATERIAL --- */
         .glass-card {
-            background: rgba(255, 255, 255, 0.65); /* Semi-transparent */
-            backdrop-filter: saturate(180%) blur(25px); /* Heavy blur */
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: saturate(180%) blur(25px);
             -webkit-backdrop-filter: saturate(180%) blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.6); /* White semi-transparent border */
+            border: 1px solid rgba(255, 255, 255, 0.6);
             box-shadow: 
-                0 4px 30px rgba(0, 0, 0, 0.04), /* Soft drop shadow */
-                inset 0 0 0 1px rgba(255, 255, 255, 0.5); /* Inner white rim glow */
+                0 4px 30px rgba(0, 0, 0, 0.04),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.5);
             transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
@@ -121,11 +119,6 @@
                 inset 0 0 0 1px rgba(255, 255, 255, 0.8);
         }
 
-        .glass-card-active {
-            background: rgba(255, 255, 255, 0.9);
-        }
-
-        /* Nav Bar specific glass - super frosty */
         .nav-glass {
             background: rgba(245, 245, 247, 0.7);
             backdrop-filter: saturate(200%) blur(30px);
@@ -153,7 +146,6 @@
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
 
-        // --- DATA (Unchanged) ---
         const DATA = {
             profile: {
                 name: "Allen Wang",
@@ -208,8 +200,6 @@
             ]
         };
 
-        // --- COMPONENTS ---
-
         const Icon = ({ name, size = 16, className }) => {
             useEffect(() => {
                 if (window.lucide) window.lucide.createIcons();
@@ -226,7 +216,6 @@
             const src = name.startsWith('http') ? name : logos[name];
             let imgClass = `logo-img transition-transform duration-500 `;
             
-            // Make logos look embedded in glass
             if (name === 'apple' || name === 'millennium') { 
                 imgClass += " object-contain p-3"; 
             } else if (fullFill) {
@@ -257,46 +246,53 @@
         };
 
         const App = () => {
-            const [activeSection, setActiveSection] = useState('about');
+            const [activeSection, setActiveSection] = useState(null);
             const [pillStyle, setPillStyle] = useState({ left: 0, width: 0, opacity: 0 });
             const [isNavReady, setIsNavReady] = useState(false); 
             const navRefs = useRef({});
             const navContainerRef = useRef(null);
 
-            // --- NAVIGATION LOGIC (Unchanged but works with new visual) ---
             useEffect(() => {
-                const sections = ['about', 'work', 'skills', 'education', 'contact'];
+                const sections = ['work', 'skills', 'education'];
                 
                 const handleScroll = () => {
                     const scrollY = window.scrollY;
                     const windowHeight = window.innerHeight;
+                    const docHeight = document.body.offsetHeight;
                     
-                    if (scrollY < 50) { 
-                        setActiveSection('about');
+                    // 1. HERO CHECK
+                    if (scrollY < 150) { 
+                        setActiveSection(null);
                         return;
                     }
-                    const readLine = scrollY + (windowHeight * 0.3);
-                    let newActiveSection = activeSection;
+
+                    // 2. BOTTOM CHECK (Strictly for very bottom)
+                    if ((windowHeight + scrollY) >= docHeight - 10) {
+                        setActiveSection('education');
+                        return;
+                    }
+
+                    // 3. STANDARD CHECK
+                    // Trigger line is now 20% down the screen (or max 250px).
+                    // This ensures that when a section snaps to top (which is ~150px down),
+                    // the line definitely crosses it.
+                    const triggerPoint = Math.min(windowHeight * 0.25, 250);
+                    const readLine = scrollY + triggerPoint;
+                    
+                    let newActiveSection = null;
 
                     for (const id of sections) {
                         const element = document.getElementById(id);
                         if (element) {
                             const { offsetTop, offsetHeight } = element;
+                            // Standard intersection
                             if (readLine >= offsetTop && readLine < offsetTop + offsetHeight) {
                                 newActiveSection = id;
                                 break;
                             }
                         }
                     }
-                    if ((windowHeight + scrollY) >= document.body.offsetHeight - 10) {
-                        const contactEl = document.getElementById('contact');
-                        if (contactEl) {
-                            const rect = contactEl.getBoundingClientRect();
-                            if (rect.top < windowHeight * 0.6) {
-                                newActiveSection = 'contact';
-                            }
-                        }
-                    }
+                    
                     if (newActiveSection !== activeSection) {
                         setActiveSection(newActiveSection);
                     }
@@ -322,26 +318,23 @@
                                 width: activeEl.offsetWidth,
                                 opacity: 1
                             });
-                            if (!isNavReady) setTimeout(() => setIsNavReady(true), 100);
                         }
+                    } else {
+                        setPillStyle(prev => ({ ...prev, opacity: 0 }));
                     }
+                    if (!isNavReady) setTimeout(() => setIsNavReady(true), 100);
                 };
                 updatePill();
-                setTimeout(updatePill, 100);
             }, [activeSection, isNavReady]);
 
             const navItems = [
-                { id: 'about', label: 'About' },
                 { id: 'work', label: 'Experience' },
                 { id: 'skills', label: 'Skills' },
-                { id: 'education', label: 'Education' },
-                { id: 'contact', label: 'Contact' }
+                { id: 'education', label: 'Education' }
             ];
 
             return (
-                <div className="min-h-screen font-sans selection:bg-accent selection:text-white pb-12 md:pb-20">
-                    
-                    {/* Navigation */}
+                <div className="min-h-screen font-sans selection:bg-accent selection:text-white pb-48 md:pb-64"> 
                     <header className="fixed top-4 md:top-6 z-50 w-full flex justify-center px-4 pointer-events-none">
                         <nav ref={navContainerRef} className="nav-glass p-1.5 rounded-full flex items-center relative pointer-events-auto overflow-x-auto no-scrollbar max-w-full">
                             <div 
@@ -369,13 +362,10 @@
                         </nav>
                     </header>
 
-                    {/* Main Content */}
                     <main className="max-w-4xl mx-auto px-5 md:px-6 pt-36 md:pt-60">
                         
-                        {/* Hero / About Section */}
-                        <section id="about" className="mb-16 md:mb-24 text-center scroll-mt-48">
+                        <section className="mb-16 md:mb-24 text-center">
                             <FadeIn>
-                                {/* Gradient Text Effect */}
                                 <h1 className="text-5xl xs:text-6xl sm:text-7xl md:text-9xl font-semibold tracking-tighter text-primary mb-6 md:mb-8 leading-[0.95] md:leading-[0.9] mix-blend-overlay opacity-90">
                                     {DATA.profile.name}
                                 </h1>
@@ -398,7 +388,6 @@
                             </FadeIn>
                         </section>
 
-                        {/* Experience */}
                         <section id="work" className="mb-16 md:mb-20 scroll-mt-28 md:scroll-mt-32">
                             <FadeIn>
                                 <h2 className="text-xs font-bold text-secondary/60 uppercase tracking-widest mb-6 md:mb-8 pl-1">Experience</h2>
@@ -450,7 +439,6 @@
                             </div>
                         </section>
 
-                         {/* Skills */}
                          <section id="skills" className="mb-16 md:mb-20 scroll-mt-28 md:scroll-mt-32">
                             <FadeIn>
                                 <h2 className="text-xs font-bold text-secondary/60 uppercase tracking-widest mb-6 md:mb-8 pl-1">Skills</h2>
@@ -464,8 +452,7 @@
                             </FadeIn>
                         </section>
 
-                        {/* Education */}
-                        <section id="education" className="mb-16 md:mb-20 scroll-mt-28 md:scroll-mt-32">
+                        <section id="education" className="mb-16 scroll-mt-28 md:scroll-mt-32">
                             <FadeIn>
                                 <h2 className="text-xs font-bold text-secondary/60 uppercase tracking-widest mb-6 md:mb-8 pl-1">Education</h2>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -491,24 +478,7 @@
                             </FadeIn>
                         </section>
 
-                        {/* Contact Section */}
-                        <section id="contact" className="mb-12 scroll-mt-28 md:scroll-mt-32">
-                            <FadeIn>
-                                <div className="glass-card rounded-4xl p-8 text-center">
-                                    <h2 className="text-2xl font-bold text-primary mb-6 tracking-tight">Get in Touch</h2>
-                                    <div className="flex justify-center gap-4"> 
-                                        {DATA.profile.socials.map((link, i) => (
-                                            <a key={i} href={link.url} target="_blank" aria-label={link.label}
-                                            className="p-4 bg-white/60 hover:bg-primary hover:text-white text-secondary transition-all duration-300 rounded-full shadow-sm hover:shadow-lg hover:-translate-y-1 active:translate-y-0"> 
-                                                <Icon name={link.icon} size={24} /> 
-                                            </a>
-                                        ))}
-                                    </div>
-                                </div>
-                            </FadeIn>
-                        </section>
-
-                        <footer className="pb-8 md:pb-12 text-center text-[13px] text-secondary/40 font-medium">
+                        <footer className="text-center text-[13px] text-secondary/40 font-medium">
                             <p>&copy; {new Date().getFullYear()} Allen Wang.</p>
                         </footer>
                     </main>
