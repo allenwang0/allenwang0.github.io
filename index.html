@@ -2,17 +2,16 @@
 <html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Allen Wang | Software Engineer</title>
-    <meta name="description" content="Portfolio of Allen Wang.">
+    <meta name="description" content="Portfolio of Allen Wang - Software Engineer at Apple.">
+    <meta name="theme-color" content="#F5F5F7">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    
     <script src="https://cdn.tailwindcss.com"></script>
-    
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <script>
@@ -37,23 +36,37 @@
                     borderRadius: {
                         '4xl': '32px',
                     },
+                    screens: {
+                        'xs': '375px',
+                    }
                 }
             }
         }
     </script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
         body { 
             background-color: #F5F5F7; 
             color: #1D1D1F; 
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        /* Hide scrollbar for IE, Edge and Firefox */
+        .no-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
         }
 
         .nav-glass {
-            background: rgba(251, 251, 253, 0.75);
+            background: rgba(251, 251, 253, 0.85);
             backdrop-filter: saturate(180%) blur(20px);
             -webkit-backdrop-filter: saturate(180%) blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.8);
@@ -102,15 +115,15 @@
             education: [
                 {
                     school: "Stanford University",
-                    degree: "BS, Math & Computer Science",
-                    year: "Dec 2024",
+                    degree: "Bachelor of Science",
+                    field: "Math & Computer Science",
                     logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Seal_of_Leland_Stanford_Junior_University.svg/1200px-Seal_of_Leland_Stanford_Junior_University.svg.png",
                     url: "https://mcs.stanford.edu/"
                 },
                 {
                     school: "University of Oxford",
-                    degree: "Quantitative Finance",
-                    year: "2024",
+                    degree: "Tutorial",
+                    field: "Quantitative Finance",
                     logo: "https://upload.wikimedia.org/wikipedia/commons/e/e4/Arms_of_University_of_Oxford.svg",
                     url: "https://oxford.stanford.edu/tutorials/mathematical-physical-and-life-sciences#0209"
                 }
@@ -138,7 +151,7 @@
                 }
             ],
             stack: [
-                "Java", "Python", "C++", "Apache Kafka", "Cassandra", "Kubernetes"
+                "Java", "Python", "C++", "Apache Kafka", "Cassandra", "Kubernetes", "React", "AWS"
             ]
         };
 
@@ -177,7 +190,7 @@
             useEffect(() => {
                 const observer = new IntersectionObserver(([e]) => {
                     if (e.isIntersecting) setIsVisible(true);
-                }, { threshold: 0.1 });
+                }, { threshold: 0.05 });
                 if (ref.current) observer.observe(ref.current);
                 return () => ref.current && observer.unobserve(ref.current);
             }, []);
@@ -205,7 +218,7 @@
                         setActiveSection('about');
                         return;
                     }
-                    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 50) {
+                    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 100) {
                         setActiveSection('contact');
                         return;
                     }
@@ -245,9 +258,17 @@
                         const containerRect = navContainerRef.current.getBoundingClientRect();
                         const itemRect = activeEl.getBoundingClientRect();
                         
+                        if (activeEl) {
+                            activeEl.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'nearest',
+                                inline: 'center'
+                            });
+                        }
+
                         setPillStyle({
-                            left: itemRect.left - containerRect.left,
-                            width: itemRect.width,
+                            left: activeEl.offsetLeft,
+                            width: activeEl.offsetWidth,
                             opacity: 1
                         });
 
@@ -257,8 +278,8 @@
                     }
                 };
                 updatePill();
-                setTimeout(updatePill, 50); 
-            }, [activeSection]);
+                setTimeout(updatePill, 100);
+            }, [activeSection, isNavReady]);
 
             const navItems = [
                 { id: 'about', label: 'About' },
@@ -269,12 +290,12 @@
             ];
 
             return (
-                <div className="min-h-screen font-sans selection:bg-accent selection:text-white pb-20">
+                <div className="min-h-screen font-sans selection:bg-accent selection:text-white pb-12 md:pb-20">
                     <div className="mesh-gradient"></div>
 
                     {/* Navigation */}
-                    <header className="fixed top-6 z-50 w-full flex justify-center pointer-events-none">
-                        <nav ref={navContainerRef} className="nav-glass p-1.5 rounded-full flex items-center relative pointer-events-auto">
+                    <header className="fixed top-4 md:top-6 z-50 w-full flex justify-center px-4 pointer-events-none">
+                        <nav ref={navContainerRef} className="nav-glass p-1.5 rounded-full flex items-center relative pointer-events-auto overflow-x-auto no-scrollbar max-w-full">
                             <div 
                                 className={`absolute bg-primary rounded-full h-[calc(100%-12px)] top-1.5 shadow-sm ${isNavReady ? 'transition-all duration-500 ease-[cubic-bezier(0.2,0,0,1)]' : ''}`}
                                 style={{ 
@@ -288,7 +309,7 @@
                                     key={item.id} 
                                     ref={el => navRefs.current[item.id] = el}
                                     href={`#${item.id}`} 
-                                    className={`relative z-10 px-5 py-2 rounded-full text-[13px] font-medium transition-colors duration-300 ${
+                                    className={`relative z-10 px-4 md:px-5 py-2 rounded-full text-[13px] font-medium transition-colors duration-300 whitespace-nowrap shrink-0 ${
                                         activeSection === item.id 
                                         ? 'text-white' 
                                         : 'text-secondary hover:text-primary'
@@ -301,27 +322,27 @@
                     </header>
 
                     {/* Main Content */}
-                    <main className="max-w-4xl mx-auto px-6 pt-52 md:pt-60">
+                    <main className="max-w-4xl mx-auto px-5 md:px-6 pt-36 md:pt-60">
                         
                         {/* Hero / About Section */}
-                        <section id="about" className="mb-24 text-center scroll-mt-48">
+                        <section id="about" className="mb-16 md:mb-24 text-center scroll-mt-48">
                             <FadeIn>
-                                <h1 className="text-7xl md:text-9xl font-semibold tracking-tighter text-primary mb-8 leading-[0.9]">
+                                <h1 className="text-5xl xs:text-6xl sm:text-7xl md:text-9xl font-semibold tracking-tighter text-primary mb-6 md:mb-8 leading-[0.95] md:leading-[0.9]">
                                     {DATA.profile.name}
                                 </h1>
-                                <p className="text-2xl md:text-3xl text-secondary/70 font-medium tracking-tight max-w-2xl mx-auto leading-snug">
+                                <p className="text-xl md:text-3xl text-secondary/70 font-medium tracking-tight max-w-2xl mx-auto leading-snug px-2">
                                     Software Engineer at <span className="text-primary">Apple</span>.
                                 </p>
-                                <p className="mt-6 text-[19px] text-secondary/80 font-normal max-w-xl mx-auto leading-relaxed">
+                                <p className="mt-4 md:mt-6 text-[16px] md:text-[19px] text-secondary/80 font-normal max-w-xl mx-auto leading-relaxed px-4">
                                     Building intelligent infrastructure & distributed systems.
                                 </p>
                             </FadeIn>
                             <FadeIn delay={200}>
-                                <div className="flex justify-center gap-4 mt-10">
+                                <div className="flex justify-center gap-3 md:gap-4 mt-8 md:mt-10">
                                     {DATA.profile.socials.map((social, i) => (
                                         <a key={i} href={social.url} target="_blank" 
-                                           className="p-3 bg-white rounded-full shadow-sm border border-border text-secondary hover:text-accent hover:scale-110 hover:shadow-md transition-all duration-300">
-                                            <Icon name={social.icon} size={22} />
+                                           className="p-3 bg-white rounded-full shadow-sm border border-border text-secondary hover:text-accent hover:scale-110 hover:shadow-md transition-all duration-300 active:scale-95">
+                                            <Icon name={social.icon} size={20} className="md:w-[22px] md:h-[22px]" />
                                         </a>
                                     ))}
                                 </div>
@@ -329,29 +350,26 @@
                         </section>
 
                         {/* Experience */}
-                        <section id="work" className="mb-20 scroll-mt-32">
+                        <section id="work" className="mb-16 md:mb-20 scroll-mt-28 md:scroll-mt-32">
                             <FadeIn>
-                                <h2 className="text-xs font-bold text-secondary/60 uppercase tracking-widest mb-8 pl-1">Experience</h2>
+                                <h2 className="text-xs font-bold text-secondary/60 uppercase tracking-widest mb-6 md:mb-8 pl-1">Experience</h2>
                             </FadeIn>
-                            <div className="flex flex-col gap-5">
+                            <div className="flex flex-col gap-4 md:gap-5">
                                 {DATA.experience.map((job, i) => (
                                     <FadeIn key={i} delay={i * 100}>
-                                        {/* Outer Link Wrapper - Makes entire card clickable */}
                                         <a 
                                             href={job.url} 
                                             target="_blank" 
                                             rel="noopener noreferrer"
-                                            className="block group relative bg-white rounded-4xl p-8 md:p-10 shadow-soft hover:shadow-hover transition-all duration-500 border border-border hover:scale-[1.01]"
+                                            className="block group relative bg-white rounded-3xl md:rounded-4xl p-6 md:p-10 shadow-soft hover:shadow-hover transition-all duration-500 border border-border hover:scale-[1.01] active:scale-[0.99]"
                                         >
-                                            <div className="flex flex-col md:flex-row md:items-start gap-6">
-                                                {/* Logo Container */}
+                                            <div className="flex flex-col md:flex-row md:items-start gap-5 md:gap-6">
                                                 <div className={`
-                                                        w-16 h-16 rounded-2xl overflow-hidden shrink-0 flex items-center justify-center
-                                                        ${job.fullFill ? 'p-0' : ''} 
-                                                        ${job.isApple ? 'bg-white' : ''} 
-                                                        ${!job.fullFill && !job.isApple ? 'bg-[#F5F5F7]' : ''}
-                                                    `}
-                                                >
+                                                    w-14 h-14 md:w-16 md:h-16 rounded-2xl overflow-hidden shrink-0 flex items-center justify-center border border-border/50 md:border-transparent
+                                                    ${job.fullFill ? 'p-0' : ''} 
+                                                    ${job.isApple ? 'bg-white' : ''} 
+                                                    ${!job.fullFill && !job.isApple ? 'bg-[#F5F5F7]' : ''}
+                                                `}>
                                                     <Logo 
                                                         name={job.logo} 
                                                         fullFill={job.fullFill} 
@@ -361,18 +379,18 @@
                                                 </div>
                                                 
                                                 <div className="flex-1">
-                                                    <div className="flex justify-between items-baseline mb-2">
-                                                        <h3 className="text-2xl font-semibold text-primary tracking-tight group-hover:text-accent transition-colors duration-300">
+                                                    <div className="flex flex-col md:flex-row md:justify-between md:items-baseline mb-1 md:mb-2">
+                                                        <h3 className="text-xl md:text-2xl font-semibold text-primary tracking-tight group-hover:text-accent transition-colors duration-300">
                                                             {job.company}
                                                         </h3>
                                                     </div>
-                                                    <p className="text-[16px] text-secondary font-medium mb-4">{job.role}</p>
-                                                    <p className="text-[17px] leading-relaxed text-primary/85 font-normal mb-6 max-w-2xl">
+                                                    <p className="text-[15px] md:text-[16px] text-secondary font-medium mb-3 md:mb-4">{job.role}</p>
+                                                    <p className="text-[15px] md:text-[17px] leading-relaxed text-primary/85 font-normal mb-5 md:mb-6 max-w-2xl">
                                                         {job.summary}
                                                     </p>
                                                     <div className="flex flex-wrap gap-2">
                                                         {job.details.split('·').map((tech, idx) => (
-                                                            <span key={idx} className="text-[12px] font-semibold text-secondary/70 bg-bg px-3 py-1.5 rounded-lg uppercase tracking-wide">
+                                                            <span key={idx} className="text-[11px] md:text-[12px] font-semibold text-secondary/70 bg-bg px-2.5 py-1 md:px-3 md:py-1.5 rounded-lg uppercase tracking-wide">
                                                                 {tech.trim()}
                                                             </span>
                                                         ))}
@@ -386,14 +404,13 @@
                         </section>
 
                          {/* Skills */}
-                         <section id="skills" className="mb-20 scroll-mt-32">
+                         <section id="skills" className="mb-16 md:mb-20 scroll-mt-28 md:scroll-mt-32">
                             <FadeIn>
-                                <h2 className="text-xs font-bold text-secondary/60 uppercase tracking-widest mb-8 pl-1">Skills</h2>
-                                {/* Changed from horizontal scroll to Grid Layout to fill width */}
-                                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-4 w-full">
+                                <h2 className="text-xs font-bold text-secondary/60 uppercase tracking-widest mb-6 md:mb-8 pl-1">Skills</h2>
+                                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 md:gap-4 w-full">
                                     {DATA.stack.map((tech, i) => (
-                                        <div key={tech} className="bg-white px-4 py-5 rounded-2xl shadow-sm border border-gray-200 hover:border-accent/40 hover:shadow-md transition-all duration-300 cursor-default text-center flex items-center justify-center">
-                                            <span className="text-[16px] font-medium text-primary/90">{tech}</span>
+                                        <div key={tech} className="bg-white px-4 py-4 md:py-5 rounded-2xl shadow-sm border border-gray-200 hover:border-accent/40 hover:shadow-md transition-all duration-300 cursor-default text-center flex items-center justify-center">
+                                            <span className="text-[14px] md:text-[16px] font-medium text-primary/90">{tech}</span>
                                         </div>
                                     ))}
                                 </div>
@@ -401,26 +418,25 @@
                         </section>
 
                         {/* Education */}
-                        <section id="education" className="mb-20 scroll-mt-32">
+                        <section id="education" className="mb-16 md:mb-20 scroll-mt-28 md:scroll-mt-32">
                             <FadeIn>
-                                <h2 className="text-xs font-bold text-secondary/60 uppercase tracking-widest mb-8 pl-1">Education</h2>
-                                <div className="grid md:grid-cols-2 gap-4">
+                                <h2 className="text-xs font-bold text-secondary/60 uppercase tracking-widest mb-6 md:mb-8 pl-1">Education</h2>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     {DATA.education.map((edu, i) => (
-                                        // Outer Link Wrapper - Makes entire bubble clickable
                                         <a 
                                             key={i} 
                                             href={edu.url} 
                                             target="_blank" 
                                             rel="noopener noreferrer"
-                                            className="bg-white p-8 rounded-3xl shadow-soft border border-border flex items-center gap-6 group hover:scale-[1.01] transition-transform duration-300 block"
+                                            className="bg-white p-6 md:p-8 rounded-3xl shadow-soft border border-border flex items-center gap-5 md:gap-6 group hover:scale-[1.01] active:scale-[0.99] transition-transform duration-300 block"
                                         >
-                                            <div className="w-14 h-14 shrink-0 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
-                                                <Logo name={edu.logo} className="w-full h-full" />
+                                            <div className="w-12 h-12 md:w-14 md:h-14 shrink-0 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+                                                <Logo name={edu.logo} className="w-full h-full object-contain" />
                                             </div>
                                             <div>
-                                                <h3 className="text-[17px] font-semibold text-primary group-hover:text-accent transition-colors duration-300">{edu.school}</h3>
-                                                <p className="text-[15px] text-secondary mt-1">{edu.degree}</p>
-                                                <p className="text-[13px] text-accent font-medium mt-1">{edu.year}</p>
+                                                <h3 className="text-[16px] md:text-[17px] font-semibold text-primary group-hover:text-accent transition-colors duration-300">{edu.school}</h3>
+                                                <p className="text-[14px] md:text-[15px] text-secondary mt-1">{edu.degree}</p>
+                                                <p className="text-[14px] md:text-[15px] text-secondary/80 mt-0.5">{edu.field}</p>
                                             </div>
                                         </a>
                                     ))}
@@ -429,14 +445,14 @@
                         </section>
 
                         {/* Contact Section */}
-                        <section id="contact" className="mb-12 scroll-mt-32">
+                        <section id="contact" className="mb-12 scroll-mt-28 md:scroll-mt-32">
                             <FadeIn>
                                 <div className="bg-white rounded-4xl p-8 shadow-soft border border-border text-center">
                                     <h2 className="text-2xl font-bold text-primary mb-6 tracking-tight">Get in Touch</h2>
                                     <div className="flex justify-center gap-4"> 
                                         {DATA.profile.socials.map((link, i) => (
                                             <a key={i} href={link.url} target="_blank" aria-label={link.label}
-                                            className="p-4 bg-[#F5F5F7] hover:bg-primary hover:text-white text-secondary transition-all duration-300 rounded-full shadow-sm hover:shadow-lg hover:-translate-y-1"> 
+                                            className="p-4 bg-[#F5F5F7] hover:bg-primary hover:text-white text-secondary transition-all duration-300 rounded-full shadow-sm hover:shadow-lg hover:-translate-y-1 active:translate-y-0"> 
                                                 <Icon name={link.icon} size={24} /> 
                                             </a>
                                         ))}
@@ -445,7 +461,7 @@
                             </FadeIn>
                         </section>
 
-                        <footer className="pb-12 text-center text-[13px] text-secondary/40 font-medium">
+                        <footer className="pb-8 md:pb-12 text-center text-[13px] text-secondary/40 font-medium">
                             <p>&copy; {new Date().getFullYear()} Allen Wang.</p>
                         </footer>
                     </main>
