@@ -24,6 +24,7 @@
 
     <script>
         tailwind.config = {
+            darkMode: 'class', // Enables manual dark mode toggling
             theme: {
                 extend: {
                     fontFamily: {
@@ -33,15 +34,10 @@
                         primary: '#1D1D1F', 
                         secondary: '#86868B', 
                         accent: '#007AFF',
-                        glass: 'rgba(255, 255, 255, 0.65)',
                     },
                     borderRadius: {
                         '4xl': '32px',
                         '5xl': '40px',
-                    },
-                    boxShadow: {
-                        'glass': '0 4px 30px rgba(0, 0, 0, 0.03)',
-                        'glass-hover': '0 20px 40px rgba(0, 0, 0, 0.08)',
                     }
                 }
             }
@@ -52,18 +48,23 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
         body { 
-            background-color: #F5F5F7; 
-            color: #1D1D1F; 
             -webkit-font-smoothing: antialiased;
             overflow-x: hidden;
         }
 
-        /* OPTIMIZED NOISE */
+        /* TRANSITIONS */
+        html, body, .glass-card, .nav-glass {
+            transition: background-color 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), 
+                        border-color 0.5s cubic-bezier(0.2, 0.8, 0.2, 1),
+                        color 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        /* NOISE OVERLAY */
         .noise-overlay {
             position: fixed;
             inset: 0;
             z-index: -1;
-            opacity: 0.4;
+            opacity: 0.35;
             pointer-events: none;
             mix-blend-mode: overlay;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
@@ -74,10 +75,16 @@
             inset: 0;
             z-index: -2;
             overflow: hidden;
-            background: #F5F5F7;
+            background: #F5F5F7; /* Light Mode BG */
+            transition: background 0.5s ease;
         }
 
-        /* Smoother Blob Animation */
+        /* Dark Mode Ambient Background */
+        .dark .ambient-light {
+            background: #050505; /* Deep Black for Dark Mode */
+        }
+
+        /* BLOB ANIMATION */
         .blob {
             position: absolute;
             filter: blur(80px);
@@ -85,10 +92,12 @@
             will-change: transform;
             animation: float 20s ease-in-out infinite;
         }
+        /* Adjust blob opacity for dark mode so they aren't too bright */
+        .dark .blob { opacity: 0.35; }
 
-        .blob-1 { top: -10%; left: -10%; width: 60vw; height: 60vw; background: radial-gradient(circle, rgba(0, 122, 255, 0.12) 0%, rgba(0,0,0,0) 70%); }
-        .blob-2 { top: 30%; right: -20%; width: 50vw; height: 50vw; background: radial-gradient(circle, rgba(175, 82, 222, 0.08) 0%, rgba(0,0,0,0) 70%); animation-delay: -5s; }
-        .blob-3 { bottom: -20%; left: 20%; width: 70vw; height: 70vw; background: radial-gradient(circle, rgba(52, 199, 89, 0.08) 0%, rgba(0,0,0,0) 70%); animation-delay: -10s; }
+        .blob-1 { top: -10%; left: -10%; width: 60vw; height: 60vw; background: radial-gradient(circle, rgba(0, 122, 255, 0.15) 0%, rgba(0,0,0,0) 70%); }
+        .blob-2 { top: 30%; right: -20%; width: 50vw; height: 50vw; background: radial-gradient(circle, rgba(175, 82, 222, 0.1) 0%, rgba(0,0,0,0) 70%); animation-delay: -5s; }
+        .blob-3 { bottom: -20%; left: 20%; width: 70vw; height: 70vw; background: radial-gradient(circle, rgba(52, 199, 89, 0.1) 0%, rgba(0,0,0,0) 70%); animation-delay: -10s; }
 
         @keyframes float {
             0%, 100% { transform: translate(0, 0) scale(1); }
@@ -96,29 +105,50 @@
             66% { transform: translate(-10px, 20px) scale(0.95); }
         }
 
-        /* PREMIUM GLASS EFFECT */
+        /* --- THE GLASS POP --- */
+        
+        /* Light Mode Glass */
         .glass-card {
             background: linear-gradient(145deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.4) 100%);
             backdrop-filter: blur(20px) saturate(180%);
             -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.02);
-            transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            /* Inner light stroke + shadow */
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1), 
+                        0 4px 24px -1px rgba(0, 0, 0, 0.04); 
+            transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        /* Dark Mode Glass */
+        .dark .glass-card {
+            background: linear-gradient(145deg, rgba(30,30,32,0.7) 0%, rgba(30,30,32,0.4) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03), 
+                        0 8px 32px -4px rgba(0, 0, 0, 0.5);
         }
 
         .glass-card:hover {
-            background: rgba(255, 255, 255, 0.9);
             transform: translateY(-4px) scale(1.005);
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
-            border-color: rgba(255, 255, 255, 0.9);
+        }
+        .dark .glass-card:hover {
+            background: linear-gradient(145deg, rgba(40,40,42,0.8) 0%, rgba(40,40,42,0.5) 100%);
+            border-color: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
         }
 
+        /* Nav Glass */
         .nav-glass {
             background: rgba(255, 255, 255, 0.7);
             backdrop-filter: blur(20px) saturate(180%);
             -webkit-backdrop-filter: blur(20px) saturate(180%);
             border: 1px solid rgba(255, 255, 255, 0.3);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+        }
+        .dark .nav-glass {
+            background: rgba(20, 20, 20, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
         }
 
         .hide-scroll::-webkit-scrollbar { display: none; }
@@ -152,7 +182,7 @@
                 {
                     company: "Apple",
                     role: "Software Engineer",
-                    summary: "Building resilient distributed systems to secure iCloud at scale.", 
+                    summary: "Architecting the distributed foundation of iCloud. Securing data for 1B+ devices using FoundationDB and Cassandra.", 
                     details: ["Java", "Cassandra", "FoundationDB", "Kafka", "Spark", "Kubernetes"],
                     logo: "apple",
                     isApple: true,
@@ -161,14 +191,13 @@
                 {
                     company: "Millennium",
                     role: "Quantitative Developer",
-                    summary: "Accelerating quantitative research through intelligent data platforms.", 
+                    summary: "Engineered high-frequency data platforms reducing signal generation latency by 40%.", 
                     details: ["Python", "C++", "Vector DB", "RAG", "Pandas", "System Design"],
                     logo: "millennium",
                     fullFill: true,
                     url: "https://mlp.com"
                 }
             ],
-            // UPDATED PROJECTS SECTION (NOW 4 PROJECTS)
             projects: [
                 {
                     title: "Statistical Arbitrage",
@@ -242,7 +271,7 @@
             const src = name.startsWith('http') ? name : logos[name];
             let imgClass = `transition-transform duration-700 ease-out group-hover:scale-110 `;
             
-            if (name === 'apple') imgClass += " object-contain p-3"; 
+            if (name === 'apple') imgClass += " object-contain p-3 dark:invert"; // INVERT APPLE LOGO IN DARK MODE
             else if (name === 'millennium') imgClass += " object-contain p-2";
             else if (fullFill) imgClass += " object-cover w-full h-full";
             else imgClass += " object-contain";
@@ -280,7 +309,33 @@
         const App = () => {
             const [activeSection, setActiveSection] = useState(null);
             const [pillStyle, setPillStyle] = useState({ left: 0, width: 0, opacity: 0 });
+            // Dark Mode State
+            const [isDark, setIsDark] = useState(false);
             const navRefs = useRef({});
+            
+            // Initialize Dark Mode
+            useEffect(() => {
+                // Check local storage or system preference
+                const savedTheme = localStorage.getItem('theme');
+                const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                
+                if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+                    setIsDark(true);
+                    document.documentElement.classList.add('dark');
+                }
+            }, []);
+
+            const toggleTheme = () => {
+                const newMode = !isDark;
+                setIsDark(newMode);
+                if (newMode) {
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('theme', 'light');
+                }
+            };
             
             useEffect(() => {
                 const sections = ['work', 'projects', 'skills', 'education'];
@@ -349,13 +404,24 @@
                 : 'translate-y-[-100px] opacity-0';
 
             return (
-                <div className="min-h-screen font-sans pb-40">
+                <div className="min-h-screen font-sans pb-40 transition-colors duration-500">
                     
+                    {/* Theme Toggle & Actions */}
+                    <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-3">
+                         <button 
+                            onClick={toggleTheme}
+                            className="w-12 h-12 rounded-full glass-card flex items-center justify-center text-primary dark:text-white hover:scale-110 transition-transform cursor-pointer"
+                            aria-label="Toggle Dark Mode"
+                        >
+                            <Icon name={isDark ? "moon" : "sun"} size={20} />
+                        </button>
+                    </div>
+
                     {/* Navigation */}
                     <header className={`fixed top-6 z-50 w-full flex justify-center px-4 transition-transform duration-500 ease-in-out ${headerClass}`}>
                         <nav className="nav-glass p-1.5 rounded-full flex items-center relative pointer-events-auto transition-transform duration-300 hover:scale-[1.02]">
                             <div 
-                                className="absolute bg-primary rounded-full h-[calc(100%-12px)] top-1.5 shadow-md transition-all duration-500 cubic-bezier(0.2, 0.8, 0.2, 1)"
+                                className="absolute bg-primary dark:bg-white rounded-full h-[calc(100%-12px)] top-1.5 shadow-md transition-all duration-500 cubic-bezier(0.2, 0.8, 0.2, 1)"
                                 style={{ left: pillStyle.left, width: pillStyle.width, opacity: pillStyle.opacity }} 
                             />
                             {navItems.map((item) => (
@@ -363,7 +429,7 @@
                                    ref={el => navRefs.current[item.id] = el} 
                                    href={`#${item.id}`} 
                                    className={`relative z-10 px-5 py-2.5 rounded-full text-[13px] font-medium transition-colors duration-300 
-                                   ${activeSection === item.id ? 'text-white' : 'text-secondary hover:text-primary'}`}>
+                                   ${activeSection === item.id ? 'text-white dark:text-black' : 'text-secondary hover:text-primary dark:hover:text-white'}`}>
                                     {item.label}
                                 </a>
                             ))}
@@ -376,18 +442,18 @@
                         {/* Hero Section */}
                         <section className="mb-24 md:mb-36 text-center">
                             <FadeIn>
-                                <h1 className="text-6xl md:text-8xl font-bold tracking-tighter text-primary mb-6 leading-[0.9] mix-blend-color-burn opacity-90">
+                                <h1 className="text-6xl md:text-8xl font-bold tracking-tighter text-primary dark:text-white mb-6 leading-[0.9] mix-blend-color-burn dark:mix-blend-normal opacity-90">
                                     {DATA.profile.name}
                                 </h1>
                                 <p className="text-xl md:text-2xl text-secondary font-medium tracking-tight max-w-xl mx-auto leading-snug">
-                                    {DATA.profile.title} at <span className="text-primary font-semibold relative inline-block after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-primary/20 after:rounded-full">Apple</span>
+                                    {DATA.profile.title} at <span className="text-primary dark:text-white font-semibold relative inline-block after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-primary/20 dark:after:bg-white/30 after:rounded-full">Apple</span>
                                 </p>
                             </FadeIn>
                             <FadeIn delay={150}>
                                 <div className="flex justify-center gap-4 mt-10">
                                     {DATA.profile.socials.map((social, i) => (
                                         <a key={i} href={social.url} target="_blank" rel="noopener noreferrer" aria-label={social.label}
-                                           className="glass-card p-3.5 rounded-full text-secondary/80 hover:text-accent hover:scale-110 transition-all duration-300">
+                                           className="glass-card p-3.5 rounded-full text-secondary/80 dark:text-secondary hover:text-accent dark:hover:text-white hover:scale-110 transition-all duration-300">
                                             <Icon name={social.icon} size={22} />
                                         </a>
                                     ))}
@@ -409,18 +475,18 @@
                                     <FadeIn key={i} delay={i * 100}>
                                         <a href={job.url} target="_blank" rel="noopener noreferrer" className="block group relative glass-card rounded-[2rem] p-8 md:p-10">
                                             <div className="flex flex-col md:flex-row gap-6 md:gap-8">
-                                                <div className={`w-16 h-16 md:w-20 md:h-20 rounded-2xl overflow-hidden shrink-0 flex items-center justify-center shadow-inner border border-white/50 ${job.fullFill ? 'p-0' : 'bg-white'}`}>
+                                                <div className={`w-16 h-16 md:w-20 md:h-20 rounded-2xl overflow-hidden shrink-0 flex items-center justify-center shadow-inner border border-white/50 dark:border-white/10 ${job.fullFill ? 'p-0' : 'bg-white dark:bg-black/40'}`}>
                                                     <Logo name={job.logo} fullFill={job.fullFill} isApple={job.isApple} className="max-w-full max-h-full" />
                                                 </div>
                                                 <div className="flex-1 pt-1">
                                                     <div className="flex flex-col md:flex-row md:items-baseline md:justify-between gap-1 mb-2">
-                                                        <h3 className="text-2xl font-bold text-primary tracking-tight group-hover:text-accent transition-colors">{job.company}</h3>
+                                                        <h3 className="text-2xl font-bold text-primary dark:text-white tracking-tight group-hover:text-accent transition-colors">{job.company}</h3>
                                                     </div>
                                                     <p className="text-[13px] font-semibold text-accent uppercase tracking-wide mb-3">{job.role}</p>
-                                                    <p className="text-[16px] leading-relaxed text-secondary font-normal mb-6">{job.summary}</p>
+                                                    <p className="text-[16px] leading-relaxed text-secondary dark:text-gray-400 font-normal mb-6">{job.summary}</p>
                                                     <div className="flex flex-wrap gap-2">
                                                         {job.details.map((tech, idx) => (
-                                                            <span key={idx} className="text-[11px] font-medium text-secondary/80 bg-white/50 px-3 py-1 rounded-full border border-white/40 shadow-sm">
+                                                            <span key={idx} className="text-[11px] font-medium text-secondary/80 dark:text-gray-300 bg-white/50 dark:bg-white/5 px-3 py-1 rounded-full border border-white/40 dark:border-white/10 shadow-sm">
                                                                 {tech}
                                                             </span>
                                                         ))}
@@ -446,19 +512,19 @@
                                         <a key={i} href={project.url} target="_blank" rel="noopener noreferrer" className="group glass-card p-8 rounded-[2rem] flex flex-col justify-between transition-all duration-300 hover:-translate-y-1">
                                             <div>
                                                 <div className="flex justify-between items-start mb-4">
-                                                    <div className="p-3 bg-white/60 rounded-xl shadow-sm text-primary">
+                                                    <div className="p-3 bg-white/60 dark:bg-white/10 rounded-xl shadow-sm text-primary dark:text-white border border-white/50 dark:border-white/10">
                                                         <Icon name={project.icon} size={24} />
                                                     </div>
                                                     <div className="opacity-0 group-hover:opacity-100 transition-opacity text-accent">
                                                         <Icon name="arrow-up-right" size={20} />
                                                     </div>
                                                 </div>
-                                                <h3 className="text-xl font-bold text-primary mb-2 tracking-tight group-hover:text-accent transition-colors">{project.title}</h3>
-                                                <p className="text-secondary text-sm leading-relaxed mb-6">{project.desc}</p>
+                                                <h3 className="text-xl font-bold text-primary dark:text-white mb-2 tracking-tight group-hover:text-accent transition-colors">{project.title}</h3>
+                                                <p className="text-secondary dark:text-gray-400 text-sm leading-relaxed mb-6">{project.desc}</p>
                                             </div>
                                             <div className="flex flex-wrap gap-2 mt-auto">
                                                 {project.tech.map((t, k) => (
-                                                    <span key={k} className="text-[10px] font-semibold text-secondary/70 bg-white/40 px-2.5 py-1 rounded-lg border border-white/30">
+                                                    <span key={k} className="text-[10px] font-semibold text-secondary/70 dark:text-gray-400 bg-white/40 dark:bg-white/5 px-2.5 py-1 rounded-lg border border-white/30 dark:border-white/10">
                                                         {t}
                                                     </span>
                                                 ))}
@@ -479,9 +545,9 @@
                                 </div>
                                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                                     {DATA.stack.map((tech, i) => (
-                                        <div key={i} className="glass-card p-4 rounded-2xl flex flex-col items-center justify-center gap-2 group hover:bg-white/90">
-                                            <span className="text-[15px] font-semibold text-primary group-hover:scale-105 transition-transform">{tech.name}</span>
-                                            <span className="text-[10px] text-secondary/60 uppercase tracking-wider font-medium">{tech.type}</span>
+                                        <div key={i} className="glass-card p-4 rounded-2xl flex flex-col items-center justify-center gap-2 group hover:bg-white/90 dark:hover:bg-white/10">
+                                            <span className="text-[15px] font-semibold text-primary dark:text-gray-100 group-hover:scale-105 transition-transform">{tech.name}</span>
+                                            <span className="text-[10px] text-secondary/60 dark:text-gray-500 uppercase tracking-wider font-medium">{tech.type}</span>
                                         </div>
                                     ))}
                                 </div>
@@ -499,13 +565,13 @@
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                                     {DATA.education.map((edu, i) => (
                                         <a key={i} href={edu.url} target="_blank" rel="noopener noreferrer" className="glass-card p-6 rounded-[24px] flex items-center gap-5 group">
-                                            <div className="w-14 h-14 shrink-0 flex items-center justify-center bg-white rounded-2xl p-2 shadow-sm border border-white/50">
+                                            <div className="w-14 h-14 shrink-0 flex items-center justify-center bg-white rounded-2xl p-2 shadow-sm border border-white/50 dark:border-transparent">
                                                 <Logo name={edu.logo} className="w-full h-full object-contain" />
                                             </div>
                                             <div>
-                                                <h3 className="text-[16px] font-bold text-primary group-hover:text-accent transition-colors">{edu.school}</h3>
-                                                <p className="text-[13px] font-medium text-secondary mt-1">{edu.degree}</p>
-                                                <p className="text-[13px] text-secondary/60 mt-0.5">{edu.field}</p>
+                                                <h3 className="text-[16px] font-bold text-primary dark:text-white group-hover:text-accent transition-colors">{edu.school}</h3>
+                                                <p className="text-[13px] font-medium text-secondary dark:text-gray-400 mt-1">{edu.degree}</p>
+                                                <p className="text-[13px] text-secondary/60 dark:text-gray-500 mt-0.5">{edu.field}</p>
                                             </div>
                                         </a>
                                     ))}
@@ -516,7 +582,7 @@
                         {/* Footer */}
                         <footer className="text-center pb-10">
                             <FadeIn delay={200}>
-                                <a href="mailto:ahw@alumni.stanford.edu" className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-primary text-white text-sm font-semibold hover:bg-accent hover:scale-105 transition-all duration-300 shadow-xl shadow-primary/20">
+                                <a href="mailto:ahw@alumni.stanford.edu" className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-primary dark:bg-white text-white dark:text-black text-sm font-semibold hover:bg-accent dark:hover:bg-gray-200 hover:scale-105 transition-all duration-300 shadow-xl shadow-primary/20 dark:shadow-white/10">
                                     <Icon name="mail" size={18} />
                                     Get in Touch
                                 </a>
