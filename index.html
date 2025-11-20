@@ -4,8 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Allen Wang | Software Engineer</title>
-    <meta name="description" content="Portfolio of Allen Wang - Software Engineer at Apple.">
+    <meta name="description" content="Portfolio of Allen Wang - Software Engineer at Apple. Ex-Millennium.">
     <meta name="theme-color" content="#F5F5F7">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://allenwang0.github.io/">
+    <meta property="og:title" content="Allen Wang | Software Engineer">
+    <meta property="og:description" content="Software Engineer at Apple. Stanford & Oxford Alum. Building resilient distributed systems.">
+    <meta property="og:image" content="https://github.com/allenwang0.png">
     
     <link rel="preconnect" href="https://unpkg.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -52,7 +58,7 @@
             overflow-x: hidden;
         }
 
-        /* OPTIMIZED NOISE - Uses blend mode for better integration */
+        /* OPTIMIZED NOISE */
         .noise-overlay {
             position: fixed;
             inset: 0;
@@ -115,7 +121,6 @@
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
         }
 
-        /* Custom Scrollbar helper */
         .hide-scroll::-webkit-scrollbar { display: none; }
         .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
@@ -133,7 +138,6 @@
     <script type="text/babel">
         const { useState, useEffect, useRef, useMemo } = React;
 
-        // --- DATA LAYER (RETAINED CONTENT FIXES) ---
         const DATA = {
             profile: {
                 name: "Allen Wang",
@@ -144,22 +148,6 @@
                     { label: "Email", url: "mailto:ahw@alumni.stanford.edu", icon: "mail" }
                 ]
             },
-            education: [
-                {
-                    school: "Stanford University",
-                    degree: "Bachelor of Science", 
-                    field: "Mathematics & Computer Science", 
-                    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Seal_of_Leland_Stanford_Junior_University.svg/1200px-Seal_of_Leland_Stanford_Junior_University.svg.png",
-                    url: "https://mcs.stanford.edu/"
-                },
-                {
-                    school: "University of Oxford",
-                    degree: "Tutorial in Quantitative Finance",
-                    field: "Corpus Christi College",
-                    logo: "https://upload.wikimedia.org/wikipedia/commons/e/e4/Arms_of_University_of_Oxford.svg",
-                    url: "https://oxford.stanford.edu/tutorials/mathematical-physical-and-life-sciences#0209"
-                }
-            ],
             experience: [
                 {
                     company: "Apple",
@@ -178,6 +166,32 @@
                     logo: "millennium",
                     fullFill: true,
                     url: "https://mlp.com"
+                }
+            ],
+            // UPDATED PROJECTS SECTION
+            projects: [
+                {
+                    title: "Statistical Arbitrage",
+                    desc: "Quantitative trading engine implementing pairs trading strategies. Features cointegration testing, automated signal generation, and a vectorized backtester.",
+                    tech: ["Python", "Pandas", "NumPy", "Backtesting"],
+                    url: "https://github.com/allenwang0/statarb",
+                    icon: "trending-up" 
+                }
+            ],
+            education: [
+                {
+                    school: "Stanford University",
+                    degree: "Bachelor of Science", 
+                    field: "Mathematics & Computer Science", 
+                    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Seal_of_Leland_Stanford_Junior_University.svg/1200px-Seal_of_Leland_Stanford_Junior_University.svg.png",
+                    url: "https://mcs.stanford.edu/"
+                },
+                {
+                    school: "University of Oxford",
+                    degree: "Tutorial in Quantitative Finance",
+                    field: "Corpus Christi College",
+                    logo: "https://upload.wikimedia.org/wikipedia/commons/e/e4/Arms_of_University_of_Oxford.svg",
+                    url: "https://oxford.stanford.edu/tutorials/mathematical-physical-and-life-sciences#0209"
                 }
             ],
             stack: [
@@ -223,7 +237,7 @@
                 const observer = new IntersectionObserver(([e]) => {
                     if (e.isIntersecting) {
                         setIsVisible(true);
-                        observer.disconnect(); // Once shown, don't toggle back
+                        observer.disconnect();
                     }
                 }, { threshold: 0.15, rootMargin: "50px" });
                 
@@ -245,24 +259,20 @@
         const App = () => {
             const [activeSection, setActiveSection] = useState(null);
             const [pillStyle, setPillStyle] = useState({ left: 0, width: 0, opacity: 0 });
-            // Removed showNav state and lastScrollY ref
             const navRefs = useRef({});
             
-            // Optimized Scroll Spy
             useEffect(() => {
-                const sections = ['work', 'skills', 'education'];
+                const sections = ['work', 'projects', 'skills', 'education'];
                 
                 const handleScroll = () => {
                     const scrollY = window.scrollY;
                     const offset = window.innerHeight * 0.3; 
                     
-                    // 1. Bar Hiding/Pill logic: activeSection controls visibility
                     if (scrollY < 100) { 
                         setActiveSection(null);
                         return;
                     }
                     
-                    // 2. If at bottom of page, force 'education'
                     if ((window.innerHeight + scrollY) >= document.body.offsetHeight - 50) {
                         setActiveSection('education');
                         return;
@@ -270,7 +280,6 @@
 
                     let newActiveSection = null;
                     
-                    // 3. Find current section: ITERATE REVERSELY (from bottom to top)
                     for (let i = sections.length - 1; i >= 0; i--) {
                         const id = sections[i];
                         const el = document.getElementById(id);
@@ -294,7 +303,6 @@
                 return () => window.removeEventListener('scroll', handleScroll);
             }, []); 
 
-            // Pill Animation Logic
             useEffect(() => {
                 if (activeSection && navRefs.current[activeSection]) {
                     const el = navRefs.current[activeSection];
@@ -310,11 +318,11 @@
 
             const navItems = [
                 { id: 'work', label: 'Experience' },
+                { id: 'projects', label: 'Projects' },
                 { id: 'skills', label: 'Stack' },
                 { id: 'education', label: 'Education' }
             ];
 
-            // Determine header visibility class based on activeSection
             const headerClass = activeSection 
                 ? 'translate-y-0 opacity-100' 
                 : 'translate-y-[-100px] opacity-0';
@@ -322,7 +330,7 @@
             return (
                 <div className="min-h-screen font-sans pb-40">
                     
-                    {/* Navigation - Visibility controlled by activeSection */}
+                    {/* Navigation */}
                     <header className={`fixed top-6 z-50 w-full flex justify-center px-4 transition-transform duration-500 ease-in-out ${headerClass}`}>
                         <nav className="nav-glass p-1.5 rounded-full flex items-center relative pointer-events-auto transition-transform duration-300 hover:scale-[1.02]">
                             <div 
@@ -333,7 +341,7 @@
                                 <a key={item.id} 
                                    ref={el => navRefs.current[item.id] = el} 
                                    href={`#${item.id}`} 
-                                   className={`relative z-10 px-6 py-2.5 rounded-full text-[13px] font-medium transition-colors duration-300 
+                                   className={`relative z-10 px-5 py-2.5 rounded-full text-[13px] font-medium transition-colors duration-300 
                                    ${activeSection === item.id ? 'text-white' : 'text-secondary hover:text-primary'}`}>
                                     {item.label}
                                 </a>
@@ -357,7 +365,7 @@
                             <FadeIn delay={150}>
                                 <div className="flex justify-center gap-4 mt-10">
                                     {DATA.profile.socials.map((social, i) => (
-                                        <a key={i} href={social.url} target="_blank" aria-label={social.label}
+                                        <a key={i} href={social.url} target="_blank" rel="noopener noreferrer" aria-label={social.label}
                                            className="glass-card p-3.5 rounded-full text-secondary/80 hover:text-accent hover:scale-110 transition-all duration-300">
                                             <Icon name={social.icon} size={22} />
                                         </a>
@@ -378,7 +386,7 @@
                             <div className="flex flex-col gap-6">
                                 {DATA.experience.map((job, i) => (
                                     <FadeIn key={i} delay={i * 100}>
-                                        <a href={job.url} target="_blank" className="block group relative glass-card rounded-[2rem] p-8 md:p-10">
+                                        <a href={job.url} target="_blank" rel="noopener noreferrer" className="block group relative glass-card rounded-[2rem] p-8 md:p-10">
                                             <div className="flex flex-col md:flex-row gap-6 md:gap-8">
                                                 <div className={`w-16 h-16 md:w-20 md:h-20 rounded-2xl overflow-hidden shrink-0 flex items-center justify-center shadow-inner border border-white/50 ${job.fullFill ? 'p-0' : 'bg-white'}`}>
                                                     <Logo name={job.logo} fullFill={job.fullFill} isApple={job.isApple} className="max-w-full max-h-full" />
@@ -386,7 +394,6 @@
                                                 <div className="flex-1 pt-1">
                                                     <div className="flex flex-col md:flex-row md:items-baseline md:justify-between gap-1 mb-2">
                                                         <h3 className="text-2xl font-bold text-primary tracking-tight group-hover:text-accent transition-colors">{job.company}</h3>
-                                                        {/* Removed job.team span */}
                                                     </div>
                                                     <p className="text-[13px] font-semibold text-accent uppercase tracking-wide mb-3">{job.role}</p>
                                                     <p className="text-[16px] leading-relaxed text-secondary font-normal mb-6">{job.summary}</p>
@@ -403,6 +410,43 @@
                                     </FadeIn>
                                 ))}
                             </div>
+                        </section>
+
+                        {/* Projects Section */}
+                        <section id="projects" className="mb-32 scroll-mt-32">
+                            <FadeIn>
+                                <div className="flex items-center gap-4 mb-10 opacity-50">
+                                    <div className="h-px flex-1 bg-gradient-to-r from-transparent via-secondary/40 to-transparent"></div>
+                                    <h2 className="text-xs font-bold text-secondary uppercase tracking-[0.2em]">Projects</h2>
+                                    <div className="h-px flex-1 bg-gradient-to-r from-transparent via-secondary/40 to-transparent"></div>
+                                </div>
+                                {/* Updated grid to center single item if needed, or keep standard grid */}
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    {DATA.projects && DATA.projects.map((project, i) => (
+                                        <a key={i} href={project.url} target="_blank" rel="noopener noreferrer" className="group glass-card p-8 rounded-[2rem] flex flex-col justify-between transition-all duration-300 hover:-translate-y-1">
+                                            <div>
+                                                <div className="flex justify-between items-start mb-4">
+                                                    <div className="p-3 bg-white/60 rounded-xl shadow-sm text-primary">
+                                                        <Icon name={project.icon} size={24} />
+                                                    </div>
+                                                    <div className="opacity-0 group-hover:opacity-100 transition-opacity text-accent">
+                                                        <Icon name="arrow-up-right" size={20} />
+                                                    </div>
+                                                </div>
+                                                <h3 className="text-xl font-bold text-primary mb-2 tracking-tight group-hover:text-accent transition-colors">{project.title}</h3>
+                                                <p className="text-secondary text-sm leading-relaxed mb-6">{project.desc}</p>
+                                            </div>
+                                            <div className="flex flex-wrap gap-2 mt-auto">
+                                                {project.tech.map((t, k) => (
+                                                    <span key={k} className="text-[10px] font-semibold text-secondary/70 bg-white/40 px-2.5 py-1 rounded-lg border border-white/30">
+                                                        {t}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </a>
+                                    ))}
+                                </div>
+                            </FadeIn>
                         </section>
 
                         {/* Skills Grid */}
@@ -434,7 +478,7 @@
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                                     {DATA.education.map((edu, i) => (
-                                        <a key={i} href={edu.url} target="_blank" className="glass-card p-6 rounded-[24px] flex items-center gap-5 group">
+                                        <a key={i} href={edu.url} target="_blank" rel="noopener noreferrer" className="glass-card p-6 rounded-[24px] flex items-center gap-5 group">
                                             <div className="w-14 h-14 shrink-0 flex items-center justify-center bg-white rounded-2xl p-2 shadow-sm border border-white/50">
                                                 <Logo name={edu.logo} className="w-full h-full object-contain" />
                                             </div>
