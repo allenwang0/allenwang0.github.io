@@ -176,6 +176,13 @@
                     tech: ["Python", "Pandas", "NumPy", "Backtesting"],
                     url: "https://github.com/allenwang0/statarb",
                     icon: "trending-up" 
+                },
+                {
+                    title: "Volatility Scanner",
+                    desc: "Real-time market screening tool that identifies assets with high implied volatility relative to historical baselines. Includes automated alerts and regime detection.",
+                    tech: ["Python", "SciPy", "Pandas", "IV Rank"],
+                    url: "https://github.com/allenwang0/volatilityscanner",
+                    icon: "activity" 
                 }
             ],
             education: [
@@ -420,7 +427,6 @@
                                     <h2 className="text-xs font-bold text-secondary uppercase tracking-[0.2em]">Projects</h2>
                                     <div className="h-px flex-1 bg-gradient-to-r from-transparent via-secondary/40 to-transparent"></div>
                                 </div>
-                                {/* Updated grid to center single item if needed, or keep standard grid */}
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     {DATA.projects && DATA.projects.map((project, i) => (
                                         <a key={i} href={project.url} target="_blank" rel="noopener noreferrer" className="group glass-card p-8 rounded-[2rem] flex flex-col justify-between transition-all duration-300 hover:-translate-y-1">
