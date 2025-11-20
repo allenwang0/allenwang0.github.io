@@ -13,6 +13,14 @@
     <meta property="og:description" content="Software Engineer at Apple. Stanford & Oxford Alum. Building resilient distributed systems.">
     <meta property="og:image" content="https://github.com/allenwang0.png">
     
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-JR31EX0R8M"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-JR31EX0R8M'); 
+    </script>
     <link rel="preconnect" href="https://unpkg.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     
@@ -408,13 +416,13 @@
                     
                     {/* Theme Toggle & Actions */}
                     <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-3">
-                         <button 
-                            onClick={toggleTheme}
-                            className="w-12 h-12 rounded-full glass-card flex items-center justify-center text-primary dark:text-white hover:scale-110 transition-transform cursor-pointer"
-                            aria-label="Toggle Dark Mode"
-                        >
-                            <Icon name={isDark ? "moon" : "sun"} size={20} />
-                        </button>
+                           <button 
+                                onClick={toggleTheme}
+                                className="w-12 h-12 rounded-full glass-card flex items-center justify-center text-primary dark:text-white hover:scale-110 transition-transform cursor-pointer"
+                                aria-label="Toggle Dark Mode"
+                            >
+                                <Icon name={isDark ? "moon" : "sun"} size={20} />
+                            </button>
                     </div>
 
                     {/* Navigation */}
