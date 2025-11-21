@@ -504,15 +504,32 @@
         const el = navRefs.current[activeSection];
         const parent = el.parentElement;
 
+        // 1) Position pill correctly relative to scrolled container
         const elRect = el.getBoundingClientRect();
         const parentRect = parent.getBoundingClientRect();
-
         const left = elRect.left - parentRect.left + parent.scrollLeft;
 
         setPillStyle({
             left,
             width: elRect.width,
             opacity: 1
+        });
+
+        // 2) Scroll nav so the active pill is centered
+        const targetScrollLeft =
+            el.offsetLeft - (parent.clientWidth / 2 - el.offsetWidth / 2);
+
+        const clampedScrollLeft = Math.max(
+            0,
+            Math.min(
+                targetScrollLeft,
+                parent.scrollWidth - parent.clientWidth
+            )
+        );
+
+        parent.scrollTo({
+            left: clampedScrollLeft,
+            behavior: 'smooth'
         });
     } else {
         setPillStyle(p => ({ ...p, opacity: 0 }));
