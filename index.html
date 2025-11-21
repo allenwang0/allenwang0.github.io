@@ -500,17 +500,25 @@
             }, []); 
 
             useEffect(() => {
-                if (activeSection && navRefs.current[activeSection]) {
-                    const el = navRefs.current[activeSection];
-                    setPillStyle({ 
-                        left: el.offsetLeft, 
-                        width: el.offsetWidth, 
-                        opacity: 1 
-                    });
-                } else {
-                    setPillStyle(prev => ({ ...prev, opacity: 0 })); 
-                }
-            }, [activeSection]);
+    if (activeSection && navRefs.current[activeSection]) {
+        const el = navRefs.current[activeSection];
+        const parent = el.parentElement;
+
+        const elRect = el.getBoundingClientRect();
+        const parentRect = parent.getBoundingClientRect();
+
+        const left = elRect.left - parentRect.left + parent.scrollLeft;
+
+        setPillStyle({
+            left,
+            width: elRect.width,
+            opacity: 1
+        });
+    } else {
+        setPillStyle(p => ({ ...p, opacity: 0 }));
+    }
+}, [activeSection]);
+
 
             const navItems = [
                 { id: 'work', label: 'Experience', icon: 'briefcase' },
