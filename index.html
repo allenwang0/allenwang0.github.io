@@ -18,9 +18,9 @@
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-
       gtag('config', 'G-JR31EX0R8M'); 
     </script>
+
     <link rel="preconnect" href="https://unpkg.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     
@@ -32,20 +32,23 @@
 
     <script>
         tailwind.config = {
-            darkMode: 'class', // Enables manual dark mode toggling
+            darkMode: 'class',
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['SF Pro Display', '-apple-system', 'BlinkMacSystemFont', 'Inter', 'sans-serif'],
+                        sans: ['SF Pro Display', '-apple-system', 'BlinkMacSystemFont', 'Inter', 'system-ui', 'sans-serif'],
                     },
                     colors: {
-                        primary: '#1D1D1F', 
-                        secondary: '#86868B', 
-                        accent: '#007AFF',
+                        primary: '#1D1D1F',
+                        secondary: '#86868B',
+                        accent: '#0A84FF',
                     },
                     borderRadius: {
                         '4xl': '32px',
                         '5xl': '40px',
+                    },
+                    boxShadow: {
+                        'ios-soft': '0 18px 45px rgba(0,0,0,0.22)',
                     }
                 }
             }
@@ -72,10 +75,10 @@
             position: fixed;
             inset: 0;
             z-index: -1;
-            opacity: 0.35;
+            opacity: 0.22;
             pointer-events: none;
-            mix-blend-mode: overlay;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            mix-blend-mode: soft-light;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
 
         .ambient-light {
@@ -83,84 +86,193 @@
             inset: 0;
             z-index: -2;
             overflow: hidden;
-            background: #F5F5F7; /* Light Mode BG */
-            transition: background 0.5s ease;
+            background: radial-gradient(circle at top, #FDFEFF 0, #F5F5F7 40%, #EAEAEE 100%);
+            transition: background 0.6s ease;
         }
 
-        /* Dark Mode Ambient Background */
         .dark .ambient-light {
-            background: #050505; /* Deep Black for Dark Mode */
+            background: radial-gradient(circle at top, #101018 0, #050505 45%, #000000 100%);
         }
 
-        /* BLOB ANIMATION */
+        /* BLOBS */
         .blob {
             position: absolute;
             filter: blur(80px);
             opacity: 0.6;
             will-change: transform;
-            animation: float 20s ease-in-out infinite;
+            animation: float 24s ease-in-out infinite;
         }
-        /* Adjust blob opacity for dark mode so they aren't too bright */
-        .dark .blob { opacity: 0.35; }
+        .dark .blob { opacity: 0.3; }
 
-        .blob-1 { top: -10%; left: -10%; width: 60vw; height: 60vw; background: radial-gradient(circle, rgba(0, 122, 255, 0.15) 0%, rgba(0,0,0,0) 70%); }
-        .blob-2 { top: 30%; right: -20%; width: 50vw; height: 50vw; background: radial-gradient(circle, rgba(175, 82, 222, 0.1) 0%, rgba(0,0,0,0) 70%); animation-delay: -5s; }
-        .blob-3 { bottom: -20%; left: 20%; width: 70vw; height: 70vw; background: radial-gradient(circle, rgba(52, 199, 89, 0.1) 0%, rgba(0,0,0,0) 70%); animation-delay: -10s; }
+        .blob-1 { top: -12%; left: -15%; width: 60vw; height: 60vw; background: radial-gradient(circle, rgba(10, 132, 255, 0.26) 0%, rgba(0,0,0,0) 70%); }
+        .blob-2 { top: 35%; right: -25%; width: 54vw; height: 54vw; background: radial-gradient(circle, rgba(191, 90, 242, 0.22) 0%, rgba(0,0,0,0) 72%); animation-delay: -7s; }
+        .blob-3 { bottom: -25%; left: 22%; width: 70vw; height: 70vw; background: radial-gradient(circle, rgba(48, 209, 88, 0.22) 0%, rgba(0,0,0,0) 72%); animation-delay: -11s; }
 
         @keyframes float {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            33% { transform: translate(20px, -30px) scale(1.05); }
-            66% { transform: translate(-10px, 20px) scale(0.95); }
+            0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+            33% { transform: translate3d(24px, -30px, 0) scale(1.06); }
+            66% { transform: translate3d(-16px, 20px, 0) scale(0.97); }
         }
 
-        /* --- THE GLASS POP --- */
-        
-        /* Light Mode Glass */
+        @media (prefers-reduced-motion: reduce) {
+            .blob { animation: none !important; }
+        }
+
+        /* GLASS CARDS */
+
         .glass-card {
-            background: linear-gradient(145deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.4) 100%);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            /* Inner light stroke + shadow */
-            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1), 
-                        0 4px 24px -1px rgba(0, 0, 0, 0.04); 
-            transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            background: linear-gradient(140deg, rgba(255,255,255,0.82) 0%, rgba(255,255,255,0.5) 60%, rgba(255,255,255,0.36) 100%);
+            backdrop-filter: blur(24px) saturate(190%);
+            -webkit-backdrop-filter: blur(24px) saturate(190%);
+            border-radius: 28px;
+            border: 1px solid rgba(255,255,255,0.55);
+            box-shadow:
+                0 0 0 0.5px rgba(255,255,255,0.7),
+                0 18px 45px rgba(15,15,30,0.16);
+            transition: transform 0.3s cubic-bezier(0.22, 0.8, 0.28, 1),
+                        box-shadow 0.3s cubic-bezier(0.22, 0.8, 0.28, 1),
+                        background 0.3s cubic-bezier(0.22, 0.8, 0.28, 1),
+                        border-color 0.3s cubic-bezier(0.22, 0.8, 0.28, 1);
+            position: relative;
+            overflow: hidden;
         }
 
-        /* Dark Mode Glass */
+        .glass-card::before {
+            content: "";
+            position: absolute;
+            inset: -40%;
+            opacity: 0;
+            background: radial-gradient(circle at top left, rgba(10,132,255,0.2), transparent 55%);
+            mix-blend-mode: screen;
+            transition: opacity 0.45s cubic-bezier(0.22, 0.8, 0.28, 1);
+            pointer-events: none;
+        }
+
         .dark .glass-card {
-            background: linear-gradient(145deg, rgba(30,30,32,0.7) 0%, rgba(30,30,32,0.4) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03), 
-                        0 8px 32px -4px rgba(0, 0, 0, 0.5);
+            background: radial-gradient(circle at top left, rgba(36,40,60,0.96), rgba(16,18,30,0.98));
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow:
+                0 0 0 0.5px rgba(255,255,255,0.08),
+                0 20px 60px rgba(0,0,0,0.7);
         }
 
         .glass-card:hover {
-            transform: translateY(-4px) scale(1.005);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
-        }
-        .dark .glass-card:hover {
-            background: linear-gradient(145deg, rgba(40,40,42,0.8) 0%, rgba(40,40,42,0.5) 100%);
-            border-color: rgba(255, 255, 255, 0.15);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            transform: translateY(-4px) scale(1.004);
+            box-shadow:
+                0 0 0 0.5px rgba(255,255,255,0.9),
+                0 28px 60px rgba(15,15,30,0.22);
         }
 
-        /* Nav Glass */
-        .nav-glass {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+        .dark .glass-card:hover {
+            border-color: rgba(255,255,255,0.16);
+            box-shadow:
+                0 0 0 0.5px rgba(255,255,255,0.18),
+                0 32px 80px rgba(0,0,0,0.9);
         }
+
+        .glass-card:hover::before {
+            opacity: 1;
+        }
+
+        .glass-tile {
+            border-radius: 999px;
+            background: linear-gradient(140deg, rgba(255,255,255,0.9), rgba(255,255,255,0.6));
+            backdrop-filter: blur(18px) saturate(180%);
+            -webkit-backdrop-filter: blur(18px) saturate(180%);
+            border: 1px solid rgba(255,255,255,0.7);
+            box-shadow: 0 14px 30px rgba(15,15,30,0.18);
+        }
+
+        .dark .glass-tile {
+            background: linear-gradient(140deg, rgba(30,32,45,0.96), rgba(16,18,30,0.96));
+            border-color: rgba(255,255,255,0.16);
+            box-shadow: 0 16px 40px rgba(0,0,0,0.9);
+        }
+
+        /* NAV BAR */
+
+        .nav-glass {
+            background: linear-gradient(120deg, rgba(255,255,255,0.88), rgba(255,255,255,0.78));
+            backdrop-filter: blur(18px) saturate(180%);
+            -webkit-backdrop-filter: blur(18px) saturate(180%);
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.7);
+            box-shadow:
+                0 0 0 0.5px rgba(255,255,255,0.8),
+                0 12px 30px rgba(0,0,0,0.08);
+            transition: background 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+
+        .nav-glass.scrolled {
+            background: rgba(255,255,255,0.96);
+            box-shadow:
+                0 0 0 0.5px rgba(255,255,255,0.9),
+                0 16px 40px rgba(0,0,0,0.15);
+        }
+
         .dark .nav-glass {
-            background: rgba(20, 20, 20, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            background: linear-gradient(120deg, rgba(18,18,22,0.92), rgba(22,22,28,0.96));
+            border: 1px solid rgba(255,255,255,0.14);
+            box-shadow:
+                0 0 0 0.5px rgba(255,255,255,0.09),
+                0 14px 40px rgba(0,0,0,0.9);
+        }
+
+        .dark .nav-glass.scrolled {
+            background: rgba(10,10,15,0.98);
+            box-shadow:
+                0 0 0 0.5px rgba(255,255,255,0.12),
+                0 20px 50px rgba(0,0,0,1);
+        }
+
+        .nav-pill-highlight {
+            background-image: linear-gradient(120deg, #0A84FF, #0A84FF);
+        }
+        .dark .nav-pill-highlight {
+            background-image: linear-gradient(120deg, #0A84FF, #0A84FF);
         }
 
         .hide-scroll::-webkit-scrollbar { display: none; }
         .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* HERO TEXT */
+        .hero-name {
+            color: #1D1D1F;
+        }
+        .dark .hero-name {
+            color: #F9FAFB;
+        }
+
+        .hero-subtitle {
+            color: #4B5563;
+        }
+        .dark .hero-subtitle {
+            color: #D1D5DB;
+        }
+
+        /* Fade-in */
+        .fade-root {
+            transform: translateY(12px);
+            opacity: 0;
+            filter: blur(6px);
+        }
+        .fade-root.visible {
+            transform: translateY(0);
+            opacity: 1;
+            filter: blur(0);
+            transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+                        filter 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .fade-root {
+                transform: none !important;
+                opacity: 1 !important;
+                filter: none !important;
+                transition: none !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -174,7 +286,7 @@
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useEffect, useRef, useMemo } = React;
+        const { useState, useEffect, useRef } = React;
 
         const DATA = {
             profile: {
@@ -190,7 +302,7 @@
                 {
                     company: "Apple",
                     role: "Software Engineer",
-                    summary: "Building resilient distributed systems to secure iCloud at scale.", 
+                    summary: "Building resilient distributed systems to secure iCloud at scale.",
                     details: ["Java", "Cassandra", "Redis", "Kafka", "Spark", "Kubernetes"],
                     logo: "apple",
                     isApple: true,
@@ -199,7 +311,7 @@
                 {
                     company: "Millennium",
                     role: "Quantitative Developer",
-                    summary: "Accelerating quantitative research through intelligent data platforms.", 
+                    summary: "Accelerating quantitative research through intelligent data platforms.",
                     details: ["Python", "C++", "Vector DB", "RAG", "Pandas", "System Design"],
                     logo: "millennium",
                     fullFill: true,
@@ -209,28 +321,28 @@
             projects: [
                 {
                     title: "Statistical Arbitrage",
-                    desc: "Quantitative trading engine implementing pairs trading strategies. Features cointegration testing, automated signal generation, and a vectorized backtester.",
+                    desc: "Quantitative trading engine implementing pairs trading strategies. Cointegration testing, signal generation, and a vectorized backtester.",
                     tech: ["Python", "Pandas", "NumPy", "Backtesting"],
                     url: "https://github.com/allenwang0/statarb",
                     icon: "trending-up" 
                 },
                 {
                     title: "Kalshi Deep Bot",
-                    desc: "Event-driven prediction market bot. Orchestrates Octagon Deep Research for fundamental analysis and OpenAI LLMs to execute value bets on Kalshi.",
+                    desc: "Event-driven prediction market bot orchestrating Octagon Deep Research and OpenAI LLMs to execute value bets on Kalshi.",
                     tech: ["Python", "OpenAI", "Kalshi API", "AsyncIO"],
                     url: "https://github.com/allenwang0/kalshibot",
                     icon: "bot" 
                 },
                 {
                     title: "Volatility Scanner",
-                    desc: "Real-time market screening tool that identifies assets with high implied volatility relative to historical baselines. Includes automated alerts and regime detection.",
+                    desc: "Realtime scanner for assets with high implied volatility versus historical baselines. Includes alerts and regime detection.",
                     tech: ["Python", "SciPy", "Pandas", "IV Rank"],
                     url: "https://github.com/allenwang0/volatilityscanner",
                     icon: "activity" 
                 },
                 {
                     title: "Limit Order Book",
-                    desc: "High-performance matching engine built in C++. Implements price-time priority execution, order cancellation, and level-2 market data reconstruction.",
+                    desc: "High-performance C++ matching engine with price-time priority, cancellation, and level-2 market data reconstruction.",
                     tech: ["C++", "CMake", "GoogleTest", "Benchmark"],
                     url: "https://github.com/allenwang0/limitorderbook",
                     icon: "arrow-up-down" 
@@ -239,8 +351,8 @@
             education: [
                 {
                     school: "Stanford University",
-                    degree: "Bachelor of Science", 
-                    field: "Mathematics & Computer Science", 
+                    degree: "Bachelor of Science",
+                    field: "Mathematics & Computer Science",
                     logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Seal_of_Leland_Stanford_Junior_University.svg/1200px-Seal_of_Leland_Stanford_Junior_University.svg.png",
                     url: "https://mcs.stanford.edu/"
                 },
@@ -253,80 +365,78 @@
                 }
             ],
             stack: [
-                { name: "Java", type: "Backend" }, 
-                { name: "Python", type: "Data" }, 
-                { name: "C++", type: "Systems" }, 
-                { name: "Kafka", type: "Infra" }, 
-                { name: "Cassandra", type: "DB" }, 
-                { name: "Kubernetes", type: "Ops" }, 
-                { name: "React", type: "Frontend" }, 
+                { name: "Java", type: "Backend" },
+                { name: "Python", type: "Data" },
+                { name: "C++", type: "Systems" },
+                { name: "Kafka", type: "Infra" },
+                { name: "Cassandra", type: "DB" },
+                { name: "Kubernetes", type: "Ops" },
+                { name: "React", type: "Frontend" },
                 { name: "AWS", type: "Cloud" }
             ]
         };
-
-        // --- COMPONENTS ---
 
         const Icon = ({ name, size = 16, className }) => {
             useEffect(() => { if (window.lucide) window.lucide.createIcons(); }, [name]);
             return <i data-lucide={name} width={size} height={size} className={className}></i>;
         };
 
-        const Logo = ({ name, className, fullFill, isApple }) => {
+        const Logo = ({ name, className, fullFill }) => {
             const logos = {
                 apple: "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg",
                 millennium: "https://upload.wikimedia.org/wikipedia/commons/d/d8/Millennium_Management_logo_2024.png"
             };
             const src = name.startsWith('http') ? name : logos[name];
-            let imgClass = `transition-transform duration-700 ease-out group-hover:scale-110 `;
-            
-            if (name === 'apple') imgClass += " object-contain p-3 dark:invert"; // INVERT APPLE LOGO IN DARK MODE
+            let imgClass = "transition-transform duration-700 ease-out group-hover:scale-110 ";
+
+            if (name === 'apple') imgClass += " object-contain p-3 dark:invert";
             else if (name === 'millennium') imgClass += " object-contain p-2";
             else if (fullFill) imgClass += " object-cover w-full h-full";
             else imgClass += " object-contain";
 
-            return <img src={src} alt={name} className={`${imgClass} ${className}`} loading="lazy" />;
+            return <img src={src} alt={name} className={`${imgClass} ${className || ''}`} loading="lazy" />;
         };
 
         const FadeIn = ({ children, delay = 0, className = "" }) => {
-            const [isVisible, setIsVisible] = useState(false);
-            const ref = useRef();
+            const ref = useRef(null);
 
             useEffect(() => {
-                const observer = new IntersectionObserver(([e]) => {
-                    if (e.isIntersecting) {
-                        setIsVisible(true);
-                        observer.disconnect();
-                    }
-                }, { threshold: 0.15, rootMargin: "50px" });
-                
-                if (ref.current) observer.observe(ref.current);
+                const el = ref.current;
+                if (!el) return;
+                const observer = new IntersectionObserver(
+                    ([entry]) => {
+                        if (entry.isIntersecting) {
+                            el.classList.add("visible");
+                            observer.disconnect();
+                        }
+                    },
+                    { threshold: 0.15, rootMargin: "60px" }
+                );
+                observer.observe(el);
                 return () => observer.disconnect();
             }, []);
 
             return (
-                <div ref={ref} style={{ transitionDelay: `${delay}ms` }} 
-                    className={`transform transition-all duration-1000 cubic-bezier(0.16, 1, 0.3, 1) 
-                    ${isVisible ? 'opacity-100 translate-y-0 blur-0' : 'opacity-0 translate-y-8 blur-sm'} ${className}`}>
+                <div
+                    ref={ref}
+                    style={{ transitionDelay: `${delay}ms` }}
+                    className={`fade-root ${className}`}
+                >
                     {children}
                 </div>
             );
         };
 
-        // --- MAIN APP ---
-
         const App = () => {
             const [activeSection, setActiveSection] = useState(null);
             const [pillStyle, setPillStyle] = useState({ left: 0, width: 0, opacity: 0 });
-            // Dark Mode State
             const [isDark, setIsDark] = useState(false);
+            const [scrolled, setScrolled] = useState(false);
             const navRefs = useRef({});
             
-            // Initialize Dark Mode
             useEffect(() => {
-                // Check local storage or system preference
                 const savedTheme = localStorage.getItem('theme');
                 const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                
                 if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
                     setIsDark(true);
                     document.documentElement.classList.add('dark');
@@ -350,8 +460,10 @@
                 
                 const handleScroll = () => {
                     const scrollY = window.scrollY;
-                    const offset = window.innerHeight * 0.3; 
+                    const offset = window.innerHeight * 0.3;
                     
+                    setScrolled(scrollY > 32);
+
                     if (scrollY < 100) { 
                         setActiveSection(null);
                         return;
@@ -372,7 +484,7 @@
                             const top = el.offsetTop - offset;
                             if (scrollY >= top) {
                                 newActiveSection = id;
-                                break; 
+                                break;
                             }
                         }
                     }
@@ -383,7 +495,7 @@
                 };
 
                 window.addEventListener('scroll', handleScroll, { passive: true });
-                handleScroll(); 
+                handleScroll();
                 return () => window.removeEventListener('scroll', handleScroll);
             }, []); 
 
@@ -401,10 +513,10 @@
             }, [activeSection]);
 
             const navItems = [
-                { id: 'work', label: 'Experience' },
-                { id: 'projects', label: 'Projects' },
-                { id: 'skills', label: 'Stack' },
-                { id: 'education', label: 'Education' }
+                { id: 'work', label: 'Experience', icon: 'briefcase' },
+                { id: 'projects', label: 'Projects', icon: 'sparkles' },
+                { id: 'skills', label: 'Stack', icon: 'cpu' },
+                { id: 'education', label: 'Education', icon: 'graduation-cap' }
             ];
 
             const headerClass = activeSection 
@@ -414,31 +526,32 @@
             return (
                 <div className="min-h-screen font-sans pb-40 transition-colors duration-500">
                     
-                    {/* Theme Toggle & Actions */}
-                    <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-3">
-                           <button 
-                                onClick={toggleTheme}
-                                className="w-12 h-12 rounded-full glass-card flex items-center justify-center text-primary dark:text-white hover:scale-110 transition-transform cursor-pointer"
-                                aria-label="Toggle Dark Mode"
-                            >
-                                <Icon name={isDark ? "moon" : "sun"} size={20} />
-                            </button>
+                    {/* Bottom-right theme toggle only */}
+                    <div className="fixed bottom-6 right-6 z-50">
+                        <button 
+                            onClick={toggleTheme}
+                            className="glass-tile h-12 w-12 flex items-center justify-center rounded-full cursor-pointer hover:scale-[1.06] transition-transform duration-300"
+                            aria-label="Toggle Dark Mode"
+                        >
+                            <Icon name={isDark ? "moon" : "sun"} size={20} className="text-primary dark:text-white" />
+                        </button>
                     </div>
 
                     {/* Navigation */}
-                    <header className={`fixed top-6 z-50 w-full flex justify-center px-4 transition-transform duration-500 ease-in-out ${headerClass}`}>
-                        <nav className="nav-glass p-1.5 rounded-full flex items-center relative pointer-events-auto transition-transform duration-300 hover:scale-[1.02]">
+                    <header className={`fixed top-6 z-50 w-full flex justify-center px-4 transition-transform duration-500 ease-out ${headerClass}`}>
+                        <nav className={`nav-glass ${scrolled ? 'scrolled' : ''} px-2 py-1.5 rounded-full flex items-center relative pointer-events-auto hide-scroll overflow-x-auto`}>
                             <div 
-                                className="absolute bg-primary dark:bg-white rounded-full h-[calc(100%-12px)] top-1.5 shadow-md transition-all duration-500 cubic-bezier(0.2, 0.8, 0.2, 1)"
+                                className="nav-pill-highlight absolute rounded-full h-[calc(100%-12px)] top-1.5 shadow-md transition-all duration-500 cubic-bezier(0.2, 0.8, 0.2, 1)"
                                 style={{ left: pillStyle.left, width: pillStyle.width, opacity: pillStyle.opacity }} 
                             />
                             {navItems.map((item) => (
                                 <a key={item.id} 
                                    ref={el => navRefs.current[item.id] = el} 
                                    href={`#${item.id}`} 
-                                   className={`relative z-10 px-5 py-2.5 rounded-full text-[13px] font-medium transition-colors duration-300 
-                                   ${activeSection === item.id ? 'text-white dark:text-black' : 'text-secondary hover:text-primary dark:hover:text-white'}`}>
-                                    {item.label}
+                                   className={`relative z-10 px-4 sm:px-5 py-2.5 rounded-full text-[13px] font-medium flex items-center gap-2 transition-colors duration-300 
+                                   ${activeSection === item.id ? 'text-white dark:text-black' : 'text-secondary hover:text-primary dark:text-gray-300 dark:hover:text-white'}`}>
+                                    <Icon name={item.icon} size={15} />
+                                    <span>{item.label}</span>
                                 </a>
                             ))}
                         </nav>
@@ -447,22 +560,24 @@
                     {/* Main Content */}
                     <main className="max-w-3xl mx-auto px-6 pt-40 md:pt-52">
                         
-                        {/* Hero Section */}
-                        <section className="mb-24 md:mb-36 text-center">
+                        {/* Hero Section – simplified */}
+                        <section className="mb-24 md:mb-32 text-center">
                             <FadeIn>
-                                <h1 className="text-6xl md:text-8xl font-bold tracking-tighter text-primary dark:text-white mb-6 leading-[0.9] mix-blend-color-burn dark:mix-blend-normal opacity-90">
+                                <h1 className="hero-name text-6xl md:text-7xl lg:text-8xl font-extrabold tracking-tight mb-5 leading-[0.9]">
                                     {DATA.profile.name}
                                 </h1>
-                                <p className="text-xl md:text-2xl text-secondary font-medium tracking-tight max-w-xl mx-auto leading-snug">
-                                    {DATA.profile.title} at <span className="text-primary dark:text-white font-semibold relative inline-block after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-primary/20 dark:after:bg-white/30 after:rounded-full">Apple</span>
+                                <p className="hero-subtitle text-lg md:text-2xl font-medium tracking-tight">
+                                    {DATA.profile.title} at <span className="font-semibold">Apple</span>
                                 </p>
                             </FadeIn>
-                            <FadeIn delay={150}>
+
+                            <FadeIn delay={220}>
                                 <div className="flex justify-center gap-4 mt-10">
                                     {DATA.profile.socials.map((social, i) => (
                                         <a key={i} href={social.url} target="_blank" rel="noopener noreferrer" aria-label={social.label}
-                                           className="glass-card p-3.5 rounded-full text-secondary/80 dark:text-secondary hover:text-accent dark:hover:text-white hover:scale-110 transition-all duration-300">
-                                            <Icon name={social.icon} size={22} />
+                                           className="glass-tile px-3.5 py-2 flex items-center gap-2 text-secondary/80 dark:text-gray-200 text-sm hover:scale-[1.03] transition-transform duration-300">
+                                            <Icon name={social.icon} size={18} />
+                                            <span className="hidden sm:inline-block">{social.label}</span>
                                         </a>
                                     ))}
                                 </div>
@@ -472,29 +587,38 @@
                         {/* Experience Section */}
                         <section id="work" className="mb-32 scroll-mt-32">
                             <FadeIn>
-                                <div className="flex items-center gap-4 mb-10 opacity-50">
+                                <div className="flex items-center gap-4 mb-10 opacity-70">
                                     <div className="h-px flex-1 bg-gradient-to-r from-transparent via-secondary/40 to-transparent"></div>
-                                    <h2 className="text-xs font-bold text-secondary uppercase tracking-[0.2em]">Selected Work</h2>
+                                    <h2 className="text-[11px] font-bold text-secondary uppercase tracking-[0.24em]">
+                                        Selected Work
+                                    </h2>
                                     <div className="h-px flex-1 bg-gradient-to-r from-transparent via-secondary/40 to-transparent"></div>
                                 </div>
                             </FadeIn>
                             <div className="flex flex-col gap-6">
                                 {DATA.experience.map((job, i) => (
-                                    <FadeIn key={i} delay={i * 100}>
+                                    <FadeIn key={i} delay={i * 120}>
                                         <a href={job.url} target="_blank" rel="noopener noreferrer" className="block group relative glass-card rounded-[2rem] p-8 md:p-10">
-                                            <div className="flex flex-col md:flex-row gap-6 md:gap-8">
-                                                <div className={`w-16 h-16 md:w-20 md:h-20 rounded-2xl overflow-hidden shrink-0 flex items-center justify-center shadow-inner border border-white/50 dark:border-white/10 ${job.fullFill ? 'p-0' : 'bg-white dark:bg-black/40'}`}>
-                                                    <Logo name={job.logo} fullFill={job.fullFill} isApple={job.isApple} className="max-w-full max-h-full" />
+                                            <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-start">
+                                                <div className={`w-16 h-16 md:w-20 md:h-20 rounded-3xl overflow-hidden shrink-0 flex items-center justify-center shadow-ios-soft border border-white/60 dark:border-white/10 ${job.fullFill ? 'p-0' : 'bg-white/90 dark:bg-black/50'}`}>
+                                                    <Logo name={job.logo} fullFill={job.fullFill} className="max-w-full max-h-full" />
                                                 </div>
                                                 <div className="flex-1 pt-1">
-                                                    <div className="flex flex-col md:flex-row md:items-baseline md:justify-between gap-1 mb-2">
-                                                        <h3 className="text-2xl font-bold text-primary dark:text-white tracking-tight group-hover:text-accent transition-colors">{job.company}</h3>
+                                                    <div className="flex flex-col md:flex-row md:items-baseline md:justify-between gap-1 mb-2.5">
+                                                        <h3 className="text-2xl font-semibold text-primary dark:text-white tracking-tight group-hover:text-accent transition-colors">
+                                                            {job.company}
+                                                        </h3>
+                                                        <div className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-accent">
+                                                            <Icon name="badge-check" size={14} />
+                                                            <span>{job.role}</span>
+                                                        </div>
                                                     </div>
-                                                    <p className="text-[13px] font-semibold text-accent uppercase tracking-wide mb-3">{job.role}</p>
-                                                    <p className="text-[16px] leading-relaxed text-secondary dark:text-gray-400 font-normal mb-6">{job.summary}</p>
+                                                    <p className="text-[15px] leading-relaxed text-secondary dark:text-gray-300 mb-5">
+                                                        {job.summary}
+                                                    </p>
                                                     <div className="flex flex-wrap gap-2">
                                                         {job.details.map((tech, idx) => (
-                                                            <span key={idx} className="text-[11px] font-medium text-secondary/80 dark:text-gray-300 bg-white/50 dark:bg-white/5 px-3 py-1 rounded-full border border-white/40 dark:border-white/10 shadow-sm">
+                                                            <span key={idx} className="text-[11px] font-medium text-secondary/90 dark:text-gray-200 bg-white/70 dark:bg-white/5 px-3 py-1 rounded-full border border-white/60 dark:border-white/15 shadow-sm">
                                                                 {tech}
                                                             </span>
                                                         ))}
@@ -510,29 +634,37 @@
                         {/* Projects Section */}
                         <section id="projects" className="mb-32 scroll-mt-32">
                             <FadeIn>
-                                <div className="flex items-center gap-4 mb-10 opacity-50">
+                                <div className="flex items-center gap-4 mb-10 opacity-70">
                                     <div className="h-px flex-1 bg-gradient-to-r from-transparent via-secondary/40 to-transparent"></div>
-                                    <h2 className="text-xs font-bold text-secondary uppercase tracking-[0.2em]">Projects</h2>
+                                    <h2 className="text-[11px] font-bold text-secondary uppercase tracking-[0.24em]">
+                                        Projects
+                                    </h2>
                                     <div className="h-px flex-1 bg-gradient-to-r from-transparent via-secondary/40 to-transparent"></div>
                                 </div>
+                            </FadeIn>
+                            <FadeIn delay={80}>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     {DATA.projects && DATA.projects.map((project, i) => (
-                                        <a key={i} href={project.url} target="_blank" rel="noopener noreferrer" className="group glass-card p-8 rounded-[2rem] flex flex-col justify-between transition-all duration-300 hover:-translate-y-1">
+                                        <a key={i} href={project.url} target="_blank" rel="noopener noreferrer" className="group glass-card p-7 rounded-[2rem] flex flex-col justify-between transition-transform duration-400 hover:-translate-y-1">
                                             <div>
                                                 <div className="flex justify-between items-start mb-4">
-                                                    <div className="p-3 bg-white/60 dark:bg-white/10 rounded-xl shadow-sm text-primary dark:text-white border border-white/50 dark:border-white/10">
+                                                    <div className="p-3 rounded-2xl bg-white/80 dark:bg-white/10 shadow text-primary dark:text-white border border-white/70 dark:border-white/18">
                                                         <Icon name={project.icon} size={24} />
                                                     </div>
                                                     <div className="opacity-0 group-hover:opacity-100 transition-opacity text-accent">
                                                         <Icon name="arrow-up-right" size={20} />
                                                     </div>
                                                 </div>
-                                                <h3 className="text-xl font-bold text-primary dark:text-white mb-2 tracking-tight group-hover:text-accent transition-colors">{project.title}</h3>
-                                                <p className="text-secondary dark:text-gray-400 text-sm leading-relaxed mb-6">{project.desc}</p>
+                                                <h3 className="text-lg font-semibold text-primary dark:text-white mb-2 tracking-tight group-hover:text-accent transition-colors">
+                                                    {project.title}
+                                                </h3>
+                                                <p className="text-secondary dark:text-gray-300 text-[13px] leading-relaxed mb-5">
+                                                    {project.desc}
+                                                </p>
                                             </div>
                                             <div className="flex flex-wrap gap-2 mt-auto">
                                                 {project.tech.map((t, k) => (
-                                                    <span key={k} className="text-[10px] font-semibold text-secondary/70 dark:text-gray-400 bg-white/40 dark:bg-white/5 px-2.5 py-1 rounded-lg border border-white/30 dark:border-white/10">
+                                                    <span key={k} className="text-[10px] font-semibold text-secondary/80 dark:text-gray-300 bg-white/70 dark:bg-white/5 px-2.5 py-1 rounded-lg border border-white/60 dark:border-white/15">
                                                         {t}
                                                     </span>
                                                 ))}
@@ -546,16 +678,24 @@
                         {/* Skills Grid */}
                         <section id="skills" className="mb-32 scroll-mt-32">
                             <FadeIn>
-                                <div className="flex items-center gap-4 mb-10 opacity-50">
+                                <div className="flex items-center gap-4 mb-10 opacity-70">
                                     <div className="h-px flex-1 bg-gradient-to-r from-transparent via-secondary/40 to-transparent"></div>
-                                    <h2 className="text-xs font-bold text-secondary uppercase tracking-[0.2em]">Technical Stack</h2>
+                                    <h2 className="text-[11px] font-bold text-secondary uppercase tracking-[0.24em]">
+                                        Technical Stack
+                                    </h2>
                                     <div className="h-px flex-1 bg-gradient-to-r from-transparent via-secondary/40 to-transparent"></div>
                                 </div>
+                            </FadeIn>
+                            <FadeIn delay={90}>
                                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                                     {DATA.stack.map((tech, i) => (
-                                        <div key={i} className="glass-card p-4 rounded-2xl flex flex-col items-center justify-center gap-2 group hover:bg-white/90 dark:hover:bg-white/10">
-                                            <span className="text-[15px] font-semibold text-primary dark:text-gray-100 group-hover:scale-105 transition-transform">{tech.name}</span>
-                                            <span className="text-[10px] text-secondary/60 dark:text-gray-500 uppercase tracking-wider font-medium">{tech.type}</span>
+                                        <div key={i} className="glass-card p-4 rounded-3xl flex flex-col items-center justify-center gap-2 group">
+                                            <span className="text-[15px] font-semibold text-primary dark:text-gray-100 group-hover:scale-105 transition-transform">
+                                                {tech.name}
+                                            </span>
+                                            <span className="text-[10px] text-secondary/70 dark:text-gray-400 uppercase tracking-[0.16em] font-medium">
+                                                {tech.type}
+                                            </span>
                                         </div>
                                     ))}
                                 </div>
@@ -565,21 +705,31 @@
                         {/* Education */}
                         <section id="education" className="mb-32 scroll-mt-32">
                             <FadeIn>
-                                <div className="flex items-center gap-4 mb-10 opacity-50">
+                                <div className="flex items-center gap-4 mb-10 opacity-70">
                                     <div className="h-px flex-1 bg-gradient-to-r from-transparent via-secondary/40 to-transparent"></div>
-                                    <h2 className="text-xs font-bold text-secondary uppercase tracking-[0.2em]">Education</h2>
+                                    <h2 className="text-[11px] font-bold text-secondary uppercase tracking-[0.24em]">
+                                        Education
+                                    </h2>
                                     <div className="h-px flex-1 bg-gradient-to-r from-transparent via-secondary/40 to-transparent"></div>
                                 </div>
+                            </FadeIn>
+                            <FadeIn delay={80}>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                                     {DATA.education.map((edu, i) => (
                                         <a key={i} href={edu.url} target="_blank" rel="noopener noreferrer" className="glass-card p-6 rounded-[24px] flex items-center gap-5 group">
-                                            <div className="w-14 h-14 shrink-0 flex items-center justify-center bg-white rounded-2xl p-2 shadow-sm border border-white/50 dark:border-transparent">
+                                            <div className="w-14 h-14 shrink-0 flex items-center justify-center bg-white/90 dark:bg.black rounded-3xl p-2 shadow border border-white/70 dark:border-white/15">
                                                 <Logo name={edu.logo} className="w-full h-full object-contain" />
                                             </div>
                                             <div>
-                                                <h3 className="text-[16px] font-bold text-primary dark:text-white group-hover:text-accent transition-colors">{edu.school}</h3>
-                                                <p className="text-[13px] font-medium text-secondary dark:text-gray-400 mt-1">{edu.degree}</p>
-                                                <p className="text-[13px] text-secondary/60 dark:text-gray-500 mt-0.5">{edu.field}</p>
+                                                <h3 className="text-[16px] font-semibold text-primary dark:text-white group-hover:text-accent transition-colors">
+                                                    {edu.school}
+                                                </h3>
+                                                <p className="text-[13px] font-medium text-secondary dark:text-gray-300 mt-1">
+                                                    {edu.degree}
+                                                </p>
+                                                <p className="text-[13px] text-secondary/70 dark:text-gray-400 mt-0.5">
+                                                    {edu.field}
+                                                </p>
                                             </div>
                                         </a>
                                     ))}
@@ -589,13 +739,13 @@
 
                         {/* Footer */}
                         <footer className="text-center pb-10">
-                            <FadeIn delay={200}>
-                                <a href="mailto:ahw@alumni.stanford.edu" className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-primary dark:bg-white text-white dark:text-black text-sm font-semibold hover:bg-accent dark:hover:bg-gray-200 hover:scale-105 transition-all duration-300 shadow-xl shadow-primary/20 dark:shadow-white/10">
+                            <FadeIn delay={180}>
+                                <a href="mailto:ahw@alumni.stanford.edu" className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full glass-tile text-sm font-semibold text-primary/90 dark:text-white hover:scale-[1.03] transition-transform duration-300">
                                     <Icon name="mail" size={18} />
-                                    Get in Touch
+                                    <span>Get in touch</span>
                                 </a>
-                                <p className="mt-12 text-[12px] text-secondary/40 font-medium">
-                                    Designed & Built by {DATA.profile.name} &middot; {new Date().getFullYear()}
+                                <p className="mt-10 text-[12px] text-secondary/60 dark:text-gray-500 font-medium">
+                                    Designed &amp; built by {DATA.profile.name} · {new Date().getFullYear()}
                                 </p>
                             </FadeIn>
                         </footer>
