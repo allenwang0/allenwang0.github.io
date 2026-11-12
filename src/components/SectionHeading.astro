@@ -1,0 +1,14 @@
+---
+interface Props {
+  id?: string;
+}
+const { id } = Astro.props;
+---
+
+<div class="fade-in mb-10 flex print:mb-2 items-center gap-4">
+  <div class="section-rule h-px flex-1"></div>
+  <h2 id={id} class="text-[11px] font-bold tracking-[0.24em] text-secondary uppercase">
+    <slot />
+  </h2>
+  <div class="section-rule h-px flex-1"></div>
+</div>

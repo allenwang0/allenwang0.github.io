@@ -1,0 +1,253 @@
+---
+import Base from "../layouts/Base.astro";
+import Icon from "../components/Icon.astro";
+import Metric from "../components/Metric.astro";
+import SectionHeading from "../components/SectionHeading.astro";
+import { listed, monthYear, projectGroups, repoUrl, site } from "../lib/data";
+
+const { profile, experience, education, stack } = site;
+const navItems = [
+  { id: "work", label: "Experience", icon: "briefcase" },
+  { id: "projects", label: "Projects", icon: "sparkles" },
+  { id: "skills", label: "Stack", icon: "cpu" },
+  { id: "education", label: "Education", icon: "graduation-cap" },
+];
+---
+
+<Base>
+  <header class="site-nav fixed top-6 z-40 flex w-full justify-center px-4">
+    <nav aria-label="Sections" class="nav-glass hide-scroll flex items-center overflow-x-auto rounded-full px-2 py-1.5">
+      {navItems.map((item) => (
+        <a
+          href={`#${item.id}`}
+          class="flex items-center gap-2 rounded-full px-4 py-2.5 text-[13px] font-medium text-secondary transition-colors duration-300 hover:text-primary sm:px-5"
+        >
+          <Icon name={item.icon} size={15} />
+          <span>{item.label}</span>
+        </a>
+      ))}
+    </nav>
+  </header>
+
+  <main class="print-tight mx-auto max-w-3xl px-6 pt-40 pb-40 md:pt-52">
+    <section class="mb-24 text-center md:mb-32 print:mb-4">
+      <div class="fade-in">
+        <h1 class="mb-5 text-6xl leading-[0.9] print:mb-1 print:text-4xl font-extrabold tracking-tight text-primary md:text-7xl lg:text-8xl">
+          {profile.name}
+        </h1>
+        <p class="text-lg font-medium tracking-tight text-secondary md:text-2xl">
+          {profile.title} at <span class="font-semibold text-primary">{profile.employer}</span>
+        </p>
+      </div>
+      <div class="fade-in mt-10 flex justify-center gap-4 print:mt-2" style="--delay: 220ms">
+        {profile.socials.map((social) => (
+          <a
+            href={social.url}
+            target={social.url.startsWith("mailto:") ? undefined : "_blank"}
+            rel="noopener noreferrer"
+            aria-label={social.label}
+            class="glass-tile flex items-center gap-2 px-3.5 py-2 text-sm text-primary transition-transform duration-300 hover:scale-[1.03]"
+          >
+            <Icon name={social.icon} size={18} />
+            <span class="hidden sm:inline-block">{social.label}</span>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <section id="work" class="mb-32 scroll-mt-32 print:mb-3" aria-labelledby="work-heading">
+      <SectionHeading id="work-heading">Selected Work</SectionHeading>
+      <div class="flex flex-col gap-6 print:gap-2">
+        {experience.map((job, i) => (
+          <a
+            href={job.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="fade-in glass-card group block rounded-[2rem] p-8 md:p-10 print:p-3"
+            style={`--delay: ${i * 120}ms`}
+          >
+            <div class="flex flex-col items-start gap-6 md:flex-row md:gap-8">
+              <div class="flex h-16 w-16 shrink-0 print:hidden items-center justify-center overflow-hidden rounded-3xl border border-white/60 bg-white/90 shadow-ios-soft md:h-20 md:w-20 dark:border-white/10 dark:bg-black/50">
+                <img
+                  src={job.logo.src}
+                  alt={job.logo.alt}
+                  width="80"
+                  height="80"
+                  loading="lazy"
+                  class:list={[
+                    "max-h-full max-w-full object-contain transition-transform duration-700 ease-out group-hover:scale-110",
+                    job.logo.invert_dark ? "p-3 dark:invert" : "p-2",
+                  ]}
+                />
+              </div>
+              <div class="flex-1 pt-1">
+                <div class="mb-2.5 flex flex-col gap-1 md:flex-row md:items-baseline md:justify-between">
+                  <h3 class="text-2xl font-semibold tracking-tight text-primary transition-colors group-hover:text-accent">
+                    {job.company}
+                  </h3>
+                  <div class="inline-flex items-center gap-1.5 text-[11px] font-semibold tracking-[0.16em] text-accent uppercase">
+                    <Icon name="badge-check" size={14} />
+                    <span>{job.role}</span>
+                  </div>
+                </div>
+                <p class="mb-5 text-[15px] leading-relaxed text-secondary print:mb-1">{job.summary}</p>
+                <ul class="flex flex-wrap gap-2" aria-label={`${job.company} stack`}>
+                  {job.details.map((tech) => (
+                    <li class="rounded-full border border-white/60 bg-white/70 px-3 py-1 text-[11px] font-medium text-primary shadow-sm dark:border-white/15 dark:bg-white/5">
+                      {tech}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <section id="projects" class="mb-32 scroll-mt-32 print:mb-3" aria-labelledby="projects-heading">
+      <SectionHeading id="projects-heading">Projects</SectionHeading>
+      {projectGroups.map((group) => (
+        <div class="mb-10 print:mb-2">
+          <h3 class="fade-in mb-4 text-[13px] font-semibold tracking-[0.12em] text-secondary uppercase">
+            {group.label}
+          </h3>
+          <div class="grid grid-cols-1 gap-6 md:grid-cols-2 print:grid-cols-4 print:gap-2">
+            {group.projects.map((project) => (
+              <article
+                class="fade-in glass-card group flex flex-col justify-between rounded-[2rem] p-7 print:p-3"
+                data-project={project.slug}
+              >
+                <div>
+                  <div class="mb-4 flex items-start justify-between print:hidden">
+                    <div class="rounded-2xl border border-white/70 bg-white/80 p-3 text-primary shadow dark:border-white/20 dark:bg-white/10">
+                      <Icon name={project.icon} size={24} />
+                    </div>
+                    <a
+                      href={repoUrl(project.repo)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="inline-flex items-center gap-1 text-[12px] font-semibold text-accent hover:underline"
+                    >
+                      Code
+                      <Icon name="arrow-up-right" size={14} />
+                      <span class="sr-only">for {project.title} on GitHub</span>
+                    </a>
+                  </div>
+                  <h4 class="mb-2 text-lg font-semibold tracking-tight text-primary">
+                    <a href={`/projects/${project.slug}/`} class="hover:text-accent hover:underline">
+                      {project.title}
+                    </a>
+                  </h4>
+                  <p class="mb-4 text-[13px] leading-relaxed text-secondary print:mb-1">
+                    {project.blurb.map((c) => c.text).join(" ")}
+                  </p>
+                  {project.card && (
+                    <div class="mb-4">
+                      <Metric card={project.card} />
+                    </div>
+                  )}
+                </div>
+                <div>
+                  <ul class="flex flex-wrap gap-2" aria-label={`${project.title} tags`}>
+                    {project.tags.map((t) => (
+                      <li class="rounded-lg border border-white/60 bg-white/70 px-2.5 py-1 text-[10px] font-semibold text-primary dark:border-white/15 dark:bg-white/5">
+                        {t.name}
+                      </li>
+                    ))}
+                  </ul>
+                  {project.pushedAt && (
+                    <p class="mt-3 text-[11px] text-secondary print:hidden">Updated {monthYear(project.pushedAt)}</p>
+                  )}
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      ))}
+      {listed.length > 0 && (
+        <div class="fade-in">
+          <h3 class="mb-4 text-[13px] font-semibold tracking-[0.12em] text-secondary uppercase">More projects</h3>
+          <ul class="glass-card flex flex-col gap-3 rounded-3xl p-6 text-[13px] leading-relaxed print:p-3">
+            {listed.map((item) => (
+              <li>
+                <a
+                  href={item.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="font-semibold text-accent hover:underline"
+                >
+                  {item.title}
+                </a>
+                <span class="text-secondary">: {item.text}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </section>
+
+    <section id="skills" class="mb-32 scroll-mt-32 print:mb-3" aria-labelledby="skills-heading">
+      <SectionHeading id="skills-heading">Technical Stack</SectionHeading>
+      <ul class="fade-in grid grid-cols-2 gap-4 sm:grid-cols-4 print:grid-cols-8 print:gap-2" style="--delay: 90ms">
+        {stack.map((tech) => (
+          <li class="glass-card group flex flex-col items-center justify-center gap-2 rounded-3xl p-4 print:p-1">
+            <span class="text-[15px] font-semibold text-primary transition-transform group-hover:scale-105">
+              {tech.name}
+            </span>
+            <span class="text-[10px] font-medium tracking-[0.16em] text-secondary uppercase">{tech.type}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section id="education" class="mb-32 scroll-mt-32 print:mb-3" aria-labelledby="education-heading">
+      <SectionHeading id="education-heading">Education</SectionHeading>
+      <div class="fade-in grid grid-cols-1 gap-5 md:grid-cols-2" style="--delay: 80ms">
+        {education.map((edu) => (
+          <a
+            href={edu.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="glass-card group flex items-center gap-5 rounded-[24px] p-6 print:p-3"
+          >
+            <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-3xl border border-white/70 bg-white/90 p-2 shadow dark:border-white/15">
+              <img
+                src={edu.logo.src}
+                alt={edu.logo.alt}
+                width="40"
+                height="40"
+                loading="lazy"
+                class="h-full w-full object-contain"
+              />
+            </div>
+            <div>
+              <h3 class="text-[16px] font-semibold text-primary transition-colors group-hover:text-accent">
+                {edu.school}
+              </h3>
+              <p class="mt-1 text-[13px] font-medium text-secondary">{edu.degree}</p>
+              <p class="mt-0.5 text-[13px] text-secondary">{edu.field}</p>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <footer class="fade-in pb-10 text-center print:hidden" style="--delay: 180ms">
+      <a
+        href={`mailto:${profile.email}`}
+        class="glass-tile inline-flex items-center gap-2 px-8 py-3.5 text-sm font-semibold text-primary transition-transform duration-300 hover:scale-[1.03]"
+      >
+        <Icon name="mail" size={18} />
+        <span>Get in touch</span>
+      </a>
+      <p class="mt-10 text-[12px] font-medium text-secondary">
+        Designed &amp; built by {profile.name} · {new Date().getFullYear()} ·
+        <a href={site.site.source_repo} class="underline hover:text-accent">
+          Source
+        </a>
+      </p>
+      <p class="mt-2 text-[12px] text-secondary">This site uses Google Analytics to count visits.</p>
+    </footer>
+  </main>
+</Base>

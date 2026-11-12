@@ -1,0 +1,18 @@
+---
+import type { Card } from "../lib/card";
+
+interface Props {
+  card: Card;
+}
+const { card } = Astro.props;
+---
+
+<div class="metric text-[13px] text-secondary" data-metric-value={card.metric.value}>
+  <span class="font-semibold text-primary">{card.metric.label}:</span>{" "}
+  <span class="metric-value font-semibold text-primary">{card.metric.value}</span>{" "}
+  {card.metric.unit && <span class="metric-unit">{card.metric.unit} </span>}
+  <span>({card.metric.higher_is_better ? "higher is better" : "lower is better"})</span>
+  <div class="mt-1">
+    from <code class="font-mono text-[12px] break-all">{card.command}</code>
+  </div>
+</div>

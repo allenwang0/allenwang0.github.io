@@ -1,0 +1,387 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "SF Pro Display", -apple-system, BlinkMacSystemFont, Inter, system-ui, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --color-primary: #1d1d1f;
+  --color-secondary: #5e5e63;
+  --color-accent: #0066cc;
+  --color-surface: #f5f5f7;
+  --shadow-ios-soft: 0 18px 45px rgba(0, 0, 0, 0.22);
+}
+
+:root {
+  color-scheme: light;
+  --chart-1: #0066cc;
+  --chart-2: #8e2fc9;
+  --chart-3: #1e7d3a;
+  --chart-4: #b35900;
+  --chart-axis: #8a8a90;
+  --chart-grid: rgba(0, 0, 0, 0.08);
+}
+
+.dark {
+  color-scheme: dark;
+  --color-primary: #f5f5f7;
+  --color-secondary: #b4b4bc;
+  --color-accent: #5aa9ff;
+  --color-surface: #000;
+  --chart-1: #5aa9ff;
+  --chart-2: #d48cff;
+  --chart-3: #5fd27f;
+  --chart-4: #ffad5c;
+  --chart-axis: #8a8a96;
+  --chart-grid: rgba(255, 255, 255, 0.1);
+}
+
+html {
+  background: var(--color-surface);
+  color: var(--color-primary);
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+html,
+body,
+.glass-card,
+.nav-glass {
+  transition:
+    background-color 0.5s cubic-bezier(0.2, 0.8, 0.2, 1),
+    border-color 0.5s cubic-bezier(0.2, 0.8, 0.2, 1),
+    color 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.noise-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.22;
+  pointer-events: none;
+  mix-blend-mode: soft-light;
+  background-size: 200px 200px;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+.ambient-light {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  overflow: hidden;
+  background: radial-gradient(circle at top, #fdfeff 0, #f5f5f7 40%, #eaeaee 100%);
+}
+
+.dark .ambient-light {
+  background: radial-gradient(circle at top, #101018 0, #050505 45%, #000000 100%);
+}
+
+.blob {
+  position: absolute;
+  filter: blur(80px);
+  opacity: 0.6;
+  will-change: transform;
+  animation: float 24s ease-in-out infinite;
+}
+.dark .blob {
+  opacity: 0.3;
+}
+.blob-1 {
+  top: -12%;
+  left: -15%;
+  width: 60vw;
+  height: 60vw;
+  background: radial-gradient(circle, rgba(10, 132, 255, 0.26) 0%, rgba(0, 0, 0, 0) 70%);
+}
+.blob-2 {
+  top: 35%;
+  right: -25%;
+  width: 54vw;
+  height: 54vw;
+  background: radial-gradient(circle, rgba(191, 90, 242, 0.22) 0%, rgba(0, 0, 0, 0) 72%);
+  animation-delay: -7s;
+}
+.blob-3 {
+  bottom: -25%;
+  left: 22%;
+  width: 70vw;
+  height: 70vw;
+  background: radial-gradient(circle, rgba(48, 209, 88, 0.22) 0%, rgba(0, 0, 0, 0) 72%);
+  animation-delay: -11s;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  33% {
+    transform: translate3d(24px, -30px, 0) scale(1.06);
+  }
+  66% {
+    transform: translate3d(-16px, 20px, 0) scale(0.97);
+  }
+}
+
+.glass-card {
+  background: linear-gradient(
+    140deg,
+    rgba(255, 255, 255, 0.82) 0%,
+    rgba(255, 255, 255, 0.5) 60%,
+    rgba(255, 255, 255, 0.36) 100%
+  );
+  backdrop-filter: blur(24px) saturate(190%);
+  -webkit-backdrop-filter: blur(24px) saturate(190%);
+  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow:
+    0 0 0 0.5px rgba(255, 255, 255, 0.7),
+    0 18px 45px rgba(15, 15, 30, 0.16);
+  transition:
+    transform 0.3s cubic-bezier(0.22, 0.8, 0.28, 1),
+    box-shadow 0.3s cubic-bezier(0.22, 0.8, 0.28, 1),
+    border-color 0.3s cubic-bezier(0.22, 0.8, 0.28, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-card::before {
+  content: "";
+  position: absolute;
+  inset: -40%;
+  opacity: 0;
+  background: radial-gradient(circle at top left, rgba(10, 132, 255, 0.2), transparent 55%);
+  mix-blend-mode: screen;
+  transition: opacity 0.45s cubic-bezier(0.22, 0.8, 0.28, 1);
+  pointer-events: none;
+}
+
+.dark .glass-card {
+  background: radial-gradient(circle at top left, rgba(36, 40, 60, 0.96), rgba(16, 18, 30, 0.98));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 0 0 0.5px rgba(255, 255, 255, 0.08),
+    0 20px 60px rgba(0, 0, 0, 0.7);
+}
+
+.glass-card:hover {
+  transform: translateY(-4px) scale(1.004);
+  box-shadow:
+    0 0 0 0.5px rgba(255, 255, 255, 0.9),
+    0 28px 60px rgba(15, 15, 30, 0.22);
+}
+
+.dark .glass-card:hover {
+  border-color: rgba(255, 255, 255, 0.16);
+  box-shadow:
+    0 0 0 0.5px rgba(255, 255, 255, 0.18),
+    0 32px 80px rgba(0, 0, 0, 0.9);
+}
+
+.glass-card:hover::before {
+  opacity: 1;
+}
+
+.glass-tile {
+  border-radius: 999px;
+  background: linear-gradient(140deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.6));
+  backdrop-filter: blur(18px) saturate(180%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 14px 30px rgba(15, 15, 30, 0.18);
+}
+
+.dark .glass-tile {
+  background: linear-gradient(140deg, rgba(30, 32, 45, 0.96), rgba(16, 18, 30, 0.96));
+  border-color: rgba(255, 255, 255, 0.16);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.9);
+}
+
+.nav-glass {
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(18px) saturate(180%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow:
+    0 0 0 0.5px rgba(255, 255, 255, 0.8),
+    0 12px 30px rgba(0, 0, 0, 0.08);
+}
+
+.dark .nav-glass {
+  background: rgba(18, 18, 22, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow:
+    0 0 0 0.5px rgba(255, 255, 255, 0.09),
+    0 14px 40px rgba(0, 0, 0, 0.9);
+}
+
+.hide-scroll::-webkit-scrollbar {
+  display: none;
+}
+.hide-scroll {
+  scrollbar-width: none;
+}
+
+.fade-in {
+  animation: fade-in 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: var(--delay, 0ms);
+}
+
+@keyframes fade-in {
+  from {
+    transform: translateY(12px);
+    opacity: 0;
+    filter: blur(6px);
+  }
+}
+
+html:not(.js) .theme-toggle {
+  display: none;
+}
+.theme-toggle .icon-moon,
+.dark .theme-toggle .icon-sun {
+  display: none;
+}
+.dark .theme-toggle .icon-moon {
+  display: block;
+}
+
+.section-rule {
+  background: linear-gradient(
+    to right,
+    transparent,
+    color-mix(in srgb, var(--color-secondary) 40%, transparent),
+    transparent
+  );
+}
+
+.chart-svg {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.chart-narrow,
+.chart-legend.narrow-only {
+  display: none;
+}
+@media (max-width: 520px) {
+  .chart-wide {
+    display: none;
+  }
+  .chart-narrow {
+    display: block;
+  }
+  .chart-legend.narrow-only {
+    display: flex;
+  }
+}
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  margin-top: 0.75rem;
+  font-size: 13px;
+  color: var(--color-primary);
+}
+.chart-legend li {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.chart-grid {
+  stroke: var(--chart-grid);
+}
+.chart-axis {
+  stroke: var(--chart-axis);
+}
+.chart-tick,
+.chart-axis-title {
+  fill: var(--color-secondary);
+}
+.chart-axis-title {
+  font-weight: 600;
+}
+.chart-line,
+.chart-interval {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.5;
+}
+.chart-line.dashed {
+  stroke-dasharray: 7 5;
+}
+.chart-mark {
+  fill: currentColor;
+}
+.chart-label {
+  fill: currentColor;
+  font-weight: 600;
+}
+.series-0 {
+  color: var(--chart-1);
+}
+.series-1 {
+  color: var(--chart-2);
+}
+.series-2 {
+  color: var(--chart-3);
+}
+.series-3 {
+  color: var(--chart-4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blob {
+    animation: none !important;
+  }
+  .fade-in {
+    animation: none !important;
+  }
+  html,
+  body,
+  .glass-card,
+  .nav-glass {
+    transition: none !important;
+  }
+}
+
+@media print {
+  @page {
+    margin: 12mm;
+  }
+  :root,
+  .dark {
+    --color-primary: #000;
+    --color-secondary: #333;
+    --color-accent: #000;
+    --color-surface: #fff;
+  }
+  .noise-overlay,
+  .ambient-light,
+  .site-nav,
+  .theme-toggle {
+    display: none !important;
+  }
+  .glass-card,
+  .glass-tile,
+  .dark .glass-card,
+  .dark .glass-tile {
+    background: #fff !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    border: 1px solid #ccc !important;
+    transform: none !important;
+  }
+  .fade-in {
+    animation: none !important;
+  }
+  .print-tight {
+    max-width: none;
+    padding: 0 !important;
+    zoom: 0.62;
+  }
+}

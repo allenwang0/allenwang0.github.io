@@ -1,0 +1,450 @@
+{
+  "site": {
+    "url": "https://allenwang0.github.io",
+    "title": "Allen Wang | Software Engineer",
+    "description": "Portfolio of Allen Wang, software engineer at Apple, previously at Millennium.",
+    "og_description": "Software engineer at Apple. Stanford BS in Mathematics and Computer Science.",
+    "source_repo": "https://github.com/allenwang0/allenwang0.github.io",
+    "ga_id": "G-JR31EX0R8M"
+  },
+  "profile": {
+    "name": "Allen Wang",
+    "title": "Software Engineer",
+    "employer": "Apple",
+    "email": "ahw@alumni.stanford.edu",
+    "socials": [
+      {
+        "label": "GitHub",
+        "url": "https://github.com/allenwang0",
+        "icon": "github"
+      },
+      {
+        "label": "LinkedIn",
+        "url": "https://linkedin.com/in/allen--wang",
+        "icon": "linkedin"
+      },
+      {
+        "label": "Email",
+        "url": "mailto:ahw@alumni.stanford.edu",
+        "icon": "mail"
+      }
+    ]
+  },
+  "experience": [
+    {
+      "company": "Apple",
+      "role": "Software Engineer",
+      "summary": "Backend services for iCloud security in Java on Cassandra, Kafka and Kubernetes.",
+      "details": ["Java", "Cassandra", "Redis", "Kafka", "Spark", "Kubernetes"],
+      "logo": {
+        "src": "/logos/apple.svg",
+        "alt": "Apple logo",
+        "fit": "padded",
+        "invert_dark": true
+      },
+      "url": "https://apple.com"
+    },
+    {
+      "company": "Millennium",
+      "role": "Quantitative Developer",
+      "summary": "Data platforms for quantitative research in Python and C++, with a vector database and retrieval-augmented generation.",
+      "details": ["Python", "C++", "Vector DB", "RAG", "Pandas", "System Design"],
+      "logo": {
+        "src": "/logos/millennium.png",
+        "alt": "Millennium logo",
+        "fit": "padded",
+        "invert_dark": false
+      },
+      "url": "https://mlp.com"
+    }
+  ],
+  "project_groups": [
+    {
+      "id": "systems",
+      "label": "Systems / C++"
+    },
+    {
+      "id": "quant",
+      "label": "Quant"
+    },
+    {
+      "id": "algorithms",
+      "label": "Algorithms"
+    },
+    {
+      "id": "ios",
+      "label": "iOS / Swift"
+    },
+    {
+      "id": "vision",
+      "label": "Data / vision"
+    },
+    {
+      "id": "web",
+      "label": "Web / simulation"
+    }
+  ],
+  "projects": [
+    {
+      "slug": "limitorderbook",
+      "repo": "allenwang0/limitorderbook",
+      "title": "Limit Order Book",
+      "icon": "arrow-up-down",
+      "state": "today",
+      "sha": "4fdc397424c1898eeaceb915112f6360994aed1a",
+      "blurb": [
+        {
+          "text": "C++17 limit order book with price-time priority matching, benchmarked on one million random orders.",
+          "source": ["OrderBook.cpp", "main.cpp"]
+        }
+      ],
+      "tags": [
+        {
+          "name": "C++17",
+          "source": "Makefile"
+        },
+        {
+          "name": "std::map",
+          "source": "OrderBook.h"
+        }
+      ],
+      "case_study": {
+        "problem": {
+          "text": "An exchange holds resting buy and sell orders and has to fill each new order against the best price first, and against the oldest order first at that price.",
+          "source": "OrderBook.h"
+        },
+        "approach": {
+          "text": "Each side of the book is a std::map from price to a FIFO std::list of orders. A new order walks the opposite side from the best price, fills against the oldest resting orders, logs a trade for each fill, and rests whatever quantity is left.",
+          "source": "OrderBook.cpp",
+          "excerpt": {
+            "path": "OrderBook.cpp",
+            "start": 17,
+            "end": 64
+          }
+        },
+        "limitations": [
+          {
+            "text": "There is no cancel or modify operation. addOrder is the only way to change the book.",
+            "source": "OrderBook.h"
+          },
+          {
+            "text": "The benchmark reports total time and throughput for the whole run, not per-order latency.",
+            "source": "main.cpp"
+          },
+          {
+            "text": "The Makefile recipes have no leading tabs, so make stops with a missing separator error.",
+            "source": "Makefile"
+          }
+        ]
+      },
+      "group": "systems"
+    },
+    {
+      "slug": "hashbench",
+      "repo": "allenwang0/hashbench",
+      "title": "hashbench",
+      "icon": "cpu",
+      "group": "systems",
+      "state": "hidden"
+    },
+    {
+      "slug": "quantsim",
+      "repo": "allenwang0/quantsim",
+      "title": "QuantSim",
+      "icon": "trending-up",
+      "state": "hidden",
+      "group": "quant"
+    },
+    {
+      "slug": "statarb",
+      "repo": "allenwang0/statarb",
+      "title": "Statistical Arbitrage",
+      "icon": "trending-up",
+      "state": "today",
+      "sha": "ad44f9b9119b2a34d4760bab0ddf9261f81d194f",
+      "blurb": [
+        {
+          "text": "Pairs-trading backtester in a Streamlit app: Kalman-filter hedge ratio and z-score entry and exit rules.",
+          "source": ["app.py", "src/math_model.py", "src/backtester.py"]
+        }
+      ],
+      "tags": [
+        {
+          "name": "Python",
+          "source": "src/backtester.py"
+        },
+        {
+          "name": "pandas",
+          "source": "src/backtester.py"
+        },
+        {
+          "name": "Streamlit",
+          "source": "app.py"
+        },
+        {
+          "name": "Kalman filter",
+          "source": "src/math_model.py"
+        }
+      ],
+      "case_study": {
+        "problem": {
+          "text": "Two related stocks drift apart and come back together. A pairs trade bets that the spread between them returns to its usual level.",
+          "source": "src/backtester.py"
+        },
+        "approach": {
+          "text": "A two-state Kalman filter updates the hedge ratio and intercept on every new pair of prices. The backtester divides the filter's residual by its standard deviation over the last 30 observations, opens a position when that z-score passes the entry threshold, and closes it at the exit threshold. The Streamlit app downloads prices for the chosen tickers and plots the equity curve.",
+          "source": ["src/math_model.py", "src/backtester.py", "app.py"],
+          "excerpt": {
+            "path": "src/math_model.py",
+            "start": 28,
+            "end": 60
+          }
+        },
+        "limitations": [
+          {
+            "text": "The backtest charges no transaction costs or slippage.",
+            "source": "src/backtester.py"
+          },
+          {
+            "text": "Daily profit is approximated as position times the change in the hedged spread, not tracked per share.",
+            "source": "src/backtester.py"
+          },
+          {
+            "text": "No cointegration test runs before a pair is traded.",
+            "source": "src/backtester.py"
+          }
+        ]
+      },
+      "group": "quant"
+    },
+    {
+      "slug": "volatilityscanner",
+      "repo": "allenwang0/volatilityscanner",
+      "title": "Volatility Scanner",
+      "icon": "activity",
+      "state": "today",
+      "sha": "30ae7cb883cacc3f4d0419efacd4d78bab2bafda",
+      "blurb": [
+        {
+          "text": "Streams a simulated option chain over WebSockets, solves for implied volatility with Newton's method, and plots the surface in 3D.",
+          "source": ["main.py", "simulator.py", "engine.py", "templates/index.html"]
+        }
+      ],
+      "tags": [
+        {
+          "name": "Python",
+          "source": "engine.py"
+        },
+        {
+          "name": "FastAPI",
+          "source": "main.py"
+        },
+        {
+          "name": "WebSockets",
+          "source": "main.py"
+        },
+        {
+          "name": "Plotly",
+          "source": "templates/index.html"
+        }
+      ],
+      "case_study": {
+        "problem": {
+          "text": "Option quotes are prices, not volatilities. Seeing the volatility smile across strikes and expiries means inverting Black-Scholes for every option in the chain.",
+          "source": "engine.py"
+        },
+        "approach": {
+          "text": "A simulator prices calls across a grid of strikes and expiries from a parabolic smile plus noise. The server inverts each price with Newton's method, stepping by price error over vega, and pushes the points to a Plotly 3D chart in the browser over a WebSocket.",
+          "source": ["simulator.py", "engine.py", "main.py", "templates/index.html"],
+          "excerpt": {
+            "path": "engine.py",
+            "start": 43,
+            "end": 66
+          }
+        },
+        "limitations": [
+          {
+            "text": "The chain is simulated. live_feed.py fetches Yahoo Finance chains, but main.py does not use it.",
+            "source": ["main.py", "live_feed.py"]
+          },
+          {
+            "text": "Only calls are simulated and solved.",
+            "source": "simulator.py"
+          },
+          {
+            "text": "The arbitrage check only flags call prices that rise with strike.",
+            "source": "engine.py"
+          }
+        ]
+      },
+      "group": "quant"
+    },
+    {
+      "slug": "kalshibot",
+      "repo": "allenwang0/kalshibot",
+      "title": "Kalshi Fed-rate bot",
+      "icon": "bot",
+      "state": "hidden",
+      "group": "quant"
+    },
+    {
+      "slug": "pairwise-ratings",
+      "repo": "allenwang0/pairwise-ratings",
+      "title": "pairwise-ratings",
+      "icon": "git-compare",
+      "group": "algorithms",
+      "state": "hidden"
+    },
+    {
+      "slug": "nudge-scheduler",
+      "repo": "allenwang0/nudge-scheduler",
+      "title": "nudge-scheduler",
+      "icon": "bell",
+      "group": "ios",
+      "state": "hidden"
+    },
+    {
+      "slug": "facelapse",
+      "repo": "allenwang0/facelapse",
+      "title": "facelapse",
+      "icon": "scan-face",
+      "group": "vision",
+      "state": "today",
+      "sha": "feb6691d5ac49fb35b3a1369cb9fe2f5dd38cf48",
+      "blurb": [
+        {
+          "text": "Command-line pipeline that finds one face across a photo archive, picks a neutral, aligned shot per time bucket, and renders an aging timelapse.",
+          "source": ["facelapse/pipeline.py", "facelapse/cli.py"]
+        }
+      ],
+      "tags": [
+        {
+          "name": "Python",
+          "source": "pyproject.toml"
+        },
+        {
+          "name": "InsightFace",
+          "source": "requirements-ml.txt"
+        },
+        {
+          "name": "MediaPipe",
+          "source": "requirements-ml.txt"
+        },
+        {
+          "name": "OpenCV",
+          "source": "requirements.txt"
+        }
+      ],
+      "case_study": {
+        "problem": {
+          "text": "A personal photo archive has thousands of shots taken at random angles, with other people in frame. Turning it into a face timelapse means choosing, for each period, one photo where the face is mine, frontal and neutral.",
+          "source": "README.md"
+        },
+        "approach": {
+          "text": "Faces are detected and embedded once and cached. Each image's faces are scored against reference photos from the nearest point in time; the best face must clear an absolute floor and beat the runner-up by a margin, or the image goes to human review. Survivors are filtered by pose and expression, the best per time bucket is aligned on the eyes, color-matched, smoothed and encoded to H.264.",
+          "source": ["facelapse/identity.py", "facelapse/pipeline.py", "facelapse/render.py"],
+          "excerpt": {
+            "path": "facelapse/identity.py",
+            "start": 63,
+            "end": 89
+          }
+        },
+        "limitations": [
+          {
+            "text": "The neutral filter leaks smirks and mid-blink frames; the review step is a designed stage, not a bug.",
+            "source": "README.md"
+          },
+          {
+            "text": "Over-tight pose/neutral gates plus dedup can starve a sparse archive.",
+            "source": "README.md"
+          },
+          {
+            "text": "v1 renders honest cuts. FILM/RIFE morph interpolation is a later toggle.",
+            "source": "README.md"
+          }
+        ]
+      }
+    },
+    {
+      "slug": "apple-health-lab",
+      "repo": "allenwang0/apple-health-lab",
+      "title": "apple-health-lab",
+      "icon": "heart-pulse",
+      "group": "vision",
+      "state": "hidden"
+    },
+    {
+      "slug": "tjs-sim",
+      "repo": "allenwang0/tjs-sim",
+      "title": "tjs-sim",
+      "icon": "shopping-cart",
+      "state": "hidden",
+      "group": "web"
+    }
+  ],
+  "listed": [
+    {
+      "repo": "allenwang0/reality-wager",
+      "title": "reality-wager",
+      "sha": "fb8874d5df49c7908f051f99d24def7350726b07",
+      "text": "Next.js game where players wager virtual credits on whether an image is a photograph or AI-generated, with balances in Supabase.",
+      "source": ["src/app/play/page.tsx", "src/app/actions.ts"]
+    }
+  ],
+  "education": [
+    {
+      "school": "Stanford University",
+      "degree": "Bachelor of Science",
+      "field": "Mathematics & Computer Science",
+      "logo": {
+        "src": "/logos/stanford.png",
+        "alt": "Stanford University seal"
+      },
+      "url": "https://mcs.stanford.edu/"
+    },
+    {
+      "school": "University of Oxford",
+      "degree": "Tutorial in Quantitative Finance",
+      "field": "Corpus Christi College",
+      "logo": {
+        "src": "/logos/oxford.png",
+        "alt": "University of Oxford arms"
+      },
+      "url": "https://oxford.stanford.edu/tutorials/mathematical-physical-and-life-sciences#0209"
+    }
+  ],
+  "stack": [
+    {
+      "name": "Java",
+      "type": "Backend"
+    },
+    {
+      "name": "Python",
+      "type": "Data"
+    },
+    {
+      "name": "C++",
+      "type": "Systems"
+    },
+    {
+      "name": "Kafka",
+      "type": "Infra"
+    },
+    {
+      "name": "Cassandra",
+      "type": "DB"
+    },
+    {
+      "name": "Kubernetes",
+      "type": "Ops"
+    },
+    {
+      "name": "React",
+      "type": "Frontend"
+    },
+    {
+      "name": "AWS",
+      "type": "Cloud"
+    }
+  ]
+}

@@ -1,0 +1,279 @@
+---
+import type { Chart, IntervalChart, LineChart } from "../lib/card";
+import { axisTitle, makeScale, spreadLabels, toNumber } from "../lib/chart";
+
+interface Props {
+  chart: Chart;
+  caption: string;
+}
+
+const { chart, caption } = Astro.props;
+
+const FONT = 12;
+const variants = [
+  { name: "wide", width: 640, ticks: 5 },
+  { name: "narrow", width: 340, ticks: 4 },
+] as const;
+
+type Mark = { x: number; y: number };
+type LineSeriesGeom = { name: string; style: string; index: number; marks: Mark[]; path: string };
+
+function lineGeometry(c: LineChart, width: number, tickCount: number, direct: boolean) {
+  const series = c.series.filter((s) => s.points.length > 0);
+  const height = width > 400 ? 320 : 260;
+  const m = { left: 56, right: direct ? 120 : 16, top: 16, bottom: 52 };
+  const xs = series.flatMap((s) => s.points.map((p) => toNumber(p[0], c.x_scale)));
+  const ys = series.flatMap((s) => s.points.map((p) => p[1]));
+  const x = makeScale(xs, c.x_scale, [m.left, width - m.right], tickCount);
+  const y = makeScale(ys, c.y_scale, [height - m.bottom, m.top], tickCount);
+  const geoms: LineSeriesGeom[] = series.map((s) => {
+    const marks = s.points.map((p) => ({ x: x.map(toNumber(p[0], c.x_scale)), y: y.map(p[1]) }));
+    return {
+      name: s.name,
+      style: s.style,
+      index: c.series.indexOf(s),
+      marks,
+      path: marks.map((pt, i) => `${i ? "L" : "M"}${pt.x.toFixed(1)},${pt.y.toFixed(1)}`).join(""),
+    };
+  });
+  return { width, height, m, x, y, geoms };
+}
+
+function intervalGeometry(c: IntervalChart, width: number, tickCount: number) {
+  const m = { left: width > 400 ? 110 : 84, right: 20, top: 12, bottom: 52 };
+  const rowH = 36;
+  const height = m.top + rowH * c.rows.length + m.bottom;
+  const x = makeScale(
+    c.rows.flatMap((r) => [r.low, r.mid, r.high]),
+    c.x_scale,
+    [m.left, width - m.right],
+    tickCount,
+  );
+  const rows = c.rows.map((r, i) => ({
+    label: r.label,
+    cy: m.top + rowH * (i + 0.5),
+    low: x.map(r.low),
+    mid: x.map(r.mid),
+    high: x.map(r.high),
+  }));
+  return { width, height, m, x, rows };
+}
+
+const pointCount = chart.type === "line" ? chart.series.reduce((n, s) => n + s.points.length, 0) : chart.rows.length;
+const empty = pointCount === 0;
+
+const wideLine =
+  !empty && chart.type === "line" ? lineGeometry(chart, variants[0].width, variants[0].ticks, true) : null;
+const directLabels = wideLine
+  ? spreadLabels(
+      wideLine.geoms.map((g) => g.marks[g.marks.length - 1].y),
+      FONT + 4,
+    )
+  : false;
+
+const lineVariants =
+  !empty && chart.type === "line"
+    ? [
+        directLabels ? wideLine! : lineGeometry(chart, variants[0].width, variants[0].ticks, false),
+        lineGeometry(chart, variants[1].width, variants[1].ticks, false),
+      ]
+    : [];
+const intervalVariants =
+  !empty && chart.type === "interval" ? variants.map((v) => intervalGeometry(chart, v.width, v.ticks)) : [];
+
+const shapes = ["circle", "square", "triangle", "diamond"];
+function markerPath(shape: string, cx: number, cy: number, r = 4): string {
+  if (shape === "square") return `M${cx - r},${cy - r}h${2 * r}v${2 * r}h${-2 * r}Z`;
+  if (shape === "triangle") return `M${cx},${cy - r - 1}L${cx + r + 1},${cy + r}L${cx - r - 1},${cy + r}Z`;
+  if (shape === "diamond") return `M${cx},${cy - r - 1}L${cx + r + 1},${cy}L${cx},${cy + r + 1}L${cx - r - 1},${cy}Z`;
+  return `M${cx - r},${cy}a${r},${r} 0 1,0 ${2 * r},0a${r},${r} 0 1,0 ${-2 * r},0`;
+}
+
+const xTitle = axisTitle(chart.x_label, chart.x_unit);
+const yTitle = chart.type === "line" ? axisTitle(chart.y_label, chart.y_unit) : "";
+const legend = chart.type === "line" ? chart.series.filter((s) => s.points.length > 0) : [];
+---
+
+<figure class="chart" data-chart-type={chart.type}>
+  {empty ? (
+    <p class="chart-empty">No data points to plot.</p>
+  ) : (
+    <>
+      {lineVariants.map((g, vi) => (
+        <svg
+          class={`chart-svg chart-${variants[vi].name}`}
+          viewBox={`0 0 ${g.width} ${g.height}`}
+          aria-hidden="true"
+          font-size={FONT}
+        >
+          {g.y.ticks.map((t) => (
+            <g>
+              <line
+                class="chart-grid"
+                x1={g.m.left}
+                x2={g.width - g.m.right}
+                y1={g.y.map(t.value)}
+                y2={g.y.map(t.value)}
+              />
+              <text class="chart-tick" x={g.m.left - 6} y={g.y.map(t.value) + 4} text-anchor="end">
+                {t.label}
+              </text>
+            </g>
+          ))}
+          {g.x.ticks.map((t) => (
+            <text class="chart-tick" x={g.x.map(t.value)} y={g.height - g.m.bottom + 18} text-anchor="middle">
+              {t.label}
+            </text>
+          ))}
+          <line
+            class="chart-axis"
+            x1={g.m.left}
+            x2={g.width - g.m.right}
+            y1={g.height - g.m.bottom}
+            y2={g.height - g.m.bottom}
+          />
+          <text class="chart-axis-title" x={(g.m.left + g.width - g.m.right) / 2} y={g.height - 8} text-anchor="middle">
+            {xTitle}
+          </text>
+          <text
+            class="chart-axis-title"
+            transform={`translate(14 ${(g.m.top + g.height - g.m.bottom) / 2}) rotate(-90)`}
+            text-anchor="middle"
+          >
+            {yTitle}
+          </text>
+          {g.geoms.map((s) =>
+            s.style === "dots" ? (
+              <g class={`series-${s.index}`}>
+                {s.marks.map((pt) => (
+                  <path class="chart-mark" d={markerPath(shapes[s.index % shapes.length], pt.x, pt.y)} />
+                ))}
+              </g>
+            ) : (
+              <path class={`chart-line series-${s.index} ${s.style}`} d={s.path} />
+            ),
+          )}
+          {vi === 0 &&
+            directLabels &&
+            g.geoms.map((s) => {
+              const last = s.marks[s.marks.length - 1];
+              return (
+                <text class={`chart-label series-${s.index}`} x={last.x + 8} y={last.y + 4}>
+                  {s.name}
+                </text>
+              );
+            })}
+        </svg>
+      ))}
+      {intervalVariants.map((g, vi) => (
+        <svg
+          class={`chart-svg chart-${variants[vi].name}`}
+          viewBox={`0 0 ${g.width} ${g.height}`}
+          aria-hidden="true"
+          font-size={FONT}
+        >
+          {g.x.ticks.map((t) => (
+            <g>
+              <line
+                class="chart-grid"
+                x1={g.x.map(t.value)}
+                x2={g.x.map(t.value)}
+                y1={g.m.top}
+                y2={g.height - g.m.bottom}
+              />
+              <text class="chart-tick" x={g.x.map(t.value)} y={g.height - g.m.bottom + 18} text-anchor="middle">
+                {t.label}
+              </text>
+            </g>
+          ))}
+          <line
+            class="chart-axis"
+            x1={g.m.left}
+            x2={g.width - g.m.right}
+            y1={g.height - g.m.bottom}
+            y2={g.height - g.m.bottom}
+          />
+          <text class="chart-axis-title" x={(g.m.left + g.width - g.m.right) / 2} y={g.height - 8} text-anchor="middle">
+            {xTitle}
+          </text>
+          {g.rows.map((r) => (
+            <g class="series-0">
+              <text class="chart-tick" x={g.m.left - 10} y={r.cy + 4} text-anchor="end">
+                {r.label}
+              </text>
+              <line class="chart-interval" x1={r.low} x2={r.high} y1={r.cy} y2={r.cy} />
+              <line class="chart-interval" x1={r.low} x2={r.low} y1={r.cy - 7} y2={r.cy + 7} />
+              <line class="chart-interval" x1={r.high} x2={r.high} y1={r.cy - 7} y2={r.cy + 7} />
+              <path class="chart-mark" d={markerPath("circle", r.mid, r.cy, 5)} />
+            </g>
+          ))}
+        </svg>
+      ))}
+      {legend.length > 0 && (
+        <ul class:list={["chart-legend", { "narrow-only": directLabels }]} aria-hidden="true">
+          {legend.map((s) => {
+            const i = chart.type === "line" ? chart.series.indexOf(s) : 0;
+            return (
+              <li>
+                <svg viewBox="0 0 28 12" width="28" height="12" class={`series-${i}`}>
+                  {s.style === "dots" ? (
+                    <path class="chart-mark" d={markerPath(shapes[i % shapes.length], 14, 6)} />
+                  ) : (
+                    <path class={`chart-line ${s.style}`} d="M2,6L26,6" />
+                  )}
+                </svg>
+                {s.name}
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </>
+  )}
+  <table class="sr-only">
+    <caption>{caption}</caption>
+    {chart.type === "line" ? (
+      <>
+        <thead>
+          <tr>
+            <th scope="col">Series</th>
+            <th scope="col">{xTitle}</th>
+            <th scope="col">{yTitle}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {chart.series.flatMap((s) =>
+            s.points.map((p) => (
+              <tr>
+                <td>{s.name}</td>
+                <td>{p[0]}</td>
+                <td>{p[1]}</td>
+              </tr>
+            )),
+          )}
+        </tbody>
+      </>
+    ) : (
+      <>
+        <thead>
+          <tr>
+            <th scope="col">Row</th>
+            <th scope="col">Low ({chart.x_unit || "value"})</th>
+            <th scope="col">Mid</th>
+            <th scope="col">High</th>
+          </tr>
+        </thead>
+        <tbody>
+          {chart.rows.map((r) => (
+            <tr>
+              <td>{r.label}</td>
+              <td>{r.low}</td>
+              <td>{r.mid}</td>
+              <td>{r.high}</td>
+            </tr>
+          ))}
+        </tbody>
+      </>
+    )}
+  </table>
+</figure>

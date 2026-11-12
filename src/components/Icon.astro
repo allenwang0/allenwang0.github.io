@@ -1,0 +1,23 @@
+---
+import * as icons from "lucide-static";
+
+interface Props {
+  name: string;
+  size?: number;
+  class?: string;
+}
+
+const { name, size = 16, class: className = "" } = Astro.props;
+const key = name.replace(/(^|-)(\w)/g, (_, __, c: string) => c.toUpperCase()) as keyof typeof icons;
+const svg = icons[key];
+if (typeof svg !== "string") throw new Error(`Unknown Lucide icon "${name}"`);
+const html = svg
+  .replace(/<!--.*?-->/s, "")
+  .replace(/width="24"/, `width="${size}"`)
+  .replace(/height="24"/, `height="${size}"`)
+  .replace(/class="([^"]*)"/, `class="$1 ${className}" aria-hidden="true" focusable="false"`)
+  .replace(/\s*\n\s*/g, " ")
+  .trim();
+---
+
+<Fragment set:html={html} />
