@@ -1,0 +1,66 @@
+{
+  "repos": {
+    "allenwang0/limitorderbook": {
+      "sha": "4fdc397424c1898eeaceb915112f6360994aed1a",
+      "description": null,
+      "language": "C++",
+      "pushed_at": "2025-11-20T19:53:00Z",
+      "card": null,
+      "excerpt": {
+        "path": "OrderBook.cpp",
+        "start": 17,
+        "end": 64,
+        "code": "void OrderBook::matchAsk(Order& bidOrder) {\n    while (bidOrder.quantity > 0 && !asks_.empty()) {\n        auto bestAskIter = asks_.begin();\n        Price bestAskPrice = bestAskIter->first;\n\n        // Check if the buy price crosses the spread\n        if (bidOrder.price < bestAskPrice) {\n            break; // No match possible, spread not crossed\n        }\n\n        // Process orders at this price level (FIFO)\n        auto& ordersAtPrice = bestAskIter->second;\n        \n        while (bidOrder.quantity > 0 && !ordersAtPrice.empty()) {\n            Order& askOrder = ordersAtPrice.front();\n            \n            // Determine trade quantity\n            Quantity tradeQty = std::min(bidOrder.quantity, askOrder.quantity);\n            \n            // Generate Trade\n            trades_.push_back({\n                bidOrder.id,\n                askOrder.id,\n                askOrder.price, // Trade happens at the resting order's price\n                tradeQty\n            });\n\n            // Update quantities\n            bidOrder.quantity -= tradeQty;\n            askOrder.quantity -= tradeQty;\n\n            // Remove filled orders from book\n            if (askOrder.quantity == 0) {\n                ordersAtPrice.pop_front();\n            }\n        }\n\n        // If no more orders at this price level, remove the level\n        if (ordersAtPrice.empty()) {\n            asks_.erase(bestAskIter);\n        }\n    }\n\n    // If quantity remains, rest on the Bid book\n    if (bidOrder.quantity > 0) {\n        bids_[bidOrder.price].push_back(bidOrder);\n    }\n}",
+        "permalink": "https://github.com/allenwang0/limitorderbook/blob/4fdc397424c1898eeaceb915112f6360994aed1a/OrderBook.cpp#L17-L64"
+      }
+    },
+    "allenwang0/statarb": {
+      "sha": "ad44f9b9119b2a34d4760bab0ddf9261f81d194f",
+      "description": null,
+      "language": "Python",
+      "pushed_at": "2026-11-12T01:13:15Z",
+      "card": null,
+      "excerpt": {
+        "path": "src/math_model.py",
+        "start": 28,
+        "end": 60,
+        "code": "    def update(self, x, y):\n        \"\"\"\n        Update the state based on new observation (x, y)\n        x: Price of Independent Asset (e.g., Coke)\n        y: Price of Dependent Asset (e.g., Pepsi)\n        \"\"\"\n        # 1. Prediction Step (Random Walk prior: state doesn't change)\n        # state_pred = state_prev\n        # P_pred = P_prev + Q\n        self.P = self.P + self.Q\n\n        # 2. Observation Matrix H = [x, 1]\n        H = np.array([x, 1.0])\n\n        # 3. Measurement Residual (Innovation)\n        # y_pred = H @ state\n        y_pred = np.dot(H, self.state)\n        error = y - y_pred\n\n        # 4. Residual Covariance\n        S = np.dot(H, np.dot(self.P, H.T)) + self.R\n\n        # 5. Kalman Gain\n        K = np.dot(self.P, H.T) / S\n\n        # 6. Update State\n        self.state = self.state + K * error\n\n        # 7. Update Error Covariance\n        self.P = (np.eye(self.n) - np.outer(K, H)) @ self.P\n\n        # Return the estimated Hedge Ratio (beta) and Intercept (alpha)\n        return self.state[0], self.state[1], error",
+        "permalink": "https://github.com/allenwang0/statarb/blob/ad44f9b9119b2a34d4760bab0ddf9261f81d194f/src/math_model.py#L28-L60"
+      }
+    },
+    "allenwang0/volatilityscanner": {
+      "sha": "30ae7cb883cacc3f4d0419efacd4d78bab2bafda",
+      "description": null,
+      "language": "Python",
+      "pushed_at": "2026-11-11T07:42:17Z",
+      "card": null,
+      "excerpt": {
+        "path": "engine.py",
+        "start": 43,
+        "end": 66,
+        "code": "def implied_volatility(market_price, S, K, T, r, option_type_flag):\n    sigma = 0.5  # Initial guess\n    tol = 1e-5\n    max_iter = 100\n\n    for i in range(max_iter):\n        price = black_scholes_price(S, K, T, r, sigma, option_type_flag)\n        diff = market_price - price\n\n        if abs(diff) < tol:\n            return sigma\n\n        vega = calculate_vega(S, K, T, r, sigma)\n\n        if vega == 0:\n            return sigma  # Prevent divide by zero, return best guess\n\n        sigma = sigma + diff / vega\n\n        # Clamp sigma to realistic bounds to prevent divergence\n        if sigma <= 0: sigma = 0.01\n        if sigma > 5: sigma = 5.0\n\n    return sigma",
+        "permalink": "https://github.com/allenwang0/volatilityscanner/blob/30ae7cb883cacc3f4d0419efacd4d78bab2bafda/engine.py#L43-L66"
+      }
+    },
+    "allenwang0/facelapse": {
+      "sha": "feb6691d5ac49fb35b3a1369cb9fe2f5dd38cf48",
+      "description": "Reconstruct neutral-face aging timelapse from chaotic photo archives (Google Photos/iCloud exports)",
+      "language": "Python",
+      "pushed_at": "2026-07-29T06:40:46Z",
+      "card": null,
+      "excerpt": {
+        "path": "facelapse/identity.py",
+        "start": 63,
+        "end": 89,
+        "code": "def resolve_image(\n    faces: list[Face], when: datetime | None, chain: ReferenceChain,\n    t_abs: float, margin: float,\n) -> tuple[IdOutcome, Face | None]:\n    \"\"\"Score all faces in one image; apply floor + margin. Mutates id_sim /\n    id_margin on the faces for later inspection.\"\"\"\n    if not faces:\n        return IdOutcome.NONE, None\n\n    sims = [chain.similarity(f.embedding, when) for f in faces]\n    order = np.argsort(sims)[::-1]\n    top_i = int(order[0])\n    top_sim = sims[top_i]\n    runner = sims[int(order[1])] if len(sims) > 1 else -1.0\n    gap = top_sim - runner\n\n    for f, s in zip(faces, sims):\n        f.id_sim = float(s)\n    faces[top_i].id_margin = float(gap)\n\n    if top_sim < t_abs:\n        return IdOutcome.NONE, None\n    if gap < margin:\n        return IdOutcome.AMBIGUOUS, faces[top_i]\n    faces[top_i].is_self = True\n    return IdOutcome.CONFIDENT, faces[top_i]\n",
+        "permalink": "https://github.com/allenwang0/facelapse/blob/feb6691d5ac49fb35b3a1369cb9fe2f5dd38cf48/facelapse/identity.py#L63-L89"
+      }
+    },
+    "allenwang0/reality-wager": {
+      "sha": "fb8874d5df49c7908f051f99d24def7350726b07",
+      "description": null,
+      "language": "TypeScript",
+      "pushed_at": "2026-11-11T07:18:11Z"
+    }
+  }
+}
