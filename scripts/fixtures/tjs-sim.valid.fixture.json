@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "repo": "tjs-sim",
+  "sha": "0000000000000000000000000000000000000000",
+  "generated_at": "2026-01-01T00:00:00Z",
+  "command": "fixture (no command produced this file)",
+  "data_note": "SYNTHETIC TEST FIXTURE. Hand-made numbers for schema and rendering tests, not a real run.",
+  "metric": {
+    "label": "Mean profit gain of base-stock over suggested",
+    "value": 1800,
+    "unit": "USD",
+    "higher_is_better": true
+  },
+  "takeaway": "Fixture takeaway: base-stock earns more than suggested ordering on average.",
+  "chart": {
+    "type": "interval",
+    "x_label": "52-week cumulative profit",
+    "x_unit": "USD",
+    "x_scale": "linear",
+    "rows": [
+      {
+        "label": "suggested",
+        "low": 9000,
+        "mid": 10000,
+        "high": 11000
+      },
+      {
+        "label": "base-stock",
+        "low": 10800,
+        "mid": 11800,
+        "high": 12700
+      }
+    ]
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "repo": "volatilityscanner",
+  "sha": "0000000000000000000000000000000000000000",
+  "generated_at": "2026-01-01T00:00:00Z",
+  "command": "fixture (no command produced this file)",
+  "data_note": "SYNTHETIC TEST FIXTURE. Hand-made numbers for schema and rendering tests, not a real run.",
+  "metric": {
+    "label": "SVI fit RMSE",
+    "value": 0.4,
+    "unit": "vol points",
+    "higher_is_better": false
+  },
+  "takeaway": "Fixture takeaway: the SVI fit tracks the quoted smile.",
+  "chart": {
+    "type": "line",
+    "x_label": "Moneyness K/S",
+    "x_unit": "",
+    "x_scale": "linear",
+    "y_label": "Implied volatility",
+    "y_unit": "%",
+    "y_scale": "linear",
+    "series": [
+      {
+        "name": "Quotes",
+        "style": "dots",
+        "points": [
+          [0.9, 16.2],
+          [0.92, 16.26],
+          [0.94, 15.24],
+          [0.96, 15.54],
+          [0.98, 14.76],
+          [1.0, 15.3],
+          [1.02, 14.76],
+          [1.04, 15.54],
+          [1.06, 15.24],
+          [1.08, 16.26],
+          [1.1, 16.2]
+        ]
+      },
+      {
+        "name": "SVI fit",
+        "style": "solid",
+        "points": [
+          [0.9, 16.5],
+          [0.92, 15.96],
+          [0.94, 15.54],
+          [0.96, 15.24],
+          [0.98, 15.06],
+          [1.0, 15.0],
+          [1.02, 15.06],
+          [1.04, 15.24],
+          [1.06, 15.54],
+          [1.08, 15.96],
+          [1.1, 16.5]
+        ]
+      }
+    ]
+  }
+}

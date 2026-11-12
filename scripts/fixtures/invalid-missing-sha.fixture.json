@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "repo": "limitorderbook",
+  "generated_at": "2026-01-01T00:00:00Z",
+  "command": "fixture (no command produced this file)",
+  "data_note": "SYNTHETIC TEST FIXTURE. Hand-made numbers for schema and rendering tests, not a real run.",
+  "metric": {
+    "label": "Median add latency",
+    "value": 120,
+    "unit": "ns",
+    "higher_is_better": false
+  },
+  "takeaway": "Fixture takeaway: p99 sits about ten times above p50 for every operation.",
+  "chart": {
+    "type": "interval",
+    "x_label": "Latency",
+    "x_unit": "ns",
+    "x_scale": "log",
+    "rows": [
+      {
+        "label": "add",
+        "low": 120,
+        "mid": 300,
+        "high": 1500
+      },
+      {
+        "label": "cancel",
+        "low": 80,
+        "mid": 200,
+        "high": 900
+      },
+      {
+        "label": "match",
+        "low": 250,
+        "mid": 700,
+        "high": 4000
+      }
+    ]
+  }
+}

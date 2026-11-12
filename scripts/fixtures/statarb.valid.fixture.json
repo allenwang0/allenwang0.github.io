@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "repo": "statarb",
+  "sha": "0000000000000000000000000000000000000000",
+  "generated_at": "2026-01-01T00:00:00Z",
+  "command": "fixture (no command produced this file)",
+  "data_note": "SYNTHETIC TEST FIXTURE. Hand-made numbers for schema and rendering tests, not a real run.",
+  "metric": {
+    "label": "Out-of-sample Sharpe after costs",
+    "value": 0.8,
+    "unit": "",
+    "higher_is_better": true
+  },
+  "takeaway": "Fixture takeaway: the Kalman strategy ends above the rolling-OLS baseline.",
+  "chart": {
+    "type": "line",
+    "x_label": "Date",
+    "x_unit": "",
+    "x_scale": "time",
+    "y_label": "Net equity",
+    "y_unit": "USD",
+    "y_scale": "linear",
+    "series": [
+      {
+        "name": "Kalman",
+        "style": "solid",
+        "points": [
+          ["2024-01-02", 100000],
+          ["2024-04-01", 101500],
+          ["2024-07-01", 103200],
+          ["2024-10-01", 104100]
+        ]
+      },
+      {
+        "name": "Rolling OLS",
+        "style": "dashed",
+        "points": [
+          ["2024-01-02", 100000],
+          ["2024-04-01", 100400],
+          ["2024-07-01", 99800],
+          ["2024-10-01", 101000]
+        ]
+      }
+    ]
+  }
+}
