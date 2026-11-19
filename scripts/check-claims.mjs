@@ -3,14 +3,9 @@ import { github, readJson, siteData, sources, visibleProjects, writeJson } from 
 const CACHE = new URL("../src/data/cache/claims.json", import.meta.url);
 
 function claimsOf(project) {
-  const cs = project.case_study ?? {};
   return [
     ...(project.blurb ?? []).map((c, i) => [`blurb[${i}]`, c]),
     ...(project.tags ?? []).map((c, i) => [`tags[${i}] "${c.name}"`, c]),
-    ["case_study.problem", cs.problem],
-    ["case_study.approach", cs.approach],
-    ...(cs.approach?.excerpt ? [["case_study.approach.excerpt", { source: cs.approach.excerpt.path }]] : []),
-    ...(cs.limitations ?? []).map((c, i) => [`case_study.limitations[${i}]`, c]),
   ];
 }
 

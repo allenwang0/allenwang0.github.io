@@ -1,13 +1,11 @@
 import { readFileSync } from "node:fs";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
-import { formatMetric } from "../../src/lib/card";
 
 const site = JSON.parse(readFileSync("src/data/site.json", "utf8"));
-const cache = JSON.parse(readFileSync("src/data/cache/projects.json", "utf8"));
 const visible = site.projects.filter((p: { state: string }) => p.state !== "hidden");
 const hidden = site.projects.filter((p: { state: string }) => p.state === "hidden");
-const pages = ["/", ...visible.map((p: { slug: string }) => `/projects/${p.slug}/`)];
+const pages = ["/"];
 
 test.beforeEach(async ({ context }) => {
   await context.route(/googletagmanager\.com/, (route) => route.abort());
@@ -28,7 +26,7 @@ test.describe("without JavaScript", () => {
     await page.goto("/");
     for (const text of [
       site.profile.name,
-      "Selected Work",
+      "Experience",
       site.experience[0].summary,
       "Projects",
       visible[0].blurb[0].text,
@@ -89,54 +87,21 @@ for (const scheme of ["light", "dark"] as const) {
   });
 }
 
-test("hidden projects have no card and no page", async ({ page }) => {
+test("hidden projects have no card", async ({ page }) => {
   await page.goto("/");
-  for (const p of hidden) {
-    await expect(page.locator(`[data-project="${p.slug}"]`)).toHaveCount(0);
-    const res = await page.request.get(`/projects/${p.slug}/`);
-    expect(res.status()).toBe(404);
-  }
+  for (const p of hidden) await expect(page.locator(`[data-project="${p.slug}"]`)).toHaveCount(0);
 });
 
-for (const project of visible) {
-  const card = cache.repos[project.repo]?.sha === project.sha ? cache.repos[project.repo].card : null;
-  for (const width of [375, 1280]) {
-    for (const scheme of ["light", "dark"] as const) {
-      test(`${project.slug} case study at ${width}px ${scheme}`, async ({ page }) => {
-        await page.emulateMedia({ colorScheme: scheme });
-        await page.setViewportSize({ width, height: 900 });
-        await page.goto(`/projects/${project.slug}/`);
-        await page.screenshot({
-          path: `test-results/screenshots/${project.slug}-${width}-${scheme}.png`,
-          fullPage: true,
-        });
-        const scroll = await page.evaluate(() => document.documentElement.scrollWidth);
-        expect(scroll).toBeLessThanOrEqual(width);
-        if (!card) {
-          await expect(page.locator(".results-pending")).toContainText("Results pending");
-          await expect(page.locator(".metric")).toHaveCount(0);
-          return;
-        }
-        await expect(page.locator(".metric-value").first()).toHaveText(formatMetric(card.metric.value));
-        if (card.chart) {
-          const svg = page.locator(".chart-svg:visible");
-          const unit = card.chart.x_unit;
-          const title = unit ? `${card.chart.x_label} (${unit})` : card.chart.x_label;
-          await expect(svg.locator(".chart-axis-title").first()).toHaveText(title);
-        }
-      });
-    }
-  }
-}
-
-test("home page metrics equal the cached card.json values", async ({ page }) => {
+test("project cards link to their repos and fit at phone width", async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 812 });
   await page.goto("/");
-  for (const project of visible) {
-    const card = cache.repos[project.repo]?.card;
-    const metric = page.locator(`[data-project="${project.slug}"] .metric-value`);
-    if (card) await expect(metric).toHaveText(formatMetric(card.metric.value));
-    else await expect(metric).toHaveCount(0);
+  for (const p of visible) {
+    await expect(page.locator(`[data-project="${p.slug}"] h3 a`)).toHaveAttribute(
+      "href",
+      `https://github.com/${p.repo}`,
+    );
   }
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(375);
 });
 
 test("the home page prints on one page", async ({ page }) => {

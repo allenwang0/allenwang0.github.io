@@ -4,15 +4,13 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "build": "node scripts/fetch-projects.mjs && node scripts/check-claims.mjs && astro build",
+    "build": "node scripts/check-claims.mjs && astro build",
     "preview": "astro preview",
     "check": "astro check",
     "lint": "eslint . && prettier --check .",
     "format": "prettier --write .",
-    "fetch-projects": "node scripts/fetch-projects.mjs",
     "check-claims": "node scripts/check-claims.mjs",
-    "test": "vitest run && playwright test",
-    "test:unit": "vitest run",
+    "test": "playwright test",
     "test:e2e": "playwright test",
     "validate-html": "html-validate \"dist/**/*.html\"",
     "build:site": "astro build"
@@ -21,8 +19,6 @@
     "@fontsource/inter": "5.3.0",
     "@resvg/resvg-js": "2.6.2",
     "@tailwindcss/vite": "4.3.5",
-    "ajv": "8.20.0",
-    "ajv-formats": "3.0.1",
     "astro": "7.4.10",
     "lucide-static": "0.577.0",
     "satori": "0.63.2",
@@ -40,8 +36,7 @@
     "prettier": "3.9.10",
     "prettier-plugin-astro": "1.1.2",
     "typescript": "6.0.3",
-    "typescript-eslint": "8.72.2",
-    "vitest": "5.1.0"
+    "typescript-eslint": "8.72.2"
   },
   "engines": {
     "node": ">=22.23.4"
