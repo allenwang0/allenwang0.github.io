@@ -1,9 +1,8 @@
 ---
 import Base from "../layouts/Base.astro";
 import Icon from "../components/Icon.astro";
-import Metric from "../components/Metric.astro";
 import SectionHeading from "../components/SectionHeading.astro";
-import { listed, monthYear, projectGroups, repoUrl, site } from "../lib/data";
+import { listed, projects, repoUrl, site } from "../lib/data";
 
 const { profile, experience, education, stack } = site;
 const navItems = [
@@ -56,7 +55,7 @@ const navItems = [
     </section>
 
     <section id="work" class="mb-32 scroll-mt-32 print:mb-3" aria-labelledby="work-heading">
-      <SectionHeading id="work-heading">Selected Work</SectionHeading>
+      <SectionHeading id="work-heading">Experience</SectionHeading>
       <div class="flex flex-col gap-6 print:gap-2">
         {experience.map((job, i) => (
           <a
@@ -107,64 +106,54 @@ const navItems = [
 
     <section id="projects" class="mb-32 scroll-mt-32 print:mb-3" aria-labelledby="projects-heading">
       <SectionHeading id="projects-heading">Projects</SectionHeading>
-      {projectGroups.map((group) => (
-        <div class="mb-10 print:mb-2">
-          <h3 class="fade-in mb-4 text-[13px] font-semibold tracking-[0.12em] text-secondary uppercase">
-            {group.label}
-          </h3>
-          <div class="grid grid-cols-1 gap-6 md:grid-cols-2 print:grid-cols-4 print:gap-2">
-            {group.projects.map((project) => (
-              <article
-                class="fade-in glass-card group flex flex-col justify-between rounded-[2rem] p-7 print:p-3"
-                data-project={project.slug}
-              >
-                <div>
-                  <div class="mb-4 flex items-start justify-between print:hidden">
-                    <div class="rounded-2xl border border-white/70 bg-white/80 p-3 text-primary shadow dark:border-white/20 dark:bg-white/10">
-                      <Icon name={project.icon} size={24} />
-                    </div>
-                    <a
-                      href={repoUrl(project.repo)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="inline-flex items-center gap-1 text-[12px] font-semibold text-accent hover:underline"
-                    >
-                      Code
-                      <Icon name="arrow-up-right" size={14} />
-                      <span class="sr-only">for {project.title} on GitHub</span>
-                    </a>
-                  </div>
-                  <h4 class="mb-2 text-lg font-semibold tracking-tight text-primary">
-                    <a href={`/projects/${project.slug}/`} class="hover:text-accent hover:underline">
-                      {project.title}
-                    </a>
-                  </h4>
-                  <p class="mb-4 text-[13px] leading-relaxed text-secondary print:mb-1">
-                    {project.blurb.map((c) => c.text).join(" ")}
-                  </p>
-                  {project.card && (
-                    <div class="mb-4 print:hidden">
-                      <Metric card={project.card} />
-                    </div>
-                  )}
+      <div class="mb-10 grid grid-cols-1 gap-6 md:grid-cols-2 print:grid-cols-4 print:gap-2">
+        {projects.map((project) => (
+          <article
+            class="fade-in glass-card group flex flex-col justify-between rounded-[2rem] p-7 print:p-3"
+            data-project={project.slug}
+          >
+            <div>
+              <div class="mb-4 flex items-start justify-between print:hidden">
+                <div class="rounded-2xl border border-white/70 bg-white/80 p-3 text-primary shadow dark:border-white/20 dark:bg-white/10">
+                  <Icon name={project.icon} size={24} />
                 </div>
-                <div>
-                  <ul class="flex flex-wrap gap-2 print:hidden" aria-label={`${project.title} tags`}>
-                    {project.tags.map((t) => (
-                      <li class="rounded-lg border border-white/60 bg-white/70 px-2.5 py-1 text-[10px] font-semibold text-primary dark:border-white/15 dark:bg-white/5">
-                        {t.name}
-                      </li>
-                    ))}
-                  </ul>
-                  {project.pushedAt && (
-                    <p class="mt-3 text-[11px] text-secondary print:hidden">Updated {monthYear(project.pushedAt)}</p>
-                  )}
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      ))}
+                <a
+                  href={repoUrl(project.repo)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center gap-1 text-[12px] font-semibold text-accent hover:underline"
+                >
+                  Code
+                  <Icon name="arrow-up-right" size={14} />
+                  <span class="sr-only">for {project.title} on GitHub</span>
+                </a>
+              </div>
+              <h3 class="mb-2 text-lg font-semibold tracking-tight text-primary">
+                <a
+                  href={repoUrl(project.repo)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="hover:text-accent hover:underline"
+                >
+                  {project.title}
+                </a>
+              </h3>
+              <p class="mb-4 text-[13px] leading-relaxed text-secondary print:mb-1">
+                {project.blurb.map((c) => c.text).join(" ")}
+              </p>
+            </div>
+            <div>
+              <ul class="flex flex-wrap gap-2 print:hidden" aria-label={`${project.title} tags`}>
+                {project.tags.map((t) => (
+                  <li class="rounded-lg border border-white/60 bg-white/70 px-2.5 py-1 text-[10px] font-semibold text-primary dark:border-white/15 dark:bg-white/5">
+                    {t.name}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </article>
+        ))}
+      </div>
       {listed.length > 0 && (
         <div class="fade-in">
           <h3 class="mb-4 text-[13px] font-semibold tracking-[0.12em] text-secondary uppercase">More projects</h3>
@@ -247,7 +236,6 @@ const navItems = [
           Source
         </a>
       </p>
-      <p class="mt-2 text-[12px] text-secondary">This site uses Google Analytics to count visits.</p>
     </footer>
   </main>
 </Base>
