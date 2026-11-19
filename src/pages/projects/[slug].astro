@@ -32,7 +32,7 @@ const sourceLinks = (claim: Claim) =>
         {project.repo}
       </a>{" "}
       · every statement below links to the file that backs it at commit{" "}
-      <a href={`${repoUrl(project.repo)}/tree/${project.sha}`} class="font-mono text-accent hover:underline">
+      <a href={`${repoUrl(project.repo)}/tree/${project.sha}`} class="font-mono break-all text-accent hover:underline">
         {shortSha}
       </a>
       .
@@ -48,7 +48,7 @@ const sourceLinks = (claim: Claim) =>
         {sourceLinks(caseStudy.problem).map((s, i) => (
           <>
             {i > 0 && ", "}
-            <a href={s.href} class="font-mono text-accent hover:underline">
+            <a href={s.href} class="font-mono break-all text-accent hover:underline">
               {s.path}
             </a>
           </>
@@ -66,7 +66,7 @@ const sourceLinks = (claim: Claim) =>
         {sourceLinks(caseStudy.approach).map((s, i) => (
           <>
             {i > 0 && ", "}
-            <a href={s.href} class="font-mono text-accent hover:underline">
+            <a href={s.href} class="font-mono break-all text-accent hover:underline">
               {s.path}
             </a>
           </>
@@ -75,7 +75,7 @@ const sourceLinks = (claim: Claim) =>
       {excerpt && (
         <figure class="mt-6">
           <figcaption class="mb-2 text-[12px] text-secondary">
-            <a href={excerpt.permalink} class="font-mono text-accent hover:underline">
+            <a href={excerpt.permalink} class="font-mono break-all text-accent hover:underline">
               {excerpt.path} lines {excerpt.start} to {excerpt.end} at {shortSha}
             </a>
           </figcaption>
@@ -100,7 +100,10 @@ const sourceLinks = (claim: Claim) =>
           </div>
           <p class="mt-3 text-[12px] text-secondary">
             Data: {card.data_note} Produced at commit{" "}
-            <a href={`${repoUrl(project.repo)}/tree/${card.sha}`} class="font-mono text-accent hover:underline">
+            <a
+              href={`${repoUrl(project.repo)}/tree/${card.sha}`}
+              class="font-mono break-all text-accent hover:underline"
+            >
               {card.sha.slice(0, 7)}
             </a>{" "}
             on {card.generated_at.slice(0, 10)}.
@@ -130,7 +133,7 @@ const sourceLinks = (claim: Claim) =>
               {sourceLinks(l).map((s, i) => (
                 <>
                   {i > 0 && ", "}
-                  <a href={s.href} class="font-mono text-accent hover:underline">
+                  <a href={s.href} class="font-mono break-all text-accent hover:underline">
                     {s.path}
                   </a>
                 </>
