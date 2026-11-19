@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
+import { formatMetric } from "../../src/lib/card";
 
 const site = JSON.parse(readFileSync("src/data/site.json", "utf8"));
 const cache = JSON.parse(readFileSync("src/data/cache/projects.json", "utf8"));
@@ -116,7 +117,7 @@ for (const project of visible) {
           await expect(page.locator(".metric")).toHaveCount(0);
           return;
         }
-        await expect(page.locator(".metric-value").first()).toHaveText(String(card.metric.value));
+        await expect(page.locator(".metric-value").first()).toHaveText(formatMetric(card.metric.value));
         if (card.chart) {
           const svg = page.locator(".chart-svg:visible");
           const unit = card.chart.x_unit;
@@ -133,7 +134,7 @@ test("home page metrics equal the cached card.json values", async ({ page }) => 
   for (const project of visible) {
     const card = cache.repos[project.repo]?.card;
     const metric = page.locator(`[data-project="${project.slug}"] .metric-value`);
-    if (card) await expect(metric).toHaveText(String(card.metric.value));
+    if (card) await expect(metric).toHaveText(formatMetric(card.metric.value));
     else await expect(metric).toHaveCount(0);
   }
 });

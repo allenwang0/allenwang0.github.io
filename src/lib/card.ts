@@ -40,3 +40,8 @@ export type Card = {
   takeaway: string;
   chart: Chart | null;
 };
+
+// Cards store full-precision floats; show two decimals, or three significant figures below 1.
+export function formatMetric(value: number): string {
+  return String(Math.abs(value) >= 1 ? Number(value.toFixed(2)) : Number(value.toPrecision(3)));
+}
