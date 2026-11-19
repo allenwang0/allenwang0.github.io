@@ -743,15 +743,7 @@
       "group": "web"
     }
   ],
-  "listed": [
-    {
-      "repo": "allenwang0/reality-wager",
-      "title": "reality-wager",
-      "sha": "fb8874d5df49c7908f051f99d24def7350726b07",
-      "text": "Next.js game where players wager virtual credits on whether an image is a photograph or AI-generated, with balances in Supabase.",
-      "source": ["src/app/play/page.tsx", "src/app/actions.ts"]
-    }
-  ],
+  "listed": [],
   "education": [
     {
       "school": "Stanford University",
