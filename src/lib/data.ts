@@ -89,7 +89,10 @@ export const projectGroups = site.project_groups
   .map((g) => ({ ...g, projects: projects.filter((p) => p.group === g.id) }))
   .filter((g) => g.projects.length > 0);
 
-export const listed = site.listed.map((l) => ({ ...l, url: repoUrl(l.repo) }));
+// Typed explicitly so an empty "listed" array in site.json still type-checks.
+type Listed = { repo: string; title: string; sha: string; text: string; source: string | string[] };
+
+export const listed = (site.listed as Listed[]).map((l) => ({ ...l, url: repoUrl(l.repo) }));
 
 export function monthYear(iso: string): string {
   return new Date(iso).toLocaleDateString("en-US", { month: "long", year: "numeric", timeZone: "UTC" });
