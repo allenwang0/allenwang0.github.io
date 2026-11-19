@@ -143,13 +143,13 @@ const navItems = [
                     {project.blurb.map((c) => c.text).join(" ")}
                   </p>
                   {project.card && (
-                    <div class="mb-4">
+                    <div class="mb-4 print:hidden">
                       <Metric card={project.card} />
                     </div>
                   )}
                 </div>
                 <div>
-                  <ul class="flex flex-wrap gap-2" aria-label={`${project.title} tags`}>
+                  <ul class="flex flex-wrap gap-2 print:hidden" aria-label={`${project.title} tags`}>
                     {project.tags.map((t) => (
                       <li class="rounded-lg border border-white/60 bg-white/70 px-2.5 py-1 text-[10px] font-semibold text-primary dark:border-white/15 dark:bg-white/5">
                         {t.name}
@@ -203,7 +203,7 @@ const navItems = [
 
     <section id="education" class="mb-32 scroll-mt-32 print:mb-3" aria-labelledby="education-heading">
       <SectionHeading id="education-heading">Education</SectionHeading>
-      <div class="fade-in grid grid-cols-1 gap-5 md:grid-cols-2" style="--delay: 80ms">
+      <div class="fade-in grid grid-cols-1 gap-5 md:grid-cols-2 print:grid-cols-2" style="--delay: 80ms">
         {education.map((edu) => (
           <a
             href={edu.url}

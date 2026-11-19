@@ -382,6 +382,6 @@ html:not(.js) .theme-toggle {
   .print-tight {
     max-width: none;
     padding: 0 !important;
-    zoom: 0.62;
+    zoom: 0.5;
   }
 }
