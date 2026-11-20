@@ -1,13 +1,139 @@
 ---
-import Base from "../layouts/Base.astro";
 ---
 
-<Base title="Page not found | Allen Wang">
-  <main class="mx-auto flex min-h-screen max-w-xl flex-col items-center justify-center px-6 text-center">
-    <h1 class="mb-4 text-5xl font-extrabold tracking-tight text-primary">Page not found</h1>
-    <p class="mb-8 text-[15px] text-secondary">There is nothing at this address.</p>
-    <a href="/" class="glass-tile px-6 py-3 text-sm font-semibold text-primary">
-      Back to the home page
-    </a>
-  </main>
-</Base>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Page not found | Allen Wang</title>
+    <meta name="description" content="There is nothing at this address." />
+    <meta name="robots" content="noindex" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <script is:inline>
+      (() => {
+        try {
+          const t = localStorage.getItem("theme");
+          if (t === "light" || t === "dark") document.documentElement.setAttribute("data-theme", t);
+        } catch {}
+      })();
+    </script>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #fbfbf9;
+        --ink: #111111;
+        --muted: #5f5f63;
+        --accent: #d70015;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) {
+          --bg: #0b0b0b;
+          --ink: #f2f2ef;
+          --muted: #a1a1a6;
+          --accent: #ff5a4f;
+        }
+      }
+      :root[data-theme="dark"] {
+        --bg: #0b0b0b;
+        --ink: #f2f2ef;
+        --muted: #a1a1a6;
+        --accent: #ff5a4f;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        min-height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 48px clamp(20px, 5.5vw, 80px);
+        background: var(--bg);
+        color: var(--ink);
+        font-family:
+          -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      main {
+        width: 100%;
+        max-width: 1280px;
+        margin: 0 auto;
+      }
+      h1 {
+        margin: 0;
+        font-size: clamp(120px, 26vw, 360px);
+        line-height: 0.8;
+        font-weight: 700;
+        letter-spacing: -0.06em;
+        margin-left: -0.04em;
+        font-variant-numeric: tabular-nums;
+      }
+      .rule {
+        border: 0;
+        border-top: 2px solid var(--ink);
+        margin: clamp(20px, 3vw, 32px) 0 16px;
+      }
+      p {
+        margin: 0;
+        font-size: 18px;
+        line-height: 1.4;
+        color: var(--muted);
+      }
+      ul {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0 24px;
+        margin: 12px 0 0;
+        padding: 0;
+        list-style: none;
+      }
+      a {
+        display: inline-flex;
+        align-items: center;
+        min-height: 44px;
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--ink);
+        text-decoration: underline;
+        text-decoration-thickness: 1px;
+        text-underline-offset: 3px;
+      }
+      a:hover {
+        text-decoration-color: var(--accent);
+      }
+      a:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+    </style>
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-JR31EX0R8M"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        // eslint-disable-next-line prefer-rest-params -- gtag.js reads the arguments object, not an array
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", "G-JR31EX0R8M");
+    </script>
+  </head>
+  <body>
+    <main>
+      <h1>404</h1>
+      <hr class="rule" />
+      <p>There is nothing at this address.</p>
+      <ul>
+        <li>
+          <a href="/">Home</a>
+        </li>
+        <li>
+          <a href="https://github.com/allenwang0">GitHub</a>
+        </li>
+      </ul>
+    </main>
+  </body>
+</html>

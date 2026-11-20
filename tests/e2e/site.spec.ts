@@ -158,3 +158,17 @@ test.fixme("the home page prints on one page", async ({ page }) => {
   const count = (pdf.toString("latin1").match(/\/Type\s*\/Page[^s]/g) ?? []).length;
   expect(count).toBe(1);
 });
+
+// A wrong URL should still feel like this site and always offer a way back home.
+for (const scheme of ["light", "dark"] as const) {
+  test.describe(`404 page (${scheme})`, () => {
+    test.use({ colorScheme: scheme });
+    test("shows 404, links home, and has no axe violations", async ({ page }) => {
+      await page.goto("/404.html");
+      await expect(page.getByRole("heading", { level: 1, name: "404" })).toBeVisible();
+      await expect(page.getByRole("link", { name: "Home" })).toHaveAttribute("href", "/");
+      const results = await new AxeBuilder({ page }).analyze();
+      expect(results.violations.map((v) => v.id)).toEqual([]);
+    });
+  });
+}
