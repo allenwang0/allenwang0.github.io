@@ -6,3 +6,5 @@ test-results/
 package-lock.json
 src/data/cache/
 public/logos/
+# Generated single-file page (built from the redesign kit); formatting it would rewrite inline SVG and data URIs.
+src/pages/index.html
