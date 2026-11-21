@@ -89,7 +89,8 @@
           "name": "Google Benchmark",
           "source": "CMakeLists.txt"
         }
-      ]
+      ],
+      "report": "https://allenwang0.github.io/limitorderbook/"
     },
     {
       "slug": "quantsim",
@@ -128,7 +129,8 @@
           "name": "cvxpy",
           "source": "src/quantsim/portfolio/optimization.py"
         }
-      ]
+      ],
+      "report": "https://allenwang0.github.io/quantsim/"
     },
     {
       "slug": "statarb",
@@ -196,7 +198,8 @@
           "name": "Plotly",
           "source": "templates/index.html"
         }
-      ]
+      ],
+      "report": "https://allenwang0.github.io/volatilityscanner/"
     },
     {
       "slug": "hashbench",
@@ -262,7 +265,8 @@
           "name": "RSA-PSS signing",
           "source": "src/client.py"
         }
-      ]
+      ],
+      "report": "https://allenwang0.github.io/kalshibot/"
     },
     {
       "slug": "facelapse",
@@ -294,7 +298,8 @@
           "name": "OpenCV",
           "source": "requirements.txt"
         }
-      ]
+      ],
+      "report": "https://allenwang0.github.io/facelapse/"
     },
     {
       "slug": "pairwise-ratings",

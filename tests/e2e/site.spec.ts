@@ -140,6 +140,55 @@ for (const scheme of ["light", "dark"] as const) {
   });
 }
 
+// Opening one row's details must never hide another row: details open in place, one at a time.
+for (const l of layouts.filter((x) => x.key !== "d")) {
+  test(`opening details in ${l.name} covers no other row`, async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 790 });
+    await page.goto(`/?layout=${l.key}`);
+    for (const id of ["x-apple", "x-stan", "x-p01", "x-p02"]) {
+      await page.locator(`button[aria-controls="${id}"]`).click({ force: true });
+      await expect(page.locator(`#${id}`)).toBeVisible();
+      const covered = await page.evaluate((open) => {
+        const me = document.getElementById(open)!.closest(".job, .school, .proj");
+        return [...document.querySelectorAll(".job, .school, .more > .proj, .feat > .proj:not(.off)")]
+          .filter((row) => row !== me)
+          .filter((row) => {
+            const b = row.getBoundingClientRect();
+            if (!b.width || b.bottom < 0 || b.top > innerHeight) return false;
+            const hit = document.elementFromPoint(b.left + b.width / 2, b.top + Math.min(b.height / 2, 14));
+            return !!hit && !row.contains(hit);
+          })
+          .map((row) => row.textContent?.trim().slice(0, 30));
+      }, id);
+      expect(covered, id).toEqual([]);
+      await expect(page.locator('[aria-expanded="true"]')).toHaveCount(1);
+    }
+  });
+}
+
+// A shared project link lands on that project with its details open, even when it starts off screen in the carousel.
+test("a project link opens that project in every layout", async ({ page }) => {
+  for (const l of layouts) {
+    await page.goto(`/?layout=${l.key}#facelapse`);
+    await expect(page.locator("#facelapse")).toHaveClass(/open/);
+    await expect(page.locator("#facelapse .pt")).toBeInViewport();
+  }
+});
+
+// "Copied" must mean copied: when the browser refuses, the visitor gets the link to copy by hand instead.
+test("a failed copy shows the link instead of claiming success", async ({ page }) => {
+  await page.goto("/?layout=bento&utm_source=x");
+  await page.evaluate(() => {
+    navigator.clipboard.writeText = () => Promise.reject(new Error("denied"));
+    document.execCommand = () => false;
+  });
+  await page.locator(".copy").evaluate((b: HTMLElement) => b.click());
+  await expect(page.locator(".copy")).not.toHaveClass(/copied/);
+  await expect(page.locator("#copy-url")).toBeFocused();
+  // The shared address keeps the layout and drops anything else in the query.
+  await expect(page.locator("#copy-url")).toHaveValue(/\?layout=bento$/);
+});
+
 test("hidden projects are not on the page", async ({ page }) => {
   await page.goto("/");
   for (const p of hidden) await expect(page.locator(`a[href="https://github.com/${p.repo}"]`)).toHaveCount(0);

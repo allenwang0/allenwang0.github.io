@@ -2,13 +2,15 @@
 
 My personal site and project portfolio, live at https://allenwang0.github.io.
 
-| Light                                          | Dark                                         |
-| ---------------------------------------------- | -------------------------------------------- |
-| ![Home page, light theme](docs/home-light.png) | ![Home page, dark theme](docs/home-dark.png) |
+The home page is one HTML file with three layouts. Visitors switch between them with the rail on the left (the pill at the bottom on phones). `?layout=poster|resume|bento` links to a layout, and a project id such as `#lob` opens that project.
+
+| Poster (default)                       | Résumé                                 | Bento (dark)                         |
+| -------------------------------------- | -------------------------------------- | ------------------------------------ |
+| ![Poster layout](docs/home-poster.png) | ![Résumé layout](docs/home-resume.png) | ![Bento layout](docs/home-bento.png) |
 
 ## Stack
 
-- Astro static build with Tailwind CSS. No client framework; the only scripts are a small inline theme toggle and Google Analytics.
+- Astro static build. The home page is `src/pages/index.html`: hand-written HTML, CSS and a small inline script for the layouts, theme, details panels and carousel. No client framework. Google Analytics is the only third-party script.
 - Lucide icons are inlined as SVG at build time.
 - GitHub Actions builds and deploys the site to GitHub Pages.
 
@@ -29,7 +31,7 @@ Other checks CI runs: `npm run lint`, `npm run check` (astro check), `npm run va
 
 ## Editing content
 
-All content lives in `src/data/site.json`: profile, experience, projects, the "More projects" list, education and stack.
+Page copy lives in `src/pages/index.html`. `src/data/site.json` holds the profile, project list and report URLs used by the share image, the sitemap and the tests, plus the sourced project claims checked below. When you rename or add a project, change both.
 
 ### Projects and the source rule
 
