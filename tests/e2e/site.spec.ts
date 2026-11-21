@@ -71,15 +71,16 @@ test("the page still renders when localStorage throws", async ({ page }) => {
   expect(errors).toEqual([]);
 });
 
+// The toggle names the action it will take ("Dark mode" while light), and the choice survives a reload.
 test("the theme toggle switches and remembers the theme", async ({ page }) => {
+  await page.emulateMedia({ colorScheme: "light" });
   await page.goto("/");
-  const toggle = page.getByRole("button", { name: "Dark mode" });
-  const before = await toggle.getAttribute("aria-pressed");
-  await toggle.click();
-  await expect(toggle).toHaveAttribute("aria-pressed", before === "true" ? "false" : "true");
-  const after = await toggle.getAttribute("aria-pressed");
+  await page.getByRole("button", { name: "Dark mode" }).click();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  await expect(page.getByRole("button", { name: "Light mode" })).toBeAttached();
   await page.reload();
-  await expect(page.getByRole("button", { name: "Dark mode" })).toHaveAttribute("aria-pressed", after!);
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  await expect(page.getByRole("button", { name: "Light mode" })).toBeAttached();
 });
 
 // Each layout is a shareable URL and the switcher reflects it; switching keeps the URL in sync for sharing.
@@ -92,7 +93,11 @@ test("every layout is reachable by URL and by the switcher", async ({ page }) =>
   await page.goto("/?layout=e");
   await page.getByRole("radio", { name: "Bento" }).check({ force: true });
   await expect(page.locator("html")).toHaveAttribute("data-layout", "d");
-  await expect(page).toHaveURL(/layout=d/);
+  // URLs use readable names so a shared link says what it shows.
+  await expect(page).toHaveURL(/layout=bento/);
+  await page.goto("/?layout=resume#projects");
+  await expect(page.locator("html")).toHaveAttribute("data-layout", "c");
+  await expect(page.locator("#projects")).toBeInViewport();
   // Keynote was removed; old links to it land on a real layout (the visitor's last choice, else Poster) instead of breaking.
   await page.goto("/?layout=b");
   await expect(page.locator("html")).toHaveAttribute("data-layout", /^[ecd]$/);
@@ -151,10 +156,24 @@ test("every visible project links to its repo and every layout fits at phone wid
   }
 });
 
-// Recruiters print or save as PDF; the old site fit one Letter page. The redesign currently needs two.
-test.fixme("the home page prints on one page", async ({ page }) => {
+// Recruiters print or save as PDF: the page must fit one Letter page (it prints the Résumé arrangement).
+test("the home page prints on one page", async ({ page }) => {
   await page.goto("/");
   const pdf = await page.pdf({ format: "Letter" });
   const count = (pdf.toString("latin1").match(/\/Type\s*\/Page[^s]/g) ?? []).length;
   expect(count).toBe(1);
 });
+
+// A wrong URL should still feel like this site and always offer a way back home.
+for (const scheme of ["light", "dark"] as const) {
+  test.describe(`404 page (${scheme})`, () => {
+    test.use({ colorScheme: scheme });
+    test("shows 404, links home, and has no axe violations", async ({ page }) => {
+      await page.goto("/404.html");
+      await expect(page.getByRole("heading", { level: 1, name: "404" })).toBeVisible();
+      await expect(page.getByRole("link", { name: "Home" })).toHaveAttribute("href", "/");
+      const results = await new AxeBuilder({ page }).analyze();
+      expect(results.violations.map((v) => v.id)).toEqual([]);
+    });
+  });
+}
