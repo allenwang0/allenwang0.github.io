@@ -140,6 +140,32 @@ for (const scheme of ["light", "dark"] as const) {
   });
 }
 
+// Opening one row's details must never hide another row: details open in place, one at a time.
+for (const l of layouts.filter((x) => x.key !== "d")) {
+  test(`opening details in ${l.name} covers no other row`, async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 790 });
+    await page.goto(`/?layout=${l.key}`);
+    for (const id of ["x-apple", "x-stan", "x-p01", "x-p02"]) {
+      await page.locator(`button[aria-controls="${id}"]`).click({ force: true });
+      await expect(page.locator(`#${id}`)).toBeVisible();
+      const covered = await page.evaluate((open) => {
+        const me = document.getElementById(open)!.closest(".job, .school, .proj");
+        return [...document.querySelectorAll(".job, .school, .more > .proj, .feat > .proj:not(.off)")]
+          .filter((row) => row !== me)
+          .filter((row) => {
+            const b = row.getBoundingClientRect();
+            if (!b.width || b.bottom < 0 || b.top > innerHeight) return false;
+            const hit = document.elementFromPoint(b.left + b.width / 2, b.top + Math.min(b.height / 2, 14));
+            return !!hit && !row.contains(hit);
+          })
+          .map((row) => row.textContent?.trim().slice(0, 30));
+      }, id);
+      expect(covered, id).toEqual([]);
+      await expect(page.locator('[aria-expanded="true"]')).toHaveCount(1);
+    }
+  });
+}
+
 test("hidden projects are not on the page", async ({ page }) => {
   await page.goto("/");
   for (const p of hidden) await expect(page.locator(`a[href="https://github.com/${p.repo}"]`)).toHaveCount(0);
