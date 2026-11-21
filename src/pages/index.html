@@ -15,11 +15,13 @@
 <meta property="og:image:alt" content="Allen Wang, Software Engineer at Apple">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="color-scheme" content="light dark">
+<!-- without scripts nothing can open, so every detail is shown -->
+<noscript><style>.page { height: auto !important; overflow: visible !important; } .f2 { display: block !important; opacity: 1 !important; } .tog, .car-ctl { display: none !important; } .car-vp { overflow: visible !important; padding-bottom: 0 !important; margin-bottom: 0 !important; } .feat { grid-auto-flow: row !important; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); row-gap: 16px; }</style></noscript>
 <meta name="theme-color" content="#fbfbf9" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0b0b0b" media="(prefers-color-scheme: dark)">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Allen Wang","jobTitle":"Software Engineer","worksFor":{"@type":"Organization","name":"Apple"},"alumniOf":{"@type":"CollegeOrUniversity","name":"Stanford University"},"url":"https://allenwang0.github.io/","sameAs":["https://github.com/allenwang0","https://linkedin.com/in/allen--wang"]}</script>
-<link id="fav" rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNyIgZmlsbD0iIzExMSIvPjxwYXRoIGQ9Ik04LjUgMjUgMTYgNi41IDIzLjUgMjVNMTEuMyAxOC41aDkuNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjwvc3ZnPgo=" type="image/svg+xml">
+<link id="fav" rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHN0eWxlPi5ne2ZpbGw6IzExMX0uYXtzdHJva2U6I2ZmZn0ucntmaWxsOiNmZjVhNGZ9LmJ7ZmlsbDojNGZhM2ZmfUBtZWRpYSAocHJlZmVycy1jb2xvci1zY2hlbWU6ZGFyayl7Lmd7ZmlsbDojZjJmMmVmfS5he3N0cm9rZTojMTExfS5ye2ZpbGw6I2Q3MDAxNX0uYntmaWxsOiMwMDcxZTN9fTwvc3R5bGU+PHJlY3QgY2xhc3M9ImciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgcng9IjciLz48cGF0aCBjbGFzcz0iYSIgZD0iTTguNSAyNSAxNiA2LjUgMjMuNSAyNU0xMS4zIDE4LjVoOS40IiBmaWxsPSJub25lIiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjwvc3ZnPg==" type="image/svg+xml">
 <script>(function(){var d=document.documentElement,M={poster:"e",resume:"c",bento:"d",e:"e",c:"c",d:"d"},q=null;try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")d.setAttribute("data-theme",t)}catch(e){}try{q=M[new URLSearchParams(location.search).get("layout")]}catch(e){}if(!q){try{q=M[localStorage.getItem("layout")]}catch(e){}}if(q)d.setAttribute("data-layout",q);d.classList.add("js")})()</script>
 <style>
 /* ===================================================================
@@ -182,6 +184,9 @@ main > section:has(.open) { z-index: 50; }
 :is([data-layout="e"], [data-layout="c"]) .f2 { position: relative; top: auto; grid-column: 2 / -1; z-index: 1; padding: 2px 0 clamp(8px, 1.4 * var(--vh), 14px); background: none; border: 0; border-radius: 0; box-shadow: none; clip-path: none; transform: none; }
 :is([data-layout="e"], [data-layout="c"]) .open > .pr > .f2 { opacity: 1; transform: none; transition: opacity .22s ease, transform .26s cubic-bezier(.3,1.2,.5,1), display 0s allow-discrete; }
 @starting-style { :is([data-layout="e"], [data-layout="c"]) .open > .pr > .f2 { opacity: 0; transform: translateY(-6px); } }
+/* headings and titles never end on one lonely word */
+h1, h2, h3, .role, .jr, .pt { text-wrap: balance; }
+.f2 p { text-wrap: pretty; }
 .car:not(.start) .car-vp { --fl: 40px; }
 [data-layout="e"] .jr { font-size: clamp(17px, 2.6 * var(--vh), 26px); font-weight: 500; letter-spacing: -.02em; line-height: 1.2; }
 [data-layout="e"] .jsn { margin-top: 4px; font-size: clamp(14px, 2 * var(--vh), 18px); line-height: 1.4; }
@@ -1062,10 +1067,10 @@ main > section:has(.open) { z-index: 50; }
     setFav(l);
 
   }
-  /* the tab icon gets the layout's mark: Poster a red square, Résumé a blue bar, Bento a blue dot */
+  /* the tab icon gets the layout's mark (the icon flips to light on a dark browser): Poster a red square, Résumé a blue bar, Bento a blue dot */
   var fav = document.getElementById("fav"), favSvg = null;
   try { favSvg = atob(fav.getAttribute("href").split(",")[1]); } catch (e) {}
-  var MARK = { e: '<rect x="22" y="4" width="6" height="6" fill="#ff5a4f"/>', c: '<rect x="20" y="5.5" width="8" height="3" rx="1" fill="#4fa3ff"/>', d: '<circle cx="25" cy="7" r="3.2" fill="#2997ff"/>' };
+  var MARK = { e: '<rect class="r" x="22" y="4" width="6" height="6"/>', c: '<rect class="b" x="20" y="5.5" width="8" height="3" rx="1"/>', d: '<circle class="b" cx="25" cy="7" r="3.2"/>' };
   function setFav(l) { if (favSvg && MARK[l]) fav.setAttribute("href", "data:image/svg+xml;base64," + btoa(favSvg.replace("</svg>", MARK[l] + "</svg>"))); }
   setFav(current());
   var annT = 0;
