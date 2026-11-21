@@ -39,6 +39,18 @@ test.describe("without JavaScript", () => {
     for (const edu of site.education) await expect(page.getByText(edu.school, { exact: true }).first()).toBeVisible();
     for (const p of visible) await expect(page.getByText(p.title, { exact: true }).first()).toBeVisible();
   });
+
+  // Nothing can open without scripts, so the details must already be readable instead of locked away.
+  test("job and project details are visible", async ({ page }) => {
+    await page.goto("/");
+    for (const id of ["x-apple", "x-stan", "x-p01", "x-p02"]) await expect(page.locator(`#${id}`)).toBeVisible();
+    await expect(page.locator(".tog").first()).toBeHidden();
+    // The carousel arrows need scripts, so every featured card must sit on the page, not off to the side.
+    const rights = await page
+      .locator(".feat > .proj")
+      .evaluateAll((cards) => cards.map((c) => c.getBoundingClientRect().right));
+    for (const r of rights) expect(r).toBeLessThanOrEqual(await page.evaluate(() => innerWidth));
+  });
 });
 
 test.describe("dark system theme", () => {
