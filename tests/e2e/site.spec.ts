@@ -166,6 +166,29 @@ for (const l of layouts.filter((x) => x.key !== "d")) {
   });
 }
 
+// A shared project link lands on that project with its details open, even when it starts off screen in the carousel.
+test("a project link opens that project in every layout", async ({ page }) => {
+  for (const l of layouts) {
+    await page.goto(`/?layout=${l.key}#facelapse`);
+    await expect(page.locator("#facelapse")).toHaveClass(/open/);
+    await expect(page.locator("#facelapse .pt")).toBeInViewport();
+  }
+});
+
+// "Copied" must mean copied: when the browser refuses, the visitor gets the link to copy by hand instead.
+test("a failed copy shows the link instead of claiming success", async ({ page }) => {
+  await page.goto("/?layout=bento&utm_source=x");
+  await page.evaluate(() => {
+    navigator.clipboard.writeText = () => Promise.reject(new Error("denied"));
+    document.execCommand = () => false;
+  });
+  await page.locator(".copy").evaluate((b: HTMLElement) => b.click());
+  await expect(page.locator(".copy")).not.toHaveClass(/copied/);
+  await expect(page.locator("#copy-url")).toBeFocused();
+  // The shared address keeps the layout and drops anything else in the query.
+  await expect(page.locator("#copy-url")).toHaveValue(/\?layout=bento$/);
+});
+
 test("hidden projects are not on the page", async ({ page }) => {
   await page.goto("/");
   for (const p of hidden) await expect(page.locator(`a[href="https://github.com/${p.repo}"]`)).toHaveCount(0);

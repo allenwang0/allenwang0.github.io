@@ -1,6 +1,7 @@
 import type { APIRoute } from "astro";
 import { el, renderPng } from "../lib/og";
 
+// Home-screen icon: the favicon's "A" on the same near-black square (iOS rounds the corners).
 export const GET: APIRoute = () =>
   renderPng(
     el(
@@ -11,13 +12,13 @@ export const GET: APIRoute = () =>
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: "#0066cc",
+        background: "#111111",
         color: "#ffffff",
         fontFamily: "Inter",
-        fontSize: 84,
+        fontSize: 118,
         fontWeight: 700,
       },
-      "AW",
+      "A",
     ),
     180,
     180,
