@@ -158,7 +158,7 @@ for (const l of layouts.filter((x) => x.key !== "d")) {
     await page.setViewportSize({ width: 1440, height: 790 });
     await page.goto(`/?layout=${l.key}`);
     for (const id of ["x-apple", "x-stan", "x-p01", "x-p02"]) {
-      await page.locator(`button[aria-controls="${id}"]`).click({ force: true });
+      await page.locator(`button[aria-controls="${id}"]`).dispatchEvent("click");
       await expect(page.locator(`#${id}`)).toBeVisible();
       const covered = await page.evaluate((open) => {
         const me = document.getElementById(open)!.closest(".job, .school, .proj");
@@ -184,6 +184,24 @@ test("a project link opens that project in every layout", async ({ page }) => {
     await page.goto(`/?layout=${l.key}#facelapse`);
     await expect(page.locator("#facelapse")).toHaveClass(/open/);
     await expect(page.locator("#facelapse .pt")).toBeInViewport();
+  }
+});
+
+// Employer and school names link out, and the row-wide open button must not swallow those clicks in any layout.
+test("employer and school names are working links in every layout", async ({ page }) => {
+  const links = {
+    Apple: "https://apple.com/",
+    Millennium: "https://mlp.com/",
+    "Stanford University": "https://mcs.stanford.edu/",
+    "University of Oxford": "https://oxford.stanford.edu/",
+  };
+  await page.route(/^https:\/\/(apple|mlp|mcs|oxford)/, (route) => route.fulfill({ body: "ok" }));
+  for (const l of layouts) {
+    for (const [name, url] of Object.entries(links)) {
+      await page.goto(`/?layout=${l.key}`);
+      await page.getByRole("link", { name, exact: true }).click({ timeout: 3000 });
+      await expect(page, `${name} in ${l.name}`).toHaveURL(new RegExp(`^${url}`));
+    }
   }
 });
 
