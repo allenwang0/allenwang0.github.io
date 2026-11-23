@@ -378,7 +378,12 @@ for (const scheme of ["light", "dark"] as const) {
 
 // A row's name must never run under its + button, at any size where the + is shown.
 test("names never run under their + button", async ({ page }) => {
-  for (const size of [{ width: 1440, height: 900 }, { width: 1280, height: 650 }, { width: 1920, height: 960 }, { width: 390, height: 844 }]) {
+  for (const size of [
+    { width: 1440, height: 900 },
+    { width: 1280, height: 650 },
+    { width: 1920, height: 960 },
+    { width: 390, height: 844 },
+  ]) {
     await page.setViewportSize(size);
     for (const l of layouts) {
       await page.goto(`/?layout=${l.key}`);
@@ -405,7 +410,9 @@ test("the phone carousel fades its peeking card in every layout", async ({ page 
   await page.setViewportSize({ width: 390, height: 844 });
   for (const l of layouts) {
     await page.goto(`/?layout=${l.key}`);
-    const mask = await page.locator(".car-vp").evaluate((n) => getComputedStyle(n).maskImage || getComputedStyle(n).webkitMaskImage);
+    const mask = await page
+      .locator(".car-vp")
+      .evaluate((n) => getComputedStyle(n).maskImage || getComputedStyle(n).webkitMaskImage);
     expect(mask, l.name).toContain("gradient");
   }
 });
