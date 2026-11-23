@@ -136,6 +136,27 @@ for (const size of [
   });
 }
 
+for (const width of [320, 375]) {
+  test(`no layout scrolls sideways at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 700 });
+    for (const l of layouts) {
+      await page.goto(`/?layout=${l.key}`);
+      const over = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
+      expect(over, `${l.name} at ${width}px`).toBeLessThanOrEqual(0);
+    }
+  });
+}
+
+test("phone switcher buttons are at least 44px", async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page.goto("/");
+  const sizes = await page
+    .locator(".seg label, .theme, .copy")
+    .evaluateAll((els) => els.map((e) => Math.min(e.getBoundingClientRect().width, e.getBoundingClientRect().height)));
+  expect(sizes.length).toBeGreaterThan(0);
+  for (const s of sizes) expect(s).toBeGreaterThanOrEqual(44);
+});
+
 async function noHorizontalOverflow(page: Page) {
   return page.evaluate(() => document.documentElement.scrollWidth <= innerWidth);
 }
