@@ -336,7 +336,9 @@ test("the phone switcher stays on screen and clears the last line", async ({ pag
       await page.evaluate((v) => scrollTo(0, v), y);
       const hit = await page.evaluate(() => {
         const s = document.querySelector(".sw")!.getBoundingClientRect();
-        return [...document.querySelectorAll(".page h1, .page h2, .page h3, .page h4, .page li, .page p, .foot a")].some((n) => {
+        return [
+          ...document.querySelectorAll(".page h1, .page h2, .page h3, .page h4, .page li, .page p, .foot a"),
+        ].some((n) => {
           const r = n.getBoundingClientRect();
           return r.width > 0 && r.left < s.right && r.right > s.left && r.top < s.bottom && r.bottom > s.top;
         });
