@@ -375,3 +375,44 @@ for (const scheme of ["light", "dark"] as const) {
     });
   });
 }
+
+// A row's name must never run under its + button, at any size where the + is shown.
+test("names never run under their + button", async ({ page }) => {
+  for (const size of [
+    { width: 1440, height: 900 },
+    { width: 1280, height: 650 },
+    { width: 1920, height: 960 },
+    { width: 390, height: 844 },
+  ]) {
+    await page.setViewportSize(size);
+    for (const l of layouts) {
+      await page.goto(`/?layout=${l.key}`);
+      const hits = await page.evaluate(() =>
+        [...document.querySelectorAll(".job, .school, .proj")].flatMap((row) => {
+          const i = row.querySelector(":scope > .tog i")?.getBoundingClientRect();
+          const name = row.querySelector(".co a, .sn a, .pt");
+          if (!i || !i.width || !name) return [];
+          const range = document.createRange();
+          range.selectNodeContents(name);
+          const overlap = [...range.getClientRects()].some(
+            (r) => r.width > 0 && r.left < i.right && r.right > i.left && r.top < i.bottom && r.bottom > i.top,
+          );
+          return overlap ? [name.textContent] : [];
+        }),
+      );
+      expect(hits, `${l.name} at ${size.width}x${size.height}`).toEqual([]);
+    }
+  }
+});
+
+// On phones the featured card that peeks in from the edge fades out instead of being cut off.
+test("the phone carousel fades its peeking card in every layout", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  for (const l of layouts) {
+    await page.goto(`/?layout=${l.key}`);
+    const mask = await page
+      .locator(".car-vp")
+      .evaluate((n) => getComputedStyle(n).maskImage || getComputedStyle(n).webkitMaskImage);
+    expect(mask, l.name).toContain("gradient");
+  }
+});
