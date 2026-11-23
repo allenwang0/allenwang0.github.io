@@ -150,9 +150,9 @@ for (const width of [320, 375]) {
 test("phone switcher buttons are at least 44px", async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
   await page.goto("/");
-  const sizes = await page.locator(".seg label, .theme, .copy").evaluateAll((els) =>
-    els.map((e) => Math.min(e.getBoundingClientRect().width, e.getBoundingClientRect().height)),
-  );
+  const sizes = await page
+    .locator(".seg label, .theme, .copy")
+    .evaluateAll((els) => els.map((e) => Math.min(e.getBoundingClientRect().width, e.getBoundingClientRect().height)));
   expect(sizes.length).toBeGreaterThan(0);
   for (const s of sizes) expect(s).toBeGreaterThanOrEqual(44);
 });
