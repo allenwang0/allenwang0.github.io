@@ -320,15 +320,23 @@ test("the carousel shows whole cards and counts what is visible", async ({ page 
 });
 
 // On phones the layout switcher must never sit on top of the page's content.
-test("the phone switcher covers no content", async ({ page }) => {
+// The phone switcher stays on screen while scrolling, so it is always reachable;
+// the page pads its end so nothing is stuck underneath it once you reach the bottom.
+test("the phone switcher stays on screen and clears the last line", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   for (const l of layouts) {
     await page.goto(`/?layout=${l.key}`);
     for (const y of [0, 300, 99999]) {
       await page.evaluate((v) => scrollTo(0, v), y);
+      const b = await page.evaluate(() => document.querySelector(".sw")!.getBoundingClientRect().bottom);
+      expect(b, `${l.name} switcher on screen at scroll ${y}`).toBeLessThanOrEqual(844);
+      expect(b, `${l.name} switcher at the bottom at scroll ${y}`).toBeGreaterThan(800);
+    }
+    for (const y of [99999]) {
+      await page.evaluate((v) => scrollTo(0, v), y);
       const hit = await page.evaluate(() => {
         const s = document.querySelector(".sw")!.getBoundingClientRect();
-        return [...document.querySelectorAll(".page h1, .page h2, .page h3, .page h4, .page li, .page p")].some((n) => {
+        return [...document.querySelectorAll(".page h1, .page h2, .page h3, .page h4, .page li, .page p, .foot a")].some((n) => {
           const r = n.getBoundingClientRect();
           return r.width > 0 && r.left < s.right && r.right > s.left && r.top < s.bottom && r.bottom > s.top;
         });

@@ -557,7 +557,9 @@ h1, h2, h3, .role, .jr, .pt { text-wrap: balance; }
 :root[data-theme="dark"] .theme .sun { display: block; }
 :root[data-theme="dark"] .theme .moon { display: none; }
 @media (max-width: 639px) {
-  .sw { position: relative; top: auto; left: auto; width: fit-content; margin: 0 var(--margin) calc(24px + env(safe-area-inset-bottom, 0px)); transform: none; }
+  /* pinned to the bottom of the screen; the page pads its end so the last line clears it */
+  :root { --pb: calc(76px + env(safe-area-inset-bottom, 0px)); }
+  .sw { top: auto; left: var(--margin); bottom: calc(12px + env(safe-area-inset-bottom, 0px)); transform: none; }
   .sw-ui { flex-direction: row; }
   .seg { grid-auto-flow: column; grid-auto-columns: 40px; grid-auto-rows: 40px; column-gap: 2px; }
   .seg label, .theme, .copy { height: 40px; justify-content: center; }
