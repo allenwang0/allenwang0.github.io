@@ -447,3 +447,44 @@ test("the phone carousel fades its peeking card in every layout", async ({ page 
     expect(mask, l.name).toContain("gradient");
   }
 });
+
+// A card cut off at the screen edge must fade out rather than end in a hard cut,
+// so it reads as "more this way" instead of a broken layout. Whole-card layouts need no fade.
+test("Poster fades a peeking card wherever one is cut off", async ({ page }) => {
+  for (const [w, h] of [
+    [768, 1024],
+    [1440, 600],
+    [844, 390],
+    [1440, 900],
+  ]) {
+    await page.setViewportSize({ width: w, height: h });
+    await page.goto("/?layout=poster");
+    const r = await page.locator(".car-vp").evaluate((n) => {
+      const v = n.getBoundingClientRect();
+      const cut = [...n.querySelectorAll(".proj")].some((p) => {
+        const b = p.getBoundingClientRect();
+        return b.left < v.right - 1 && b.right > v.right + 1;
+      });
+      const s = getComputedStyle(n);
+      return { cut, faded: (s.maskImage || s.webkitMaskImage).includes("gradient") };
+    });
+    if (r.cut) expect(r.faded, `${w}x${h} peeking card is faded`).toBe(true);
+  }
+});
+
+// WCAG 2.5.8: the school names are links, so each needs a tap target at least 24px tall.
+test("school name links are at least 24px tall in every layout", async ({ page }) => {
+  for (const [w, h] of [
+    [320, 640],
+    [390, 844],
+    [844, 390],
+    [1440, 900],
+  ]) {
+    await page.setViewportSize({ width: w, height: h });
+    for (const l of layouts) {
+      await page.goto(`/?layout=${l.key}`);
+      const hs = await page.locator(".sn a").evaluateAll((a) => a.map((n) => n.getBoundingClientRect().height));
+      for (const x of hs) expect(x, `${l.name} ${w}x${h}`).toBeGreaterThanOrEqual(24);
+    }
+  }
+});

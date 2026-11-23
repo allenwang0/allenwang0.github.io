@@ -167,6 +167,8 @@ html.grabbing, html.grabbing * { cursor: grabbing !important; user-select: none 
 [data-layout="d"] :is(.co, .sn) a { color: var(--ink); }
 /* the employer and school names stay real links above the row-wide open button */
 :is(.co, .sn) { position: relative; z-index: 1; }
+/* school names are small links: pad them to a 24px tap target without moving the text */
+.sn a { display: inline-block; padding-block: 4px; margin-block: -4px; }
 [data-layout="e"] :is(.co, .sn) a:hover { text-decoration: underline; text-decoration-thickness: .06em; text-underline-offset: .12em; }
 [data-layout="e"] .page.frozen main { align-content: start; }
 /* the close button stays in the plus button's spot, and a card keeps its title at the top when a neighbour grows */
@@ -233,7 +235,8 @@ h1, h2, h3, .role, .jr, .pt { text-wrap: balance; }
 /* panels unfurl into the viewport's transparent lower padding, so the scroller never clips them */
 /* education and featured cards share two equal columns; More projects splits the same width in three */
 [data-layout="e"] .feat { --cg: var(--gut); grid-auto-columns: calc((100% - var(--cg)) / 2); }
-@media (min-width: 640px) { [data-layout="e"] .car-vp { mask-image: none; } }
+/* only the two-column desktop shows whole cards; narrower or shorter screens peek at the next one and fade it */
+@media (min-width: 1024px) and (min-height: 645px) { [data-layout="e"] .car-vp { mask-image: none; } }
 [data-layout="e"] .feat > .proj { pointer-events: auto; border-top: 1px solid var(--heavy); padding-block: clamp(4px, .6 * var(--vh), 10px); --pi: clamp(24px, 3.6 * var(--vh), 36px); --px: calc(var(--pi) + 16px); --ti: clamp(20px, 2.8 * var(--vh), 28px); }
 [data-layout="e"] .feat .pt { font-size: clamp(20px, 3.6 * var(--vh), 38px); font-weight: 700; letter-spacing: -.03em; line-height: 1.1; }
 [data-layout="e"] .more-h { grid-row: 2; }
