@@ -43,7 +43,8 @@ test.describe("without JavaScript", () => {
   // Nothing can open without scripts, so the details must already be readable instead of locked away.
   test("job and project details are visible", async ({ page }) => {
     await page.goto("/");
-    for (const id of ["x-apple", "x-stan", "x-p01", "x-p02"]) await expect(page.locator(`#${id}`)).toBeVisible();
+    for (const id of ["apple-details", "stanford-details", "lob-details", "quantsim-details"])
+      await expect(page.locator(`#${id}`)).toBeVisible();
     await expect(page.locator(".tog").first()).toBeHidden();
     // The carousel arrows need scripts, so every featured card must sit on the page, not off to the side.
     const rights = await page
@@ -157,7 +158,7 @@ for (const l of layouts.filter((x) => x.key !== "d")) {
   test(`opening details in ${l.name} covers no other row`, async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 790 });
     await page.goto(`/?layout=${l.key}`);
-    for (const id of ["x-apple", "x-stan", "x-p01", "x-p02"]) {
+    for (const id of ["apple-details", "stanford-details", "lob-details", "quantsim-details"]) {
       await page.locator(`button[aria-controls="${id}"]`).dispatchEvent("click");
       await expect(page.locator(`#${id}`)).toBeVisible();
       const covered = await page.evaluate((open) => {
@@ -177,6 +178,64 @@ for (const l of layouts.filter((x) => x.key !== "d")) {
     }
   });
 }
+
+// Opening must feel anchored: the name doesn't move, the close button stays where the plus was,
+// neighbouring cards keep their titles at the top, and Stack and the footer stay readable below.
+for (const l of layouts.filter((x) => x.key !== "d")) {
+  test(`opening details in ${l.name} keeps everything else in place`, async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 650 });
+    for (const id of ["apple-details", "lob-details", "statarb-details"]) {
+      await page.goto(`/?layout=${l.key}`);
+      const tog = page.locator(`button[aria-controls="${id}"]`);
+      // where each closed card's title sits inside its card
+      const titleOffsets = () =>
+        page.evaluate((open) => {
+          const cards = [...document.querySelectorAll(".more > .proj, .feat > .proj:not(.off)")];
+          return cards
+            .filter((c) => !c.querySelector(`#${open}`))
+            .map((c) =>
+              Math.round(c.querySelector(".pt")!.getBoundingClientRect().top - c.getBoundingClientRect().top),
+            );
+        }, id);
+      const offsetsBefore = await titleOffsets();
+      const nameBefore = await page.locator("h1").boundingBox();
+      const togBefore = await tog.boundingBox();
+      await tog.dispatchEvent("click");
+      await expect(page.locator(`#${id}`)).toBeVisible();
+      await page.waitForTimeout(400);
+      expect((await page.locator("h1").boundingBox())!.y, `name moved (${id})`).toBeCloseTo(nameBefore!.y, 0);
+      if (togBefore!.width > 0 && togBefore!.width < 100) {
+        const togAfter = (await tog.boundingBox())!;
+        expect([togAfter.x, togAfter.y], `close button moved (${id})`).toEqual([togBefore!.x, togBefore!.y]);
+      }
+      const r = await page.evaluate(() => {
+        const box = (s: string) => document.querySelector(s)!.getBoundingClientRect();
+        return {
+          stackBottom: box(".stk").bottom,
+          footTop: box(".foot").top,
+          docH: document.documentElement.scrollHeight,
+        };
+      });
+      expect(r.stackBottom, `footer overlaps Stack (${id})`).toBeLessThanOrEqual(r.footTop + 1);
+      expect(r.stackBottom, `Stack cut off (${id})`).toBeLessThanOrEqual(r.docH);
+      expect(await titleOffsets(), `a closed card's title moved (${id})`).toEqual(offsetsBefore);
+    }
+  });
+}
+
+// Rows open on click; a hand that drifts a few pixels while clicking must still open the row, not drag the card.
+test("a slightly moved click still opens a row in every layout", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 790 });
+  for (const l of layouts) {
+    await page.goto(`/?layout=${l.key}`);
+    const b = (await page.locator("#lob .pt").boundingBox())!;
+    await page.mouse.move(b.x + 20, b.y + b.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(b.x + 28, b.y + b.height / 2 + 6, { steps: 4 });
+    await page.mouse.up();
+    await expect(page.locator("#lob"), l.name).toHaveClass(/open/);
+  }
+});
 
 // A shared project link lands on that project with its details open, even when it starts off screen in the carousel.
 test("a project link opens that project in every layout", async ({ page }) => {
@@ -215,8 +274,68 @@ test("a failed copy shows the link instead of claiming success", async ({ page }
   await page.locator(".copy").evaluate((b: HTMLElement) => b.click());
   await expect(page.locator(".copy")).not.toHaveClass(/copied/);
   await expect(page.locator("#copy-url")).toBeFocused();
-  // The shared address keeps the layout and drops anything else in the query.
-  await expect(page.locator("#copy-url")).toHaveValue(/\?layout=bento$/);
+  // The shared address keeps the layout and theme and drops anything else in the query.
+  await expect(page.locator("#copy-url")).toHaveValue(/\?layout=bento&theme=light$/);
+});
+
+// A friend opening a shared link sees the sender's theme, not their own system setting.
+test("a shared link carries the theme it was copied in", async ({ page }) => {
+  await page.emulateMedia({ colorScheme: "light" });
+  await page.goto("/?layout=resume&theme=dark");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  // the visitor's own toggle then wins, and the stale theme leaves the address bar
+  await page.locator(".theme").click();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  expect(new URL(page.url()).searchParams.has("theme")).toBe(false);
+});
+
+// Opening a card is not navigation: the address bar stays clean, and a shared #id is dropped once its card closes.
+test("opening and closing cards leaves the address bar alone", async ({ page }) => {
+  await page.goto("/?layout=poster");
+  await page.locator('button[aria-controls="nudge-details"]').dispatchEvent("click");
+  await expect(page.locator("#nudge-details")).toBeVisible();
+  expect(new URL(page.url()).hash).toBe("");
+  await page.goto("/?layout=poster#nudge");
+  await expect(page.locator("#nudge-details")).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(page.locator("#nudge-details")).toBeHidden();
+  expect(new URL(page.url()).hash).toBe("");
+});
+
+// Featured cards are never cut at the edge on wide screens, and the counter names every card on screen.
+test("the carousel shows whole cards and counts what is visible", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  for (const l of ["resume", "bento"]) {
+    await page.goto(`/?layout=${l}`);
+    const cut = await page.evaluate(() => {
+      const vp = document.querySelector(".car-vp")!.getBoundingClientRect();
+      return [...document.querySelectorAll(".feat > .proj")].filter((c) => {
+        const r = c.getBoundingClientRect();
+        return r.left < vp.right - 1 && r.right > vp.right + 1;
+      }).length;
+    });
+    expect(cut, `${l}: a card is cut at the edge`).toBe(0);
+    await expect(page.locator(".car-count")).toHaveText("1–2 of 4");
+  }
+});
+
+// On phones the layout switcher must never sit on top of the page's content.
+test("the phone switcher covers no content", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  for (const l of layouts) {
+    await page.goto(`/?layout=${l.key}`);
+    for (const y of [0, 300, 99999]) {
+      await page.evaluate((v) => scrollTo(0, v), y);
+      const hit = await page.evaluate(() => {
+        const s = document.querySelector(".sw")!.getBoundingClientRect();
+        return [...document.querySelectorAll(".page h1, .page h2, .page h3, .page h4, .page li, .page p")].some((n) => {
+          const r = n.getBoundingClientRect();
+          return r.width > 0 && r.left < s.right && r.right > s.left && r.top < s.bottom && r.bottom > s.top;
+        });
+      });
+      expect(hit, `${l.name} at scroll ${y}`).toBe(false);
+    }
+  }
 });
 
 test("hidden projects are not on the page", async ({ page }) => {
